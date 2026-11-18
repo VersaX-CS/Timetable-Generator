@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VersaX Timetable Generator</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#14304a">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--ink:#14304a;--bg:#f6f4ee;--card:#fff;--line:#cfd6dd;--acc:#e8b923;--tx:#1c2630;--cs:65%;--cl:84%;--as:34%;--al:82%;--fx:#d9d9d9;--br:#fff2cc;--cx:#10181f;--ok:#1d7a3a;--bad:#b3261e;--warn:#9a6a00;color-scheme:light}
+[data-theme=dark]{--bg:#0d141a;--card:#16212b;--line:#3d4d5a;--tx:#f5f8fb;--cs:42%;--cl:27%;--as:28%;--al:30%;--fx:#3a4651;--br:#5c4b10;--cx:#ffffff;--ok:#6ee79a;--bad:#ff9a92;--warn:#ffd27a;color-scheme:dark}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d141a;--card:#16212b;--line:#3d4d5a;--tx:#f5f8fb;--cs:42%;--cl:27%;--as:28%;--al:30%;--fx:#3a4651;--br:#5c4b10;--cx:#ffffff;--ok:#6ee79a;--bad:#ff9a92;--warn:#ffd27a;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+header{background:var(--ink);color:#fff;padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:100}
+header h1{font:600 17px Georgia,serif;margin:0 auto 0 0}
+.brand{display:flex;align-items:center;gap:10px}.brand svg{width:40px;height:40px;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}.brand .nm{display:block;font:700 25px/1 "Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;letter-spacing:.02em;color:#fff}.brand .nm b{color:var(--acc)}.brand small{display:block;margin-top:4px;font:600 10.5px/1 "Segoe UI",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#a9c4da}
+nav{display:flex;flex-wrap:wrap;gap:2px}.ng{position:relative}.gb{background:none;border:0;color:#cfe0ee;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:3px solid transparent}
+.gb.on,.ng.open .gb{color:#fff;border-color:var(--acc)}.gm{display:none;position:absolute;left:0;top:100%;min-width:210px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:4px;z-index:30}.ng.open .gm{display:block}.gm button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);padding:8px 12px;border-radius:6px;font:inherit;cursor:pointer}.gm button:hover,.gm button:focus-visible{background:var(--line)}.gm button.on{font-weight:700;border-left:3px solid var(--acc)}
+main{padding:14px;max-width:1100px;margin:auto}section{display:none}section.on{display:block}
+button,select,input,textarea{font:inherit;color:inherit}
+.b{background:var(--ink);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;margin:2px}
+.b.a{background:var(--acc);color:#241c00}.b.g{background:transparent;color:var(--tx);border:1px solid var(--line)}
+select,input{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px;max-width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0;overflow-x:auto}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid var(--line);padding:4px 6px;text-align:center;font-size:13px;min-width:78px}
+td{color:var(--cx)}td.fx{background:var(--fx)}td.br{background:var(--br);font-size:12px}td small{display:block;opacity:.85}
+td.tgt{outline:3px solid #2fbf71;outline-offset:-3px}[draggable=true]{cursor:grab}
+.ok{color:var(--ok)}.bad{color:var(--bad);font-weight:600}.warn{color:var(--warn)}
+#msg{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 14px;border-radius:20px;display:none}
+@media print{header,.row,#msg,nav,#dnd{display:none}body{background:#fff;color:#000}:root{--tx:#000!important;--cx:#10181f!important;--cs:65%!important;--cl:84%!important;--as:34%!important;--al:82%!important;--fx:#d9d9d9!important;--br:#fff2cc!important;--line:#999!important}}
+table.lay td{min-width:52px;height:28px;font-size:11px;cursor:pointer;padding:2px 3px}table.lay td.lb,table.lay th.lb{border-left:2px solid var(--acc)}table.lay th{min-width:40px;font-size:11px}
+td.br.e{background:transparent}label.sw{display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0;min-width:150px}label.sw input{width:38px;height:30px;padding:0;border:1px solid var(--line)}
+#vbar{border-color:var(--acc);background:var(--card)}
+.bar{display:inline-block;width:110px;height:12px;background:var(--line);border-radius:6px;vertical-align:middle;overflow:hidden;margin-right:6px}.bar i{display:block;height:100%;border-radius:6px}
+details.wt{border:1px solid var(--line);border-radius:8px;margin:6px 0;background:var(--card);padding:0 8px}details.wt summary{padding:8px 0;cursor:pointer}details.wt table{margin-bottom:8px}.chip{display:inline-block;border-radius:10px;padding:1px 8px;margin:2px 2px 0 0;font-size:12px}.mini{display:inline-flex;gap:2px;align-items:flex-end;height:40px;margin-left:8px;vertical-align:middle}.mini i{display:block;width:7px;background:var(--acc);border-radius:2px}tr.ghost input{border-style:dashed}
+@media(max-width:700px){header{position:static;padding:5px 8px;gap:2px}.brand svg{width:30px;height:30px}.brand .nm{font-size:19px}.brand small{font-size:8.5px;letter-spacing:.12em}.gb{padding:5px 7px;font-size:13px}}
+</style></head><body>
+<header><h1 class=brand><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="var(--acc)"/><g fill="var(--ink)"><rect x="4.5" y="4.5" width="5" height="5" rx="1.2"/><rect x="10.7" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="4.5" width="5" height="5" rx="1.2"/><rect x="4.5" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="10.7" width="5" height="5" rx="1.2"/><rect x="16.9" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="10.7" width="5" height="5" rx="1.2"/><rect x="29.3" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="16.9" width="5" height="5" rx="1.2"/><rect x="23.1" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/></g></svg><span><span class=nm>Versa<b>X</b></span><small>School Timetable Generator</small></span></h1>
+<nav id=nav>
+  <div class=ng><button class="gb on" aria-haspopup=true aria-expanded=false>Allocations &amp; Rules ▾</button><div class=gm><button data-t=data class=on>Allocations</button><button data-t=res>Reservations</button><button data-t=rul>Breaks &amp; Fixed Slots</button></div></div>
+ <div class=ng><button class=gb aria-haspopup=true aria-expanded=false>Timetable ▾</button><div class=gm><button data-t=xls>Import / Export</button><button data-t=gen>Generate &amp; View</button><button data-t=ver>Saved Versions</button><button data-t=emg>Emergency Day</button></div></div>
+<div class=ng><button class=gb aria-haspopup=true aria-expanded=false>Setup ▾</button><div class=gm><button data-t=cls>Classes</button><button data-t=sub>Subjects</button><button data-t=tch>Teacher List &amp; Limits</button><button data-t=wl>Teacher Workload</button><button data-t=ven>Venues</button><button data-t=clr>Colours</button></div></div>
+</nav>
+<button class="b g" id=undo hidden style="color:#fff;border-color:#8aa"></button><button class="b g" id=th style="color:#fff;border-color:#8aa"></button><button class="b a" id=inst hidden>Install app</button></header>
+<main><div id=vbar class=box hidden></div>
+<section id=cls><div class=row><button class=b onclick="edAdd('cls')">Add class</button></div><p class=warn>Class name, year number and level. The level (Junior / Middle / Senior) decides which break and lunch rules apply. Renaming a class keeps its allocations.</p><div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Add a year group</b><label>Year <input id=yg_y type=number value=7 min=1 max=13 style="width:64px"></label><label>Class names <input id=yg_n placeholder="NOAH, JOSEPH, DANIEL" style="width:220px"></label>
+ <label>Level <select id=yg_l><option value="">auto</option><option>Junior</option><option>Middle</option><option>Senior</option></select></label><label>Copy allocations from <select id=yg_c></select></label><button class=b id=yg_b>Add classes</button></div>
+ <div class=box id=e_cls></div></section>
+<section id=tch><div class=row><button class=b onclick="edFocus('tch')">Add teacher</button></div><p class=warn>Active = N keeps a teacher out of exam invigilation. Max periods per day blank means 8. Unavailable example: MON:1-3;FRI (Monday periods 1-3 and all of Friday). Renaming updates every allocation.</p><div class=box id=e_tch></div></section>
+<section id=wl><div class=row><input id=wq placeholder="Search teacher, subject or class" style="min-width:240px"><label>Sort <select id=ws><option value=az>A to Z</option><option value=hi>most loaded first</option><option value=lo>least loaded first</option></select></label><label><input type=checkbox id=wx> expand all</label></div><div id=wlbox></div></section>
+<section id=sub><div class=row><button class=b onclick="edFocus('sub')">Add subject</button><button class="b g" onclick="subSample()">Add common subjects</button><button class="b g" onclick="subFromAl()">Fill from allocations</button></div><p class=warn>Exam = Y gets an exam paper. Core = Y limits a class to 1 core exam per day and prefers mornings for lessons.</p><div class=box id=e_sub></div></section>
+<section id=xls>
+ <div class=box><b>1 · Fill in Excel (optional)</b><p>Download the blank template, fill it in, then import it below. Or export what you have entered in the app and edit it in Excel.</p>
+ <div class=row><button class=b id=xb>Download blank template</button><button class="b g" id=xc>Export current data</button></div></div>
+ <div class=box><b>2 · Import</b><p>Replaces the data in the app. Only the Allocations sheet is required; any other sheet you leave out keeps its current values.</p>
+ <div class=row><button class="b a" id=imp>Import Excel / CSV</button><input type=file id=file accept=".xlsx,.xls,.csv" hidden></div><div id=impmsg></div></div>
+ <div class=box><b>Start over</b><div class=row><button class="b g" id=reset2>Load a sample school (12 classes)</button><button class="b g" id=empty>Start with empty data</button></div></div></section>
+<section id=data class=on>
+ <div class=row><label>Class <select id=cs></select></label><button class="b g" id=demo>Auto-fill teachers (demo)</button></div>
+ <div class=row><b>Add to this class</b><input id=ns list=sl placeholder="MTH or ADD / ACC" style="width:190px"><datalist id=sl></datalist><label>Periods <input id=np type=number value=2 min=1 max=20 style="width:64px"></label><button class=b id=na>Add</button><label>Copy all from <select id=cf></select></label><button class="b g" id=cp>Copy</button></div>
+ <div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Apply to other classes</b>
+  <label>Apply my edits to <select id=sc><option value=this>this class only</option><option value=year>same year group</option><option value=all>all classes</option></select></label>
+  <label><input type=checkbox id=ixn checked> periods &amp; doubles</label><label><input type=checkbox id=ixt checked> teachers</label><label><input type=checkbox id=ixv checked> venues</label><label><input type=checkbox id=ixb> fill blanks only</label>
+  <button class=b id=bc>Copy this whole class to the scope</button><small>With a scope chosen, every teacher / venue / periods / doubles you change here is also applied to the same subject in those classes. The ⇉ button on a row applies that row.</small></div>
+ <div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Merged classes</b>
+  <label>Subject <select id=msj></select></label><button class="b g" id=msb>Merge it across this year group</button><button class="b g" id=mb>Merge all blocks that have equal periods in parallel classes</button><button class="b g" id=mu>Unmerge all</button>
+  <small>A merged class meets at the same time with the same teachers and venue, so the teacher / venue "clash" between its classes is allowed; every other rule (fixed slots, other classes, limits, reservations) still applies. Use the "merge with…" box on a row for single subjects or odd pairs.</small></div>
+ <div class=box id=al></div></section>
+<section id=gen>
+ <div class=row><button class=b id=go>Generate timetable</button><button class="b g" id=re>Regenerate (new variation)</button>
+ <button class="b g" id=xl>Download Excel</button><button class="b g" onclick="print()">Print / PDF</button><label><input type=checkbox id=st> Show times</label><select id=fmt><option>PNG</option><option>JPG</option></select><button class="b g" id=ei>Export image</button><button class="b g" id=ez>Export all as ZIP</button><button class="b a" id=sv>Save this version</button></div>
+ <div id=diag class=box></div>
+ <div class=row><select id=kind><option value=c>By class</option><option value=t>By teacher</option><option value=m>Master schedule</option></select><select id=who></select></div>
+ <p><small>Class view: drag a lesson - green cells are valid moves. If a move breaks a rule, the reasons and possible alternatives appear below the timetable.</small></p><label>Moving a break / activity applies to <select id=lyd2 onchange="$('#lyd').value=this.value"><option value=this>this day only</option><option value=mt>Monday to Thursday</option><option value=all>every day</option></select></label> <small>(drag sports, etiquette, assembly, break or lunch cells; a break dropped on a period goes right after it; lessons displaced are re-placed automatically)</small><br><label><input type=checkbox id=par> also move the same subject in the other classes of this year to the same new slot (works when they have different teachers)</label><div id=dnd></div>
+ <div class=box id=grid>Generate a timetable to see it here.</div>
+ <div class=row><b>Exams</b><label>Days <input id=xd type=number value=10 min=3 max=20 style="width:64px"></label><button class=b id=gx>Generate exam timetable</button></div><div class=box id=ex>Exam timetable appears here.</div></section>
+<section id=ven>
+ <p class=warn>One venue per line. A venue can only host one lesson at a time, so give each lab or workshop that is shared between classes its own line. Choose a venue per subject in the Allocations tab.</p>
+ <textarea id=vt rows=10 placeholder="One venue per line, e.g.&#10;Chemistry Lab&#10;ICT Lab&#10;Art Studio" style="width:100%;max-width:420px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea>
+ <div class=row><button class=b id=vs>Save venues</button><label>Auto-fill for <select id=vy></select></label><button class="b g" id=va>Auto-fill venues (labs, ICT, art...)</button></div></section>
+<section id=clr><div class=row><button class="b g" id=cr>Reset all colours</button></div>
+ <p class=warn>Pick a colour for each subject and each activity (assembly, sports, break, lunch ...). Anything you leave alone keeps an automatic colour that adapts to the light / dark theme; a colour you pick stays the same in both themes, in Excel-free image exports and in the ZIP. Elective blocks such as ADD / ACC use the colour of their first subject that has one.</p>
+ <div class=box id=clrbox></div></section>
+<section id=res><div class=row><button class=b onclick="edAdd('res')">Add rule</button></div>
+ <p class=warn><b>ONLY</b> - the subject can be placed only in these slots (e.g. MTH only P1-P3). <b>NEVER</b> - the subject is never placed in these slots (e.g. PHE never P1). <b>RESERVE</b> - these slots are kept for this subject only, so nothing else is scheduled there. Applies to: ALL, Junior, Middle, Senior, a year (9) or a class name. Day: MON, MON-FRI, TUE,THU. Period: 3 or 1-3. Several subject codes can be listed separated by commas.</p><div class=box id=e_res></div></section>
+<section id=rul>
+ <div class=box><b>Lesson times</b><div class=row><label>First period starts <input type=time id=bs></label><label>Period (min) <input type=number id=bl min=10 max=120 style="width:70px"></label><label>Break (min) <input type=number id=bb min=0 max=90 style="width:70px"></label><label>Lunch (min) <input type=number id=bu min=0 max=120 style="width:70px"></label><label>Custom lengths <input id=bo placeholder="1=30,9=35" style="width:120px"></label><label>Preview <select id=bd></select></label></div><div id=bp></div><div id=bm style="margin-top:10px"></div><div class=row><b>Shift all times</b><input id=sh type=number value=0 style="width:80px"> minutes <button class="b g" id=shb>Shift</button><small>(moves the first period and any manual times; negative = earlier)</small></div></div>
+ <div class=row><button class=b id=ra>Add row</button><button class="b g" id=rr>Reset to defaults</button></div>
+ <p class=warn>Day: MON, MON-THU, TUE,WED or ALL · Period: 3 or 4-6 · Applies to: ALL, Junior, Middle, Senior, a year (7, YEAR 9) or a class name, separated by commas · Break, Lunch and In break happen <b>after</b> the period. <b>In break</b> puts another activity (e.g. Prayers) in the break column, optionally with its own Minutes. Identical cells merge automatically.</p>
+ <div class=box id=rt></div>
+ <div class=box><b>Day layout - move break, lunch and activities</b>
+  <p class=warn>Each group below is a set of classes with the same fixed layout. <b>Click a cell</b> to type what happens there, or <b>drag a cell</b> onto another: break and lunch move between the narrow <i>after</i> columns (the break column); activities (assembly, sports, prayers...) can move between periods and into the break column. Dropping an activity on an occupied break slot adds it to that break (e.g. BREAK + PRAYERS).</p>
+  <div class=row><label>Apply a change to <select id=lyd onchange="$('#lyd2').value=this.value"><option value=this>this day only</option><option value=mt>Monday to Thursday</option><option value=all>every day</option></select></label><small>(Friday can differ: pick "this day only" for it.)</small></div><div id=lay></div></div></section>
+<section id=ver><div id=vl></div></section>
+<section id=emg>
+ <div class=row><label>Day <select id=ed></select></label></div>
+ <div class=box id=ea></div><div class=box id=eo></div><div class=box id=ep></div></section>
+</main><div id=msg></div>
+<script src="xlsx.full.min.js"></script>
+<script>window.XLSX||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>')</script>
+<script>
+/*CORE*/
+const D=["MON","TUE","WED","THU","FRI"],NP=9,CORE="MTH ENG ECO PHY CHM BIO CIV".split(" ");
+const TEACHERS=["MR. BALOGUN MAYOWA","MS. OLARINDE DEBORAH","MRS. ADESANYA","MRS. MUSTAPHA","MR. OLADEJI","MR. OWIE","MR. AJIBOLA","MR. ADEOYE","MR. JOSHUA NWOGU","MR EMMANUEL OWOSUYI","MRS. ADEYEMI","MR. EMMANUEL IGHAHUMHEN","MRS. OYEDIRAN","MR. OLUYOLE","MR. OLADOKUN","MRS. KIMIA","MR. FELIX","MR. ODUNJO","MR. TADAGBE","MR. ALLI","MR. SALAMI","MS. EZEOKEKE","MR. OLOWOLAYEMO","MR. AMANA","MR. SAMUEL AJOSEH"];
+const JU="MTH:4,ENG:4,BIO:2,CHM:2,PHY:2,D&T:2,A&D:2,ICT:2,FRN:2,HIS:2,LIT:2,PHE:2,SOS:2,COD:1,MUS:1,COUNSELLING:1";
+const MI=(b,h)=>`MTH:4,ENG:4,BIO:${b},HIS:${h},CHM:2,PHY:2,D&T:2,A&D:2,ICT:2,FRN:2,GEO:2,LIT:2,PHE:2,COD:1,IBM:1,MUS:1,COUNSELLING:1`;
+const CL={"YEAR 7 NOAH":JU,"YEAR 7 JOSEPH":JU,"YEAR 7 DANIEL":JU.replace("A&D:2","A&D:1").replace("MUS:1","MUS:2"),"YEAR 8 CALEB":JU,"YEAR 8 GIDEON":JU,"YEAR 8 JOSHUA":JU,
+"YEAR 9 EZRA":MI(2,1),"YEAR 9 NEHEMIAH":MI(1,2),
+"YEAR 10 EZEKIEL":"MTH:4,ENG:4,ADD/ACC:3,BIO:3,CHM/HIS:2,CIV:2,FRN:2,PHY/BUS/COM:2,LIT/GEO:2,AGR/GOV:2,ECO:2,A&D/D&T:2,ICT:2,LIBRARY:1",
+"YEAR 10 JEREMIAH":"ENG:5,MTH:4,BIO:3,ADD/ACC:3,CHM/HIS:2,CIV:2,ECO:2,FRN:2,PHY/BUS/COM:2,LIT/GEO:2,AGR/GOV:2,ICT:2,A&D/D&T:2",
+"YEAR 11 JAMES":"MTH:4,ENG:4,ECO:3,CHM/HIS:3,LIT/GEO:2,ADD/ACC:2,FRN:2,BIO:2,CIV:2,ICT:2,A&D/D&T:2,A&D/D&T/GOV:2,PHY/BUS/COM:1,PHY/BUS:1,LIBRARY:1",
+"YEAR 11 JUDE":"MTH:4,ENG:4,ADD/ACC:3,PHY/BUS/COM:2,ICT:2,CIV:2,FRN:2,CHM/HIS:2,ECO:2,BIO:2,A&D/D&T/CRK:2,A&D/D&T/GOV:2,LIT/GEO:1,LIBRARY:1,LIT:1,PHY:1"};
+// School rules (fixed activities, break, lunch). Editable in the "Breaks & fixed slots" tab; Applies-to accepts ALL, Junior/Middle/Senior, a year (7, YEAR 9) or a class name.
+const FX0=[["MON","1","ALL","ASSEMBLY"],["TUE,WED","1","ALL","FELLOWSHIP"],["MON-THU","4","ALL","BREAK","BREAK"],["MON-FRI","6","Junior","LUNCH","LUNCH"],["MON-FRI","7","Middle,Senior","LUNCH","LUNCH"],
+["FRI","3","ALL","ETIQUETTE"],["FRI","4-6","Junior","SPORTS"],["FRI","4-7","Middle,Senior","SPORTS"],["FRI","8","Junior","MENTOR/MENTEE"],["FRI","9","Middle,Senior","MENTOR/MENTEE"],
+["MON","9","ALL","MUSIC CLUB"],["WED","9","ALL","FRENCH CLUB"],["FRI","9","Junior","DRAMA/CHESS CLUB"]].map(([d,p,a,n,k])=>({d,p,a,n,k:k||"ACTIVITY"}));
+const dayIx=s=>{const o=[];String(s).toUpperCase().split(/[,;&]/).forEach(t=>{t=t.trim();if(!t)return;if(t=="ALL")o.push(0,1,2,3,4);
+ else if(t.includes("-")){const[a,z]=t.split("-").map(x=>D.indexOf(x.trim().slice(0,3)));for(let i=a;i<=z;i++)o.push(i)}else o.push(D.indexOf(t.slice(0,3)))});return o.filter(i=>i>=0).join("")};
+// kind: B = break, L = lunch, O = other activity placed in the break column; the last value is optional minutes
+const compile=fx=>fx.map(r=>[dayIx(r.d),String(r.p),/^(ALL|\*)?$/i.test(String(r.a).trim())?"*":r.a,r.n,/LUNCH/i.test(r.k||"")?"L":/IN BREAK|OTHER/i.test(r.k||"")?"O":/BREAK/i.test(r.k||"")?"B":0,r.m===""||r.m==null?null:+r.m]);
+let RULES=compile(FX0),LOV=[];
+// layout overrides: {a: applies-to, d: day 0-4, s: "P" period | "B" break column after period p, p, n: name ("" clears), m: minutes}
+const kindOf=n=>/^LUNCH$/i.test(n)?"L":/^BREAK$/i.test(n)?"B":"O";
+const compileLo=lo=>lo.map(o=>({ay:/^(ALL|\*)?$/i.test(String(o.a||"").trim())?"*":o.a,d:+o.d,s:o.s,p:+o.p,n:String(o.n||"").trim(),m:o.m===""||o.m==null?null:+o.m}));
+function setRules(){RULES=compile(S.data.fx);LOV=compileLo(S.data.lo||[])}
+const VN0=["Chemistry Lab","Physics Lab","Biology Lab","ICT Lab","Art Studio","D&T Workshop","Music Room","Library","Sports Field"];
+const SUBJ0=[["MTH","Mathematics","Y","Y"],["ENG","English Language","Y","Y"],["ECO","Economics","Y","Y"],["PHY","Physics","Y","Y"],["CHM","Chemistry","Y","Y"],["BIO","Biology","Y","Y"],["CIV","Civic Education","Y","Y"],["ICT","ICT","Y","N"],["FRN","French","Y","N"],["D&T","Design & Technology","Y","N"],["HIS","History","Y","N"],["LIT","Literature","Y","N"],["ADD","Additional Mathematics","Y","N"],["ACC","Accounting","Y","N"],["BUS","Business Studies","Y","N"],["GEO","Geography","Y","N"],["A&D","Art & Design","Y","N"],["GOV","Government","Y","N"],["AGR","Agricultural Science","Y","N"],["COM","Commerce","Y","N"],["COD","Coding","Y","N"],["SOS","Social Studies","Y","N"],["PHE","Physical & Health Education","Y","N"],["MUS","Music","Y","N"],["IBM","Introduction to Business Management","Y","N"],["CRK","Christian Religious Knowledge","Y","N"],["COUNSELLING","Counselling","N","N"],["LIBRARY","Library","N","N"]];
+let CORESET=new Set(CORE),NOEX=new Set(["COUNSELLING","LIBRARY"]);
+const freshWith=sample=>{const classes=sample?Object.keys(CL).map(n=>({n,y:+n.split(" ")[1]})):[],al=[];
+ classes.forEach(c=>CL[c.n].split(",").forEach(s=>{const i=s.lastIndexOf(":");al.push({c:c.n,s:s.slice(0,i).split("/").join(" / "),n:+s.slice(i+1),t:[],d:0,v:[]})}));
+ return{classes,al,teachers:[],tl:{},fx:FX0.map(r=>({...r})),vn:[],bell:{s:"08:00",l:40,b:20,u:40,o:"",m:{}},rs:[],lo:[],colors:{},subj:[]}};
+const fresh=()=>freshWith(false),sampleData=()=>freshWith(true); // empty start / optional sample school (12 classes)
+const nz=x=>String(x).trim().toUpperCase().replace(/^YEAR\s*/,"");
+const lvl=c=>c.l||(c.y<9?"Junior":c.y<10?"Middle":"Senior"),hit=(ys,c)=>{const me=[c.y,c.n,lvl(c)].map(nz);return ys==="*"||String(ys).split(",").some(x=>me.includes(nz(x)))};
+function fixedMap(c){const f={},b={},bt={};
+ RULES.forEach(([ds,ps,ys,nm,k,mm])=>{if(!hit(ys,c))return;
+  String(ps).split(/[,;]/).forEach(sg=>{const[a,z]=sg.split("-").map(Number);if(!a)return;for(const d of ds)for(let p=a;p<=(z||a);p++){const key=d+","+p;
+   if(k){b[key]=b[key]?b[key]+" + "+nm:nm;(bt[key]=bt[key]||[]).push([k,mm])}else f[key]=nm}})});
+ LOV.forEach(o=>{if(!hit(o.ay,c))return;const key=o.d+","+o.p;if(o.s=="P"){if(o.n)f[key]=o.n;else delete f[key]}else{delete b[key];delete bt[key];if(o.n){b[key]=o.n;bt[key]=o.n.split(" + ").map(x=>[kindOf(x.trim()),kindOf(x.trim())=="O"?o.m:null])}}});return{f,b,bt}}
+const rng=s=>()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const RS=A=>{const t=A.t.filter(Boolean),v=(A.v||[]).filter(Boolean);return v.length?t.concat(v.map(x=>"@"+x)):t}; // resources a lesson occupies: teachers + venues ("@" prefix)
+const isCore=A=>A.s.split(" / ").some(x=>CORESET.has(x)),comps=A=>A.s.split(" / ");
+const PP=v=>v%100,SPN=v=>v>=100?2:1; // a stored position is the start period, +100 when the lesson is a double
+const parseUn=s=>{const u=new Set();String(s||"").split(";").forEach(tok=>{const[dp,pp]=tok.split(":"),di=D.indexOf((dp||"").trim().toUpperCase().slice(0,3));
+ if(di<0)return;const[a,z]=(pp||"1-12").split("-").map(Number);for(let p=a;p<=(z||a);p++)u.add(di+","+p)});return u};
+// Subject reservations: per allocation, slots it may not use (forb) and, if set, the only slots it may use (only)
+function resSets(data){const{al,classes}=data,out=al.map(()=>({forb:new Set(),only:null}));
+ (data.rs||[]).forEach(r=>{const want=String(r.s||"").toUpperCase().split(/[\/,;]/).map(x=>x.trim()).filter(Boolean);if(!want.length)return;
+  const ys=/^(ALL|\*)?$/i.test(String(r.a||"").trim())?"*":r.a,slots=new Set(),mode=String(r.m||"ONLY").toUpperCase();
+  String(r.p).split(/[,;]/).forEach(sg=>{const[a,z]=sg.split("-").map(Number);if(!a)return;for(const d of dayIx(r.d))for(let p=a;p<=(z||a);p++)slots.add(d+","+p)});
+  al.forEach((A,i)=>{const c=classes.find(x=>x.n==A.c);if(!c||!hit(ys,c))return;const mine=comps(A).some(x=>want.includes(x));
+   if(mine&&mode=="ONLY")out[i].only=new Set([...(out[i].only||[]),...slots]);
+   else if(mine&&mode=="NEVER")slots.forEach(k=>out[i].forb.add(k));
+   else if(!mine&&mode=="RESERVE")slots.forEach(k=>out[i].forb.add(k))})});return out}
+// Merged (joint) classes: allocations sharing a group id `j` and the same subject meet together (same period, shared teachers and venue)
+function groupsOf(al){const GM=al.map((_,i)=>[i]),lead=al.map((_,i)=>i),by={};al.forEach((A,i)=>{if(A.j){const k=A.j+"|"+A.s;(by[k]=by[k]||[]).push(i)}});
+ Object.values(by).forEach(m=>{if(m.length>1)m.forEach(i=>{GM[i]=m;lead[i]=m[0]})});return{GM,lead}}
+// Engine: holds the grid and enforces every hard rule. Used by the solver and by manual drag-and-drop.
+function mk(data,pos){
+ const{al,classes,tl={}}=data,fx={},br={},ck={},tk={},ld={},un={},E={ck,tk,pos},RZ=resSets(data),{GM,lead}=groupsOf(al);E.GM=GM;E.lead=lead;
+ classes.forEach(c=>{const m=fixedMap(c);fx[c.n]=m.f;br[c.n]=m.b});
+ const RR=al.map((_,i)=>{const s=new Set();GM[i].forEach(m=>RS(al[m]).forEach(x=>s.add(x)));return[...s]}); // resources of a (merged) lesson, counted once
+ const RZc=al.map((_,i)=>{const m=GM[i];if(m.length==1)return RZ[i];const f=new Set(),os=[];m.forEach(x=>{RZ[x].forb.forEach(k=>f.add(k));if(RZ[x].only)os.push(RZ[x].only)});
+  return{forb:f,only:os.length?new Set([...os[0]].filter(k=>os.every(o=>o.has(k)))):null}});
+ const lim=t=>t[0]=="@"?99:(tl[t]&&+tl[t].m)||8,unv=t=>un[t]||(un[t]=parseUn(tl[t]&&tl[t].u)),nm=x=>GM[x].map(m=>al[m].c).join(" + ")+" "+al[x].s,ckL=(c,k)=>{const o=ck[c+"|"+k];return o==null?null:lead[o]};
+ E.put=(a0,d,v)=>{const a=lead[a0],p=PP(v),s=SPN(v);GM[a].forEach(m=>{pos[m][d]=v;for(let i=0;i<s;i++)ck[al[m].c+"|"+d+","+(p+i)]=m});
+  RR[a].forEach(t=>{for(let i=0;i<s;i++)tk[t+"|"+d+","+(p+i)]=a;ld[t+d]=(ld[t+d]||0)+s})};
+ E.out=(a0,d)=>{const a=lead[a0],v=pos[a][d],p=PP(v),s=SPN(v);GM[a].forEach(m=>{pos[m][d]=-1;for(let i=0;i<s;i++)delete ck[al[m].c+"|"+d+","+(p+i)]});
+  RR[a].forEach(t=>{for(let i=0;i<s;i++)delete tk[t+"|"+d+","+(p+i)];ld[t+d]-=s})};
+ // lessons that would have to move if `a` (span s) sat at day d, period p; null = a hard rule forbids it
+ E.conf=(a0,d,p,s)=>{const a=lead[a0],ev=new Set(),z=RZc[a];if(pos[a][d]>=0)return null;
+  for(let i=0;i<s;i++){const k=d+","+(p+i);if(p+i>NP)return null;
+   for(const m of GM[a]){const c=al[m].c;if(fx[c][k])return null;if(i&&br[c][d+","+(p+i-1)])return null;const o=ckL(c,k);if(o!=null)ev.add(o)}
+   if(z.forb.has(k)||(z.only&&!z.only.has(k)))return null;
+   for(const t of RR[a]){if(unv(t).has(k))return null;const x=tk[t+"|"+k];if(x!=null)ev.add(x)}}
+  for(const t of RR[a])if((ld[t+d]||0)+s>lim(t))return null;return ev};
+ // same rules, but returns the human-readable reasons (used to explain a refused drag-and-drop)
+ E.why=(a0,d,p,s)=>{const a=lead[a0],A=al[a],R=[],ev=new Set(),z=RZc[a];
+  if(pos[a][d]>=0)R.push(`${A.s} already has a lesson on ${D[d]} (max 1 per subject per day)`);
+  for(let i=0;i<s;i++){const k=d+","+(p+i),L=`${D[d]} P${p+i}`,occ=new Set();
+   if(p+i>NP){R.push(`${L} does not exist`);continue}
+   for(const m of GM[a]){const c=al[m].c,w=GM[a].length>1?` for ${c}`:"";if(fx[c][k])R.push(`${L} is fixed${w}: ${fx[c][k]}`);
+    if(i&&br[c][d+","+(p+i-1)])R.push(`a double period cannot run across ${br[c][d+","+(p+i-1)]}`);
+    const o=ckL(c,k);if(o!=null){ev.add(o);occ.add(o);R.push(`${L} is occupied${w} by ${nm(o)}`)}}
+   if(z.forb.has(k)||(z.only&&!z.only.has(k)))R.push(`${L} is not allowed for ${A.s} by a subject reservation`);
+   for(const t of RR[a]){const x=tk[t+"|"+k];if(x!=null){ev.add(x);if(!occ.has(x))R.push(`${t[0]=="@"?"venue "+t.slice(1):t} is busy at ${L} (${nm(x)})`)}if(unv(t).has(k))R.push(`${t} is unavailable at ${L}`)}}
+  for(const t of RR[a])if(t[0]!="@"&&(ld[t+d]||0)+s>lim(t))R.push(`${t} would have more than ${lim(t)} periods on ${D[d]}`);
+  return{R,ev}};
+ // soft cost: core subjects early, balanced teacher days, few teacher gaps, few class gaps
+ E.cost=()=>{let c=0;const tm={},cm={};
+  pos.forEach((ps,a)=>{if(lead[a]!==a)return;const A=al[a],core=isCore(A);ps.forEach((v,d)=>{if(v<0)return;const p=PP(v),s=SPN(v);if(core)c+=p*.5;
+   for(let i=0;i<s;i++){RR[a].filter(t=>t[0]!="@").forEach(t=>(tm[t+d]=tm[t+d]||[]).push(p+i));GM[a].forEach(m=>(cm[al[m].c+d]=cm[al[m].c+d]||[]).push(p+i))}})});
+  for(const k in tm){const x=tm[k];c+=x.length*x.length*.6+(Math.max(...x)-Math.min(...x)+1-x.length)*2}
+  for(const k in cm){const x=cm[k];c+=(Math.max(...x)-Math.min(...x)+1-x.length)*3}return c};
+ // move lesson a (day d) to day d2 / period p2, swapping with whatever is there; returns an undo function or null
+ E.mv=(a0,d,d2,p2)=>{const a=lead[a0],v=pos[a][d],s=SPN(v),sw=ckL(al[a].c,d2+","+p2),b=sw!=null&&sw!==a?sw:null,bv=b==null?-1:pos[b][d2];
+  if(b!=null&&(SPN(bv)!=s||PP(bv)!=p2))return null;
+  const back=()=>{E.put(a,d,v);if(b!=null)E.put(b,d2,bv)};
+  E.out(a,d);if(b!=null)E.out(b,d2);
+  const e1=E.conf(a,d2,p2,s);if(!e1||e1.size){back();return null}
+  E.put(a,d2,p2+(s>1?100:0));
+  if(b!=null){const e2=E.conf(b,d,PP(v),s);if(!e2||e2.size){E.out(a,d2);back();return null}E.put(b,d,v)}
+  return()=>{E.out(a,d2);if(b!=null)E.out(b,d);back()}};
+ // why a drop would be refused
+ E.explain=(a0,d,d2,p2)=>{const a=lead[a0],v=pos[a][d],s=SPN(v),sw=ckL(al[a].c,d2+","+p2),b=sw!=null&&sw!==a?sw:null,R=[];
+  if(b!=null&&(SPN(pos[b][d2])!=s||PP(pos[b][d2])!=p2))return[`${D[d2]} P${p2} is taken by ${nm(b)}, which has a different length or starts in another period, so the two cannot be swapped`];
+  const bv=b==null?-1:pos[b][d2];E.out(a,d);if(b!=null)E.out(b,d2);
+  R.push(...E.why(a,d2,p2,s).R);if(b!=null)R.push(...E.why(b,d,PP(v),s).R.map(x=>`swap partner ${al[b].s}: ${x}`));
+  E.put(a,d,v);if(b!=null)E.put(b,d2,bv);return[...new Set(R)]};
+ // every position this lesson could move or swap to without breaking a rule
+ E.options=(a0,d)=>{const a=lead[a0],v=pos[a][d],o=[];for(let d2=0;d2<5;d2++)for(let p2=1;p2<=NP;p2++){if(d2==d&&p2==PP(v))continue;
+  const sw=ckL(al[a].c,d2+","+p2),b=sw!=null&&sw!==a?sw:null,u=E.mv(a,d,d2,p2);if(u){u();o.push({d2,p2,b})}}return o};
+ al.forEach((A,a)=>{if(lead[a]!==a)pos[a].fill(-1)}); // partners follow their leader: clear them first, the leader's put() refills them
+ al.forEach((A,a)=>{if(lead[a]===a)pos[a].forEach((v,d)=>{if(v>=0){pos[a][d]=-1;E.put(a,d,v)}})});
+ return E}
+// Place queued lessons [alloc, span] with min-conflicts (evicted lessons go back on the queue)
+function fillQ(E,pos,q,R,data,maxIter=400000){const{al}=data;
+ for(let it=0;q.length&&it<maxIter;it++){const[a,s]=q.shift(),core=isCore(al[a]),o=[];
+  for(let d=0;d<5;d++)for(let p=1;p<=NP;p++){const ev=E.conf(a,d,p,s);if(ev)o.push([ev.size*100+(core?p*.6:0)+R()*4,d,p,ev])}
+  if(!o.length)return false;
+  const pk=R()<.03?o[R()*o.length|0]:o.reduce((m,x)=>x[0]<m[0]?x:m);
+  pk[3].forEach(b=>{q.push([b,SPN(pos[b][pk[1]])]);E.out(b,pk[1])});E.put(a,pk[1],pk[2]+(s>1?100:0))}
+ return!q.length}
+// Keep every lesson that is still valid under the current rules/layout; re-place only the ones that are not. Returns {pos,moved} or null.
+function repair(data,old,seed=1){const R=rng(seed),{al}=data,pos=al.map(()=>[-1,-1,-1,-1,-1]),E=mk(data,pos),q=[];
+ old.forEach((ps,a)=>ps.forEach((v,d)=>{if(v<0||E.lead[a]!==a)return;const ev=E.conf(a,d,PP(v),SPN(v));if(ev&&!ev.size)E.put(a,d,v);else q.push([a,SPN(v)])}));
+ const moved=q.length;return fillQ(E,pos,q,R,data)?{pos,moved}:null}
+// Phase 1: min-conflicts construction. Phase 2: simulated annealing on the soft cost (hard rules never broken).
+function solve(data,seed=1,iters=20000){
+ const R=rng(seed),{al}=data,pos=al.map(()=>[-1,-1,-1,-1,-1]),E=mk(data,pos),q=[];
+ al.forEach((A,i)=>{if(E.lead[i]!==i)return;const dbl=Math.min(A.d|0,A.n>>1);for(let k=0;k<dbl;k++)q.push([i,2]);for(let k=0;k<A.n-2*dbl;k++)q.push([i,1])});
+ q.sort((x,y)=>(y[1]-x[1])*5+al[y[0]].t.length-al[x[0]].t.length+(R()-.5)*2);
+ if(!fillQ(E,pos,q,R,data))return null;
+ let cur=E.cost();
+ for(let it=0;it<iters;it++){const T=2*(1-it/iters)+.05,a=R()*al.length|0,ds=[0,1,2,3,4].filter(d=>pos[a][d]>=0);if(E.lead[a]!==a||!ds.length)continue;
+  const undo=E.mv(a,ds[R()*ds.length|0],R()*5|0,1+(R()*NP|0));if(!undo)continue;
+  const nc=E.cost();if(nc<=cur||R()<Math.exp((cur-nc)/T))cur=nc;else undo()}
+ return pos}
+// Independent re-check of a finished timetable. Merged classes may share teachers and venues; everything else still applies.
+function check(data,pos){const{al,classes,tl={}}=data,{GM,lead}=groupsOf(al),cs={},ts={},td={},vs={},RZ=resSets(data);let fxh=0,cnt=0,lim=0,rv=0,mg=0;
+ const addS=(m,k,id)=>{(m[k]=m[k]||new Set()).add(id)},add=(m,k,n=1)=>{m[k]=(m[k]||0)+n};
+ pos.forEach((ps,a)=>{const A=al[a],f=fixedMap(classes.find(c=>c.n==A.c)).f,z=RZ[a];let n=0;
+  if(GM[a].length>1&&JSON.stringify(ps)!==JSON.stringify(pos[lead[a]]))mg++;
+  const T=[...new Set(GM[a].flatMap(m=>al[m].t.filter(Boolean)))],V=[...new Set(GM[a].flatMap(m=>(al[m].v||[]).filter(Boolean)))];
+  ps.forEach((v,d)=>{if(v<0)return;const p=PP(v),s=SPN(v);n+=s;if(lead[a]===a)T.forEach(t=>add(td,t+"|"+d,s));
+   for(let i=0;i<s;i++){const k=d+","+(p+i);add(cs,A.c+"|"+k);T.forEach(t=>addS(ts,t+"|"+k,lead[a]));V.forEach(x=>addS(vs,x+"|"+k,lead[a]));
+    if(f[k])fxh++;if(z.forb.has(k)||(z.only&&!z.only.has(k)))rv++}});if(n!=A.n)cnt++});
+ for(const k in td)if(td[k]>((tl[k.split("|")[0]]&&+tl[k.split("|")[0]].m)||8))lim++;
+ const dupN=m=>Object.keys(m).some(k=>m[k]>1),dupS=m=>Object.keys(m).some(k=>m[k].size>1);
+ const r=[[!dupN(cs),"No class has two lessons in one period"],[!dupS(ts),"No teacher is in two places at once (merged classes count as one lesson)"],[!dupS(vs),"No venue is double-booked (merged classes count as one lesson)"],[!fxh,"No lesson uses a fixed school-wide slot"],[!rv,"Subject reservations are respected"],[!mg,"Merged classes meet at the same times"],[!cnt,"Every subject has exactly its weekly periods (max 1 lesson per day)"],[!lim,"No teacher exceeds the daily limit"]];
+ return{ok:r.every(x=>x[0]),r}}
+// Exams: papers = (year, subject). Same-year classes sit together; a class never has two exams in one session
+// (parallel electives of one block excepted); max 1 core exam per class per day; invigilators balanced.
+function exams(data,days=10,seed=1){
+ const R=rng(seed),K=days*2,{al,classes,teachers}=data,NE=["COUNSELLING","LIBRARY"],yr=n=>classes.find(c=>c.n==n).y,P={},cs={},ex={};
+ al.forEach(A=>{const cm=comps(A).filter(x=>!NOEX.has(x));cm.forEach(x=>{const k=yr(A.c)+"|"+x;(P[k]=P[k]||new Set()).add(A.c);(cs[A.c]=cs[A.c]||new Set()).add(x);cm.forEach(z=>x!=z&&(ex[A.c]=ex[A.c]||new Set()).add(x+"|"+z))})});
+ const keys=Object.keys(P),cf={},dc={};keys.forEach(k=>{cf[k]=new Set();dc[k]=new Set()});
+ for(const c in cs){const y=yr(c),L=[...cs[c]];L.forEach(x=>L.forEach(z=>{if(x==z)return;const a=y+"|"+x,b=y+"|"+z;
+  if(!(ex[c]&&ex[c].has(x+"|"+z)))cf[a].add(b);if(CORESET.has(x)&&CORESET.has(z))dc[a].add(b)}))}
+ const slot={},q=[...keys].sort(()=>R()-.5),cnt=Array(K).fill(0);
+ for(let it=0;q.length&&it<100000;it++){const k=q.shift(),core=CORESET.has(k.split("|")[1]),o=[];
+  for(let s=0;s<K;s++){const ev=keys.filter(z=>slot[z]!=null&&((cf[k].has(z)&&slot[z]==s)||(dc[k].has(z)&&(slot[z]>>1)==(s>>1))));o.push([ev.length*100+(core&&s%2?3:0)+cnt[s]*.8+R()*2,s,ev])}
+  const pk=R()<.03?o[R()*K|0]:o.reduce((m,x)=>x[0]<m[0]?x:m);
+  pk[2].forEach(z=>{cnt[slot[z]]--;delete slot[z];q.push(z)});slot[k]=pk[1];cnt[pk[1]]++}
+ let viol=q.length;keys.forEach(a=>{cf[a].forEach(b=>{if(slot[a]==slot[b])viol++});dc[a].forEach(b=>{if((slot[a]>>1)==(slot[b]>>1))viol++})});
+ const duty={},busy={},dd={},sit=[],ow={};teachers.forEach(t=>duty[t]=0);
+ keys.forEach(k=>{const[y,x]=k.split("|"),r=new Set();al.forEach(A=>{if(yr(A.c)==y&&comps(A).includes(x))A.t.filter(Boolean).forEach(t=>r.add(t))});ow[k]=r;[...P[k]].forEach(c=>sit.push({k,c,s:slot[k],i:[]}))});
+ sit.sort(()=>R()-.5).forEach(z=>{const t=teachers.filter(t=>!(data.tl&&data.tl[t]&&data.tl[t].a=="N")&&!busy[t+z.s]&&(dd[t+(z.s>>1)]||0)<2&&!ow[z.k].has(t)).sort((a,b)=>duty[a]-duty[b]||R()-.5)[0];
+  if(t){z.i.push(t);busy[t+z.s]=1;duty[t]++;dd[t+(z.s>>1)]=(dd[t+(z.s>>1)]||0)+1}});
+ return{sit,duty,ok:viol==0&&sit.every(z=>z.i.length)}}
+/*ENDCORE*/
+
+/* ---------- state & storage ---------- */
+const $=s=>document.querySelector(s),LS=localStorage;let S={data:fresh(),pos:null,seed:1,vers:[],active:null};
+const cl=x=>x==null?x:JSON.parse(JSON.stringify(x)),vid=()=>Date.now()*1000+Math.floor(Math.random()*1000); // deep copy / unique id
+const save=()=>{try{
+ if(S.editing){const v=S.vers.find(x=>x.id===S.editing);if(v){v.data=JSON.parse(JSON.stringify(S.data));v.pos=cl(S.pos);v.date=new Date().toLocaleString();v.edited=1}else S.editing=null}
+ LS.tt=JSON.stringify({data:S.data,pos:S.pos,seed:S.seed,vers:S.vers,active:S.active,editing:S.editing||null});S._sf=0}catch(e){if(!S._sf){S._sf=1;say("\u26A0 NOT SAVED: browser storage is full or blocked. Use Excel > Export current data to keep a copy, and delete old saved versions.",12000)}}
+ if(typeof updBar=="function")updBar()};
+try{const s=JSON.parse(LS.tt||"null");if(s){
+ if(s.data)S.data=Object.assign(fresh(),s.data);
+ else{S.data.al.forEach((a,i)=>{a.t=s.t[i]||[];a.d=(s.d||[])[i]|0;a.v=(s.v||[])[i]||[]});if(s.vn)S.data.vn=s.vn;if(s.bell)S.data.bell=s.bell;S.data.tl=s.tl||{};if(s.fx)S.data.fx=s.fx}
+ S.pos=s.pos;S.seed=s.seed||1;S.vers=s.vers||[];S.active=s.active;S.editing=s.editing||null}}catch(e){}
+let sayT;const say=(m,ms=2600)=>{const e=$("#msg");e.textContent=m;e.style.display="block";clearTimeout(sayT);sayT=setTimeout(()=>e.style.display="none",ms)};
+const col=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
+// ---- colours: subjects use a hue, activities a muted hue ("a<hue>"), custom colours are hex and stay the same in both themes
+const ACT_H={ASSEMBLY:210,FELLOWSHIP:165,ETIQUETTE:330,SPORTS:125,"MENTOR/MENTEE":265,"MUSIC CLUB":290,"FRENCH CLUB":190,"DRAMA/CHESS CLUB":20};
+const CLR=()=>S.data.colors||{};
+function actCol(n){n=String(n||"").split(" + ")[0].trim().toUpperCase();const c=CLR()[n];if(c)return c;if(n=="BREAK")return 48;if(n=="LUNCH")return 28;return"a"+(ACT_H[n]??col(n))}
+function subCol(s){const C=CLR();if(C[s])return C[s];for(const x of s.split(" / "))if(C[x])return C[x];return col(s)}
+const lum=x=>{const n=parseInt(x.slice(1),16);return(.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255))/255},ink=x=>lum(x)>.58?"#10181f":"#ffffff";
+const bgStyle=c=>c==null?"":typeof c=="string"&&c[0]=="#"?`background:${c};color:${ink(c)}`:typeof c=="string"?`background:hsl(${c.slice(1)} var(--as) var(--al))`:`background:hsl(${c} var(--cs) var(--cl))`;
+const imgFill=c=>typeof c=="string"&&c[0]=="#"?c:typeof c=="string"?`hsl(${c.slice(1)} 34% 82%)`:`hsl(${c} 65% 84%)`,inkFor=c=>typeof c=="string"&&c[0]=="#"?ink(c):"#10181f";
+const actNames=()=>[...new Set(["BREAK","LUNCH",...S.data.fx.map(r=>r.n),...(S.data.lo||[]).map(o=>o.n)].flatMap(n=>String(n||"").split(" + ")).map(x=>x.trim().toUpperCase()).filter(Boolean))];
+
+/* ---------- allocations tab ---------- */
+function drawAl(){const c=$("#cs").value,T=S.data.teachers,V=S.data.vn||[],L=teacherLoads(),G=groupsOf(S.data.al),
+ sel=(fn,i,k,x,list,cur,lab)=>`<select onchange="${fn}(${i},${k},this.value)"><option value="">${x}: —</option>`+list.map(t=>`<option value="${q(t)}" ${cur==t?"selected":""}>${lab?lab(t):t}</option>`).join("")+"</select>";
+ const mergeCell=(A,i)=>{const gm=G.GM[i].filter(m=>m!==i).map(m=>S.data.al[m].c);
+  if(gm.length)return`<b title="These classes meet together: same period, same teachers and venue">🔗 ${gm.join(", ")}</b> <button class="b g" onclick="unmerge(${i})">Unmerge</button>`;
+  const opts=S.data.al.filter(B=>B.c!=A.c&&B.s==A.s&&!B.j).map(B=>B.c).sort((x,y)=>((clsOf(y)||{}).y==(clsOf(A.c)||{}).y)-((clsOf(x)||{}).y==(clsOf(A.c)||{}).y));
+  return opts.length?`<select onchange="mergeWith(${i},this.value)"><option value="">merge with…</option>${opts.map(o=>`<option>${o}</option>`).join("")}</select>`:`<small>—</small>`};
+ const rows=S.data.al.map((A,i)=>A.c!=c?"":`<tr><td>${A.s}</td><td><input type=number min=1 max=20 value=${A.n} style="width:56px" onchange="setN(${i},this.value)"></td><td><input type=number min=0 max=${A.n>>1} value=${A.d|0} style="width:56px" onchange="setD(${i},this.value)"></td><td style="text-align:left">${comps(A).map((x,k)=>sel("setT",i,k,x,T,A.t[k],t=>`${t} (${(L[t]||{w:0}).w})`)).join(" ")}</td><td style="text-align:left">${comps(A).map((x,k)=>sel("setV",i,k,x,V,(A.v||[])[k])).join(" ")}</td><td>${mergeCell(A,i)}</td><td style="white-space:nowrap"><button class="b g" title="Apply this row to the scope chosen above" onclick="applyRow(${i})">⇉</button><button class="b g" onclick="delA(${i})">✕</button></td></tr>`).join("");
+ const cl=clsOf(c),tot=S.data.al.filter(A=>A.c==c).reduce((s,A)=>s+A.n,0),free=cl?NP*5-Object.keys(fixedMap(cl).f).length:0;
+ $("#al").innerHTML=c?(T.length?"":'<p class=warn>No teachers yet - add them in the Teachers tab (type a name in the blank row) or import them.</p>')+"<table><tr><th>Subject / block</th><th>Periods</th><th>Doubles</th><th>Teacher per subject <small>(weekly periods)</small></th><th>Venue per subject</th><th>Merged class</th><th></th></tr>"+rows+`</table><small class=${tot>free?"bad":""}>${tot} periods per week allocated · ${free} free periods in this class's week</small>`:"Nothing here yet - add a class in the Classes tab (use \"Add a year group\" for several at once), import a workbook in the Excel tab, or load the sample school there.";
+ $("#msj").innerHTML=S.data.al.filter(A=>A.c==c).map(A=>`<option>${A.s}</option>`).join("")}
+// ---- merged (joint) classes
+const gid=()=>"g"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+function harmonize(src,G){G.forEach(x=>{if(x!==src){x.n=src.n;x.d=src.d;x.t=[...src.t];x.v=[...(src.v||[])]}})}
+function mergeGroup(rows,id){id=id||rows.map(r=>r.j).find(Boolean)||gid();const src=rows.slice().sort((a,b)=>b.t.filter(Boolean).length-a.t.filter(Boolean).length)[0];rows.forEach(r=>r.j=id);harmonize(src,rows)}
+function mergeWith(i,cn){const A=S.data.al[i],B=S.data.al.find(x=>x.c==cn&&x.s==A.s);if(!B)return;
+ if(A.n!=B.n&&!confirm(`${A.c} has ${A.n} period(s) and ${cn} has ${B.n}. A merged class needs the same number, so ${cn} will use ${A.n}. Continue?`))return drawAl();
+ withUndo("merge "+A.s+": "+A.c+" + "+cn,()=>{const G=[A,B,...S.data.al.filter(x=>x.j&&x.j==A.j&&x.s==A.s)];const id=A.j||B.j||gid();G.forEach(r=>r.j=id);harmonize(A,G)});drawAl();say(`${A.c} and ${cn} now meet together for ${A.s} (same periods, teachers and venue as ${A.c})`)}
+function unmerge(i){const A=S.data.al[i];withUndo("unmerge "+A.s,()=>{const G=S.data.al.filter(x=>x.j&&x.j===A.j&&x.s==A.s);if(G.length<=2)G.forEach(x=>x.j="");else A.j=""});drawAl()}
+// make members of a group identical to its first member (called before solving)
+function fixGroups(){const G=groupsOf(S.data.al);let n=0;S.data.al.forEach((A,i)=>{const L=S.data.al[G.lead[i]];if(L!==A&&(A.n!=L.n||(A.d|0)!=(L.d|0)||A.t.join()!=L.t.join()||(A.v||[]).join()!=(L.v||[]).join())){A.n=L.n;A.d=L.d;A.t=[...L.t];A.v=[...(L.v||[])];n++}});return n}
+$("#msb").onclick=()=>{const c=$("#cs").value,s=$("#msj").value,k=clsOf(c);if(!s)return;const rows=S.data.al.filter(A=>A.s==s&&(clsOf(A.c)||{}).y==k.y);
+ if(rows.length<2)return say("No other class of this year group has "+s);if(rows.some(r=>r.j&&!rows.every(x=>x.j==r.j)))return say("Some of them are already merged elsewhere - unmerge first");
+ const odd=rows.filter(r=>r.n!=rows[0].n);if(odd.length&&!confirm(`Periods differ between the classes (${rows.map(r=>r.c+": "+r.n).join(", ")}). They will all use ${rows.find(r=>r.c==c).n}. Continue?`))return;
+ const lead=rows.find(r=>r.c==c);withUndo("merge "+s+" in Year "+k.y,()=>{const id=rows.map(r=>r.j).find(Boolean)||gid();rows.forEach(r=>r.j=id);harmonize(lead,rows)});drawAl();say(`${s} is now one merged class for ${rows.length} classes of Year ${k.y}`)};
+$("#mb").onclick=()=>{const by={};S.data.al.forEach(A=>{if(!A.s.includes(" / "))return;const y=(clsOf(A.c)||{}).y;(by[y+"|"+A.s]=by[y+"|"+A.s]||[]).push(A)});
+ const ok=[],skip=[];Object.entries(by).forEach(([k,r])=>{if(r.length<2||r.some(x=>x.j))return;(r.every(x=>x.n==r[0].n)?ok:skip).push(r)});
+ if(!ok.length)return say(skip.length?"The blocks have different periods in each class - merge them one by one":"No unmerged blocks found in parallel classes");
+ withUndo("merge "+ok.length+" blocks",()=>ok.forEach(r=>mergeGroup(r)));drawAl();say(`Merged ${ok.length} blocks across parallel classes`+(skip.length?`; ${skip.length} skipped because the classes have different periods (${skip.map(r=>r[0].s).join(", ")})`:""))};
+$("#mu").onclick=()=>{if(!S.data.al.some(A=>A.j))return say("Nothing is merged");if(confirm("Unmerge every merged class?")){withUndo("unmerge all",()=>S.data.al.forEach(A=>A.j=""));drawAl()}};
+// ---- teachers' totals
+function teacherLoads(){const G=groupsOf(S.data.al),L={};S.data.teachers.forEach(t=>L[t]={w:0,cls:new Set()});
+ S.data.al.forEach((A,a)=>{if(G.lead[a]!==a)return;const ts=new Set();G.GM[a].forEach(m=>S.data.al[m].t.filter(Boolean).forEach(t=>ts.add(t)));
+  ts.forEach(t=>{const o=L[t]=L[t]||{w:0,cls:new Set()};o.w+=A.n;G.GM[a].forEach(m=>o.cls.add(S.data.al[m].c))})});return L}
+function teacherDays(){if(!S.pos)return null;const G=groupsOf(S.data.al),T={};S.pos.forEach((ps,a)=>{if(G.lead[a]!==a)return;const ts=new Set();G.GM[a].forEach(m=>S.data.al[m].t.filter(Boolean).forEach(t=>ts.add(t)));
+ ps.forEach((v,d)=>{if(v<0)return;ts.forEach(t=>{(T[t]=T[t]||[0,0,0,0,0])[d]+=SPN(v)})})});return T}
+function delA(i){S.data.al.splice(i,1);S.pos=null;save();drawAl()}
+function fillSel(){setRules();applySubj();loadVen();loadBell();const cur=$("#cs").value,cl=S.data.classes.map(c=>`<option>${c.n}</option>`).join("");
+ $("#cs").innerHTML=cl;$("#cf").innerHTML=cl;if(S.data.classes.some(c=>c.n==cur))$("#cs").value=cur;
+ $("#sl").innerHTML=[...new Set([...S.data.subj.map(s=>s.c),...S.data.al.map(a=>a.s)])].map(x=>`<option value="${q(x)}">`).join("");fillYears();drawAl()}
+const refresh=()=>{fillSel();whoList()};
+const cellS=x=>String(x??"").trim(),parts=x=>cellS(x).split(/[\/;|]/).map(s=>s.trim());
+$("#na").onclick=()=>{const c=$("#cs").value,s=parts($("#ns").value).map(x=>x.toUpperCase()).filter(Boolean).join(" / "),n=+$("#np").value;
+ if(!c)return say("Add a class first");if(!s||!(n>0))return say("Type a subject and the periods per week");if(S.data.al.some(a=>a.c==c&&a.s==s))return say("That subject is already in this class");
+ S.data.al.push({c,s,n,t:[],d:0,v:[]});s.split(" / ").forEach(x=>S.data.subj.some(y=>y.c==x)||S.data.subj.push({c:x,n:x,x:"Y",k:"N"}));$("#ns").value="";S.pos=null;save();refresh()};
+$("#cp").onclick=()=>{const c=$("#cs").value,f=$("#cf").value;if(!c||c==f)return say("Pick a different class to copy from");if(!confirm(`Replace ${c}'s allocations with those of ${f}?`))return;
+ S.data.al=S.data.al.filter(a=>a.c!=c).concat(S.data.al.filter(a=>a.c==f).map(a=>JSON.parse(JSON.stringify({...a,c,j:""}))));S.pos=null;save();refresh()};
+$("#cs").onchange=drawAl;
+$("#demo").onclick=()=>{if(!S.data.al.length)return say("Add classes and allocations first (or load the sample school in the Excel tab)");if(!S.data.teachers.length)for(let i=1;i<=25;i++)S.data.teachers.push("TEACHER "+String(i).padStart(2,"0"));const{al,teachers}=S.data,load={},asg={},bad={};teachers.forEach(t=>load[t]=0);
+ const key=(A,x)=>A.c.split(" ")[1]+x;al.forEach(A=>{const ks=comps(A).map(x=>key(A,x));ks.forEach(k=>{bad[k]=bad[k]||new Set();ks.forEach(o=>o!=k&&bad[k].add(o))})});
+ const ld={};al.forEach(A=>comps(A).forEach(x=>ld[key(A,x)]=(ld[key(A,x)]||0)+A.n));
+ Object.keys(ld).sort((a,b)=>ld[b]-ld[a]).forEach(k=>{const no=new Set([...bad[k]].map(o=>asg[o]));
+  const t=teachers.filter(t=>!no.has(t)).sort((a,b)=>load[a]-load[b])[0];asg[k]=t;load[t]+=ld[k]});
+ al.forEach(A=>A.t=comps(A).map(x=>asg[key(A,x)]));S.pos=null;save();drawAl();say("Demo teachers assigned")};
+/* ---------- Excel: template, export, import ---------- */
+const minsOf=v=>typeof v=="number"&&v<1?Math.round(v*1440):T2M(cellS(v));
+// Reads a workbook into a new data object: {d, msg}. d=null when nothing usable was found.
+function importWb(wb){const msg=[],rd=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(wb.Sheets[n],{defval:""}):null,cur=S.data;
+ const AR=rd("Allocations")||(wb.SheetNames.length==1?rd(wb.SheetNames[0]):null);
+ if(!AR||!AR.length)return{d:null,msg:["No allocation rows found. The workbook needs an Allocations sheet with Class, Subject and Periods columns."]};
+ const d=fresh();d.classes=[];d.al=[];d.teachers=[];d.tl={};d.fx=cur.fx;d.bell=cur.bell;
+ const SR=rd("Subjects");d.subj=SR&&SR.some(r=>cellS(r.Code))?SR.filter(r=>cellS(r.Code)).map(r=>({c:cellS(r.Code).toUpperCase(),n:cellS(r.Name),x:/^n/i.test(cellS(r.Exam))?"N":"Y",k:/^y/i.test(cellS(r.Core))?"Y":"N"})):cur.subj;
+ const known=new Set(d.subj.map(s=>s.c)),TR=rd("Teachers"),CR=rd("Classes"),FR=rd("Fixed_Slots"),VR=rd("Venues"),ST=rd("Settings");
+ if(TR)TR.forEach(r=>{const n=cellS(r.Teacher);if(!n||d.teachers.includes(n))return;d.teachers.push(n);d.tl[n]={a:/^n/i.test(cellS(r.Active))?"N":"Y",m:cellS(r.Max_Periods_Per_Day),u:cellS(r.Unavailable)}});
+ if(CR)CR.forEach(r=>{const n=cellS(r.Class);if(n&&!d.classes.some(c=>c.n==n))d.classes.push({n,y:+(cellS(r.Year||n).match(/\d+/)||[0])[0],l:cellS(r.Level)})});
+ if(FR&&FR.some(r=>cellS(r.Day)))d.fx=FR.filter(r=>cellS(r.Day)).map(r=>({d:cellS(r.Day),p:cellS(r.Period),a:cellS(r.Applies_To)||"ALL",n:cellS(r.Activity),k:cellS(r.Type).toUpperCase()||"ACTIVITY",m:cellS(r.Minutes)}));
+ const VN=new Set(VR?VR.map(r=>cellS(r.Venue||r.Name)).filter(Boolean):cur.vn);
+ AR.forEach((r,i)=>{const row=i+2,c=cellS(r.Class),sc=parts(r.Subject).map(x=>x.toUpperCase()).filter(Boolean),n=Math.round(+r.Periods);
+  if(!c&&!sc.length&&!cellS(r.Periods))return;
+  if(!c||!sc.length||!(n>0)){msg.push(`Allocations row ${row}: needs a class, a subject and Periods above 0 - skipped.`);return}
+  if(!d.classes.some(x=>x.n==c)){d.classes.push({n:c,y:+(c.match(/\d+/)||[0])[0],l:""});if(CR)msg.push(`Allocations row ${row}: class "${c}" was not on the Classes sheet - added.`)}
+  const s=sc.join(" / ");if(d.al.some(a=>a.c==c&&a.s==s)){msg.push(`Allocations row ${row}: ${c} / ${s} appears twice - skipped.`);return}
+  sc.forEach(x=>{if(!known.has(x)){known.add(x);d.subj.push({c:x,n:x,x:"Y",k:"N"});msg.push(`Subject code "${x}" (row ${row}) was not on the Subjects sheet - added.`)}});
+  const t=parts(r.Teachers),v=parts(r.Venues);while(t.length&&!t[t.length-1])t.pop();while(v.length&&!v[v.length-1])v.pop();
+  t.forEach(x=>{if(x&&!d.teachers.includes(x)){d.teachers.push(x);if(TR)msg.push(`Teacher "${x}" (row ${row}) was not on the Teachers sheet - added.`)}});
+  v.forEach(x=>x&&VN.add(x));d.al.push({c,s,n,t,d:Math.max(0,Math.round(+r.Double_Periods||0)),v,j:cellS(r.Merged_Group)})});
+ d.vn=[...VN];const CO=rd("Colours");d.colors=CO?Object.fromEntries(CO.filter(r=>cellS(r.Name)&&/^#?[0-9a-f]{6}$/i.test(cellS(r.Colour))).map(r=>[cellS(r.Name).toUpperCase(),"#"+cellS(r.Colour).replace("#","").toLowerCase()])):(cur.colors||{});const LR=rd("Layout");d.lo=LR?LR.filter(r=>cellS(r.Slot)).map(r=>{const m=cellS(r.Slot).toUpperCase().match(/^([PB])(\d+)$/);return m?{a:cellS(r.Applies_To)||"ALL",d:D.indexOf(cellS(r.Day).toUpperCase().slice(0,3)),s:m[1],p:+m[2],n:cellS(r.Name).toUpperCase(),m:cellS(r.Minutes)}:null}).filter(o=>o&&o.d>=0):(cur.lo||[]);const RR=rd("Reservations");d.rs=RR?RR.filter(r=>cellS(r.Subject)).map(r=>({a:cellS(r.Applies_To)||"ALL",s:cellS(r.Subject),d:cellS(r.Day)||"MON-FRI",p:cellS(r.Period)||"1",m:(cellS(r.Mode)||"ONLY").toUpperCase()})):(cur.rs||[]);
+ if(ST){const g={};ST.forEach(r=>g[cellS(r.Setting).toLowerCase()]=r.Value);const m=k=>g[k]!=null&&g[k]!==""?g[k]:null;
+  d.bell={s:M2T(minsOf(m("first period starts")??"08:00")),l:+m("period length (min)")||40,b:+(m("break (min)")??20),u:+(m("lunch (min)")??40),o:cellS(m("custom lengths")??""),m:Object.fromEntries(cellS(m("manual times")??"").split(";").filter(Boolean).map(x=>{const[p,t]=x.split("=");const[a,z]=(t||"").split("-");return[+p,[a||"",z||""]]}))}}
+ return{d,msg}}
+// Builds the workbook: blank=true gives headers only (to fill in Excel), otherwise the current data.
+function buildWb(blank,d){const wb=XLSX.utils.book_new(),B=d.bell,body=r=>blank?[]:r,
+ add=(n,rows)=>{const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=rows[0].map((_,j)=>({wch:Math.min(60,Math.max(12,...rows.map(r=>String(r[j]??"").length+2)))}));XLSX.utils.book_append_sheet(wb,ws,n)};
+ add("READ ME",[["How to use this workbook"],[""],["Fill in the sheets, save, then use Import in the Excel tab of the app. Only the Allocations sheet is required."],
+  ["Subjects: Code, Name, Exam (Y/N), Core (Y/N). A class gets at most 1 core exam per day."],["Teachers: Teacher, Active (Y/N), Max_Periods_Per_Day (blank = 8), Unavailable e.g. MON:1-3;FRI"],
+  ["Classes: Class, Year (e.g. YEAR 7), Level (Junior / Middle / Senior)"],["Fixed_Slots: Day (MON, MON-THU, TUE,WED, ALL), Period (3 or 4-6), Applies_To (ALL, Junior, YEAR 9 or a class name), Activity, Type (ACTIVITY, BREAK or LUNCH - break and lunch happen AFTER the period)"],
+  ["Allocations: one row per class and subject. A concurrent elective block is written ADD / ACC. Merged_Group: give the same code (e.g. M1) to the same subject in classes that meet together. Teachers and Venues list one name per subject in the same order, separated by  /  . Double_Periods = how many of the Periods are doubles."],["Venues: one room per row. Reservations: Applies_To, Subject, Day, Period, Mode (ONLY / NEVER / RESERVE). Layout: day-by-day moves of break, lunch and activities (Slot P4 = period 4, B4 = break column after period 4). Settings: first period start, period / break / lunch lengths in minutes; Manual times like 1=08:00-08:40;3=-09:30."]]);
+ add("Subjects",[["Code","Name","Exam","Core"],...body(d.subj.map(s=>[s.c,s.n,s.x,s.k]))]);
+ add("Teachers",[["Teacher","Active","Max_Periods_Per_Day","Unavailable"],...body(d.teachers.map(n=>{const l=d.tl[n]||{};return[n,l.a||"Y",l.m||"",l.u||""]}))]);
+ add("Classes",[["Class","Year","Level"],...body(d.classes.map(c=>[c.n,"YEAR "+c.y,c.l||""]))]);
+ add("Fixed_Slots",[["Day","Period","Applies_To","Activity","Type","Minutes"],...body(d.fx.map(r=>[r.d,r.p,r.a,r.n,r.k,r.m??""]))]);
+ add("Allocations",[["Class","Subject","Periods","Teachers","Double_Periods","Venues","Merged_Group"],...body(d.al.map(a=>[a.c,a.s,a.n,a.t.join(" / "),a.d|0,(a.v||[]).join(" / "),a.j||""]))]);
+ add("Venues",[["Venue"],...body((d.vn||[]).map(v=>[v]))]);
+ add("Layout",[["Applies_To","Day","Slot","Name","Minutes"],...body((d.lo||[]).map(o=>[o.a,D[o.d],o.s+o.p,o.n,o.m??""]))]);
+ add("Colours",[["Name","Colour"],...body(Object.entries(d.colors||{}).map(([n,c])=>[n,c]))]);
+ add("Reservations",[["Applies_To","Subject","Day","Period","Mode"],...body((d.rs||[]).map(r=>[r.a,r.s,r.d,r.p,r.m]))]);
+ add("Settings",[["Setting","Value"],["First period starts",B.s],["Period length (min)",B.l],["Break (min)",B.b],["Lunch (min)",B.u],["Custom lengths",B.o||""],["Manual times",Object.entries(B.m||{}).filter(([,v])=>v[0]||v[1]).map(([p,v])=>`${p}=${v[0]||""}-${v[1]||""}`).join(";")]]);
+ return wb}
+$("#xb").onclick=()=>XLSX.writeFile(buildWb(true,S.data),"school_data_template.xlsx");
+$("#xc").onclick=()=>XLSX.writeFile(buildWb(false,S.data),"school_data.xlsx");
+$("#imp").onclick=()=>$("#file").click();
+$("#file").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const r=importWb(XLSX.read(await f.arrayBuffer()));
+ if(!r.d){$("#impmsg").innerHTML=`<p class=bad>${r.msg[0]}</p>`;return}
+ S.data=r.d;S.editing=null;S.pos=null;save();refresh();
+ $("#impmsg").innerHTML=`<p class=ok>✔ Imported ${r.d.classes.length} classes, ${r.d.teachers.length} teachers, ${r.d.al.length} allocations and ${r.d.vn.length} venues.</p>`+(r.msg.length?`<p class=warn>${r.msg.length} note(s):</p><ul>${r.msg.slice(0,30).map(m=>`<li>${m}</li>`).join("")}</ul>`:"")}
+ catch(x){$("#impmsg").innerHTML=`<p class=bad>Import failed: ${x.message}</p>`}e.target.value=""};
+$("#reset2").onclick=()=>{if(confirm("Replace everything with the sample school (12 classes, 188 allocations, no teachers)?")){S.data=sampleData();S.editing=null;S.pos=null;save();refresh();$("#impmsg").textContent=""}};
+$("#empty").onclick=()=>{if(confirm("Clear all classes, teachers and allocations and start from empty?")){const d=fresh();d.classes=[];d.al=[];d.teachers=[];d.tl={};S.data=d;S.editing=null;S.pos=null;save();refresh();$("#impmsg").textContent=""}};
+
+/* ---------- generate & view ---------- */
+function run(){if(!S.data.al.length)return say("Add classes and allocations first");fixGroups();if(S.editing&&!confirm("You are editing a saved version. Generating a new timetable replaces that version's timetable. Continue?"))return;const t0=performance.now();let pos=null;
+ for(let k=0;k<12&&!pos;k++)pos=solve(S.data,S.seed*7+k);
+ if(!pos){$("#diag").innerHTML='<p class=bad>No timetable found. Check that no class has more periods than free slots and no teacher is overloaded.</p>';return}
+ S.pos=pos;ttDirty=!S.editing;save();showDiag(((performance.now()-t0)/1000).toFixed(1));drawGrid()}
+function showDiag(sec){const noT=S.data.al.filter(a=>!a.t.filter(Boolean).length).length,r=check(S.data,S.pos);
+ $("#diag").innerHTML=r.r.map(([g,t])=>`<div class=${g?"ok":"bad"}>${g?"✔":"✘"} ${t}</div>`).join("")+(noT?`<div class=warn>⚠ ${noT} allocation(s) have no teacher, so teacher clashes are not checked for them.</div>`:"")+(sec?`<small>Solved in ${sec}s</small>`:"")}
+function whoList(){const k=$("#kind").value;$("#who").style.display=k=="m"?"none":"";$("#who").innerHTML=(k=="c"?S.data.classes.map(c=>c.n):k=="t"?S.data.teachers:[]).map(x=>`<option>${x}</option>`).join("")}
+// ---- lesson times: automatic from the bell settings and each class's break/lunch positions, optionally overridden per period
+const T2M=s=>{const[a,b]=String(s||"08:00").split(":").map(Number);return a*60+(b||0)},M2T=m=>String(m/60|0).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const showT=()=>LS.ttTime!=="0",rng2=(a,z)=>M2T(a)+"–"+M2T(z);
+const gapOf=items=>(items||[]).reduce((s,[k,m])=>s+(m!=null&&m!==""?+m:k=="L"?+S.data.bell.u:+S.data.bell.b),0);
+function slotTime(bt,d,p){const B=S.data.bell,ov={},mm=B.m||{};String(B.o||"").split(",").forEach(x=>{const[a,z]=x.split("=");if(+a&&+z)ov[+a]=+z});
+ let t=T2M(B.s);for(let i=1;i<=p;i++){const m=mm[i]||[],s0=m[0]?T2M(m[0]):t,e0=m[1]?T2M(m[1]):s0+(ov[i]||+B.l);if(i==p)return[s0,e0];t=e0+gapOf(bt[d+","+i])}}
+const brTime=(bt,d,p)=>{const e=slotTime(bt,d,p)[1];return[e,e+gapOf(bt[d+","+p])]};
+const clsOf=n=>S.data.classes.find(c=>c.n==n);
+// grid(kind,name) -> rows of {t,c(hue),k,d,p,a,st,i,cs,rs,skip}; DAYS run down the rows, PERIODS across the columns. kind: c=class, t=teacher, m=master
+function grid(kind,name){const{al,classes}=S.data,cell={},rows=[],PS=[...Array(NP)].map((_,i)=>i+1),FMc={},ST=showT();
+ const GR=groupsOf(al),fm=n=>FMc[n]||(FMc[n]=fixedMap(clsOf(n))),ven=A=>(A.v||[]).filter(Boolean).join(" / "),tms=A=>A.t.filter(Boolean).join(" / ");
+ const lessons=f=>S.pos.forEach((ps,a)=>{const A=al[a];ps.forEach((v,d)=>{if(v<0)return;for(let i=0;i<SPN(v);i++)f(A,a,d,PP(v)+i,PP(v))})});
+ const info=(A,a,d,st)=>{const bt=fm(A.c).bt,[x]=slotTime(bt,d,st),[,z]=slotTime(bt,d,st+SPN(S.pos[a][d])-1);return`${A.s} · ${rng2(x,z)} (${z-x} min)`+(ven(A)?" · "+ven(A):"")};
+ if(kind=="m"){const L={};lessons((A,a,d,p,st)=>L[A.c+"|"+d+","+p]=[A,a,st]);
+  rows.push([{t:"Day",k:"h"},{t:"Class",k:"h"},...PS.map(p=>({t:"P"+p,k:"h"}))]);
+  D.forEach((dn,d)=>classes.forEach(c=>{const F=fm(c.n);rows.push([{t:dn,k:"h"},{t:c.n,k:"h"},...PS.map(p=>{const k=d+","+p,l=L[c.n+"|"+k];
+   return F.f[k]?{t:F.f[k]+(ST?"\n"+rng2(...slotTime(F.bt,d,p)):""),k:"fx",c:actCol(F.f[k])}:l?{t:[l[0].s,tms(l[0]),ven(l[0])].filter(Boolean).join("\n"),c:subCol(l[0].s),i:info(l[0],l[1],d,l[2])}:{t:""}})])}));return rows}
+ const F=kind=="c"?fm(name):{f:{},b:{},bt:{}},f=F.f,b=F.b;
+ lessons((A,a,d,p,st)=>{if(kind=="c"?A.c==name:(GR.lead[a]===a&&GR.GM[a].some(m=>al[m].t.includes(name)))){const bt=fm(A.c).bt,sp=SPN(S.pos[a][d]),mkk="L"+a+"|"+d+"|"+st;
+  if(p==st){const t=ST?rng2(slotTime(bt,d,st)[0],slotTime(bt,d,st+sp-1)[1]):"";
+   cell[d+","+p]={t:(kind=="c"?[A.s,t,tms(A),ven(A),GR.GM[a].length>1?"🔗 with "+GR.GM[a].filter(m=>al[m].c!=A.c).map(m=>al[m].c).join(", "):""]:[GR.GM[a].map(m=>al[m].c).join(" + "),A.s,t,ven(A)]).filter(Boolean).join("\n"),c:subCol(A.s),a,st,i:info(A,a,d,st),mk:mkk}}
+  else cell[d+","+p]={t:"",c:subCol(A.s),a,st,mk:mkk}}});
+ const cols=[];PS.forEach(p=>{cols.push(p);if(D.some((_,d)=>b[d+","+p]))cols.push(-p)}); // -p = break column after period p
+ rows.push([{t:"",k:"h"},...cols.map(p=>({t:p>0?"P"+p:"Break",k:"h"}))]);
+ D.forEach((dn,d)=>rows.push([{t:dn,k:"h"},...cols.map(p=>{if(p<0){const n=b[d+","+(-p)];return n?{t:n+(ST?"\n"+rng2(...brTime(F.bt,d,-p)):""),k:"br",d,bp:-p,c:actCol(n)}:{t:"",k:"br",d,bp:-p}}
+  const k=d+","+p;return{...(f[k]?{t:f[k],k:"fx",c:actCol(f[k]),nm:f[k],mk:"F"+f[k],ti:{bt:F.bt,d,p}}:cell[k]||{t:""}),d,p}})]));
+ mergeRows(rows,ST);return rows}
+// Merge cells: double periods and runs of the same fixed activity merge across the row; identical break/lunch cells merge down the days
+function mergeRows(rows,ST){rows.forEach((r,i)=>{if(!i)return;for(let j=1;j<r.length;j++){const x=r[j];if(!x.mk||x.skip)continue;let e=j,last=j;
+  for(;;){let n=e+1;while(r[n]&&r[n].k=="br"&&!r[n].t&&x.mk[0]=="F")n++;if(r[n]&&r[n].mk===x.mk){e=n;last=n}else break}
+  if(e>j){x.cs=e-j+1;for(let q=j+1;q<=e;q++)r[q].skip=true;if(x.ti)x.t=x.nm+(ST?"\n"+rng2(slotTime(x.ti.bt,x.ti.d,x.ti.p)[0],slotTime(x.ti.bt,x.ti.d,r[last].p)[1]):"")}
+  else if(x.ti&&ST)x.t=x.nm+"\n"+rng2(...slotTime(x.ti.bt,x.ti.d,x.ti.p));j=e}});
+ for(let j=1;j<rows[0].length;j++)for(let i=1;i<rows.length;i++){const x=rows[i][j];if(!x||x.k!="br"||!x.t||x.skip)continue;let e=i;
+  while(rows[e+1]&&rows[e+1][j].k=="br"&&rows[e+1][j].t==x.t)e++;if(e>i){x.rs=e-i+1;for(let q=i+1;q<=e;q++)rows[q][j].skip=true}i=e}}
+let gk="";
+function drawGrid(){if(!S.pos){$("#grid").textContent="Generate a timetable to see it here.";return}
+ const kd=$("#kind").value,key=kd+"|"+$("#who").value;if(key!=gk){gk=key;$("#dnd").innerHTML=""}
+ $("#grid").innerHTML="<table>"+grid(kd,$("#who").value).map(r=>"<tr>"+r.map(x=>{if(x.skip)return"";if(x.k=="h")return`<th>${x.t}</th>`;const l=x.t.split("\n");
+  return`<td class="${x.k||""}${x.k=="br"&&!x.t?" e":""}"${x.c!=null?` style="${bgStyle(x.c)}"`:""}${x.cs?` colspan=${x.cs}`:""}${x.rs?` rowspan=${x.rs}`:""}${x.i?` title="${q(x.i)}"`:""}${x.d!=null?` data-d=${x.d}${x.bp!=null?` data-bp=${x.bp}`:` data-p=${x.p}`}`:""}${kd=="c"&&((x.k=="fx")||(x.k=="br"&&x.t))?" draggable=true data-act=1":""}${x.a!=null&&kd=="c"?` draggable=true data-a=${x.a} data-st=${x.st}`:""}>${l[0]}${l.length>1?"<small>"+l.slice(1).join("<br>")+"</small>":""}</td>`}).join("")+"</tr>").join("")+"</table>"}
+// ---- manual drag-and-drop editing (class view): valid targets glow green; a refused drop explains why and suggests alternatives
+let dr=null;const G=$("#grid"),clr=()=>G.querySelectorAll(".tgt").forEach(e=>e.classList.remove("tgt"));
+G.addEventListener("dragstart",e=>{const td=e.target.closest("td[data-a],td[data-act]");dr=null;if(!td)return;
+ if(td.dataset.act){dr={act:1,d:+td.dataset.d,s:td.dataset.bp!=null?"B":"P",p:+(td.dataset.bp??td.dataset.p)};return}
+ dr={a:+td.dataset.a,d:+td.dataset.d};
+ mk(S.data,S.pos).options(dr.a,dr.d).forEach(o=>{const c=G.querySelector(`td[data-d="${o.d2}"][data-p="${o.p2}"]`);if(c)c.classList.add("tgt")})});
+G.addEventListener("dragend",clr);G.addEventListener("dragover",e=>e.preventDefault());
+function doMv(a,d,d2,p2){const ok=mk(S.data,S.pos).mv(a,d,d2,p2);
+ if(ok){let msg="Moved";if($("#par").checked){const A=S.data.al[a],y=clsOf(A.c).y;let n=0,f=0,s=0;
+  S.data.al.forEach((B,b)=>{if(b==a||B.s!=A.s||B.c==A.c||A.j||B.j||(clsOf(B.c)||{}).y!=y)return;
+   if(S.pos[b][d2]>=0&&PP(S.pos[b][d2])==p2){s++;return}
+   const db=S.pos[b][d]>=0?d:S.pos[b].findIndex(v=>v>=0);if(db<0)return;
+   mk(S.data,S.pos).mv(b,db,d2,p2)?n++:f++});
+  msg+=` · parallel classes: ${n} moved to the same slot`+(s?`, ${s} already there`:"")+(f?`, ${f} could not (clash)`:"")}
+ ttDirty=!S.editing;save();showDiag();drawGrid();$("#dnd").innerHTML="";say(msg)}return!!ok}
+G.addEventListener("drop",e=>{e.preventDefault();clr();const td=e.target.closest("td[data-d]");if(!dr||!td||$("#kind").value!="c")return;
+ if(dr.act){const src={d:dr.d,s:dr.s,p:dr.p},gi=layGroups().findIndex(g=>g.n.includes($("#who").value)),t={d:+td.dataset.d,s:td.dataset.bp!=null?"B":"P",p:+(td.dataset.bp??td.dataset.p)};dr=null;return layMove(src,t,gi)}
+ const a=dr.a,d=dr.d,d2=+td.dataset.d,p2=+td.dataset.p;dr=null;if(doMv(a,d,d2,p2))return;
+ const E=mk(S.data,S.pos),A=S.data.al[a],why=E.explain(a,d,d2,p2),o=E.options(a,d);
+ $("#dnd").innerHTML=`<div class=box><b class=bad>✘ Not allowed: ${A.s} → ${D[d2]} P${p2}</b><ul>${why.map(x=>`<li>${x}</li>`).join("")||"<li>This position breaks a rule.</li>"}</ul>`+
+  (o.length?`<b>Possible moves for this lesson (${o.length}):</b><div class=row>${o.slice(0,14).map(x=>`<button class="b g" onclick="doMv(${a},${d},${x.d2},${x.p2})">${D[x.d2]} P${x.p2}${x.b!=null?" ⇄ "+S.data.al[x.b].s:""}</button>`).join("")}</div>`:"<b>No other position works for this lesson without breaking a rule.</b>")+"</div>"});
+// ---- image export (PNG / JPG) drawn on a canvas with the same colours and merged cells
+const FMT={PNG:"image/png",JPG:"image/jpeg"},safe=s=>String(s).replace(/[^\w\- ]+/g,"_");
+function drawImg(rows,title,sub){const W=rows[0].map(h=>h.t==="Break"?92:h.t==="Day"||h.t===""?64:h.t==="Class"?140:140),P=16,TH=64,HH=30,LH=15,SC=2,F="'Segoe UI',Arial,sans-serif";
+ const X=[P];W.forEach((x,j)=>X.push(X[j]+x));const mc=document.createElement("canvas").getContext("2d");mc.font="12px "+F;
+ const wrap=(s,mw)=>{const o=[];let cur="";for(const w of s.split(" ")){const t=cur?cur+" "+w:w;if(cur&&mc.measureText(t).width>mw){o.push(cur);cur=w}else cur=t}o.push(cur);return o};
+ rows.forEach((r,i)=>r.forEach((x,j)=>{if(x.skip||!i)return;const cw=X[Math.min(j+(x.cs||1),W.length)]-X[j];x._L=(x.t||"").split("\n").flatMap((ln,q)=>q?wrap(ln,cw-10):[ln])}));
+ const rh=rows.map((r,i)=>i?Math.max(62,16+LH*Math.max(...r.map(x=>x.skip||x.rs?1:(x._L||[""]).length))):HH),
+  w=W.reduce((a,b)=>a+b,0)+P*2,h=TH+rh.reduce((a,b)=>a+b,0)+P,c=document.createElement("canvas");c.width=w*SC;c.height=h*SC;
+ const g=c.getContext("2d");g.scale(SC,SC);g.fillStyle="#fff";g.fillRect(0,0,w,h);
+ g.fillStyle="#14304a";g.font="bold 24px Georgia,serif";g.textAlign="left";g.fillText(title,P,34);g.font="13px "+F;g.fillStyle="#555";g.fillText(sub,P,54);
+ let y=TH;
+ rows.forEach((r,i)=>{r.forEach((x,j)=>{if(x.skip)return;const cw=X[Math.min(j+(x.cs||1),W.length)]-X[j],ch=x.rs?rh.slice(i,i+x.rs).reduce((a,b)=>a+b,0):rh[i];
+  g.fillStyle=x.k=="h"?"#14304a":x.c!=null?imgFill(x.c):"#fff";g.fillRect(X[j],y,cw,ch);
+  g.strokeStyle="#8a949c";g.lineWidth=1;g.strokeRect(X[j],y,cw,ch);
+  const L=x._L||(x.t||"").split("\n"),y0=y+(ch-L.length*LH)/2+LH-3;g.textAlign="center";
+  L.forEach((ln,q)=>{g.font=(x.k=="h"||q==0?"bold 13px ":"12px ")+F;g.fillStyle=x.k=="h"?"#fff":inkFor(x.c);g.fillText(ln,X[j]+cw/2,y0+q*LH)})});y+=rh[i]});
+ return c}
+const imgFor=(k,n)=>drawImg(grid(k,n),k=="m"?"MASTER SCHEDULE":n,k=="c"?"Class timetable":k=="t"?"Teacher timetable":"All classes, Monday to Friday");
+const blobOf=(c,f)=>new Promise(r=>c.toBlob(r,FMT[f],.93));
+const dl=(b,n)=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
+const crcT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})(),crc=u=>{let c=-1;for(let i=0;i<u.length;i++)c=crcT[(c^u[i])&255]^(c>>>8);return(c^-1)>>>0};
+// minimal ZIP writer (stored, no compression), so no library is needed and it works offline
+function zipStore(files){const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+ files.forEach(f=>{const nm=enc.encode(f.name),c=crc(f.data),h=new DataView(new ArrayBuffer(30));
+  h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,c,true);h.setUint32(18,f.data.length,true);h.setUint32(22,f.data.length,true);h.setUint16(26,nm.length,true);
+  parts.push(new Uint8Array(h.buffer),nm,f.data);
+  const g=new DataView(new ArrayBuffer(46));g.setUint32(0,0x02014b50,true);g.setUint16(4,20,true);g.setUint16(6,20,true);g.setUint16(8,0x0800,true);g.setUint16(14,0x21,true);g.setUint32(16,c,true);g.setUint32(20,f.data.length,true);g.setUint32(24,f.data.length,true);g.setUint16(28,nm.length,true);g.setUint32(42,off,true);
+  cen.push(new Uint8Array(g.buffer),nm);off+=30+nm.length+f.data.length});
+ const cs=cen.reduce((s,x)=>s+x.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:"application/zip"})}
+$("#ei").onclick=async()=>{if(!S.pos)return say("Generate a timetable first");const k=$("#kind").value,n=k=="m"?"Master schedule":$("#who").value,f=$("#fmt").value;
+ dl(await blobOf(imgFor(k,n),f),safe(n)+"."+f.toLowerCase())};
+$("#ez").onclick=async()=>{if(!S.pos)return say("Generate a timetable first");const f=$("#fmt").value,ext=f.toLowerCase(),files=[];
+ const add=async(path,c)=>files.push({name:path,data:new Uint8Array(await(await blobOf(c,f)).arrayBuffer())});say("Building images ...");
+ for(const c of S.data.classes)await add("Classes/"+safe(c.n)+"."+ext,imgFor("c",c.n));
+ for(const t of S.data.teachers)if(S.pos.some((ps,a)=>S.data.al[a].t.includes(t)&&ps.some(v=>v>=0)))await add("Teachers/"+safe(t)+"."+ext,imgFor("t",t));
+ await add("Master schedule."+ext,imgFor("m",""));dl(zipStore(files),"Timetables_"+f+".zip");say(files.length+" images zipped")};
+$("#st").checked=showT();$("#st").onchange=()=>{LS.ttTime=$("#st").checked?"1":"0";drawGrid()};
+// exams
+const dayName=s=>{const d=s>>1;return`W${(d/5|0)+1} ${D[d%5]}`};
+function exRows(){const x=S.ex,yr=n=>S.data.classes.find(c=>c.n==n).y;
+ return[["Day","Session","Subject","Year","Class","Invigilator(s)"],...x.sit.filter(z=>z.s!=null).sort((a,b)=>a.s-b.s||yr(a.c)-yr(b.c)||a.k.localeCompare(b.k)).map(z=>[dayName(z.s),z.s%2?"Afternoon":"Morning",z.k.split("|")[1],"Year "+yr(z.c),z.c,z.i.join(" / ")])]}
+function drawEx(){const x=S.ex;if(!x)return;$("#ex").innerHTML=`<div class=${x.ok?"ok":"bad"}>${x.ok?"✔ Same-year classes sit together · no class clash · max 1 core exam per class per day · every sitting has an invigilator":"✘ Not all rules could be met: add exam days or reduce invigilation limits"}</div><table>`+exRows().map((r,i)=>"<tr>"+r.map(c=>i?`<td>${c}</td>`:`<th>${c}</th>`).join("")+"</tr>").join("")+"</table>"}
+$("#gx").onclick=()=>{let best=null;for(let k=0;k<5&&!(best&&best.ok);k++)best=exams(S.data,+$("#xd").value||10,S.seed*13+k);S.ex=best;drawEx()};
+$("#kind").onchange=()=>{whoList();drawGrid()};$("#who").onchange=drawGrid;
+$("#go").onclick=()=>{S.seed=S.seed||1;run()};$("#re").onclick=()=>{S.seed++;run()};
+$("#xl").onclick=()=>{if(!S.pos)return say("Generate a timetable first");const wb=XLSX.utils.book_new(),used=new Set();
+ const add=(k,n,pre)=>{let nm=(pre+n).replace(/[\[\]:*?\/\\]/g,"-").slice(0,31);while(used.has(nm))nm=nm.slice(0,28)+"~";used.add(nm);
+  const rows=grid(k,n),ws=XLSX.utils.aoa_to_sheet(rows.map(r=>r.map(x=>x.skip?"":x.t))),mg=[];
+  rows.forEach((r,i)=>r.forEach((x,j)=>{if(x.cs||x.rs)mg.push({s:{r:i,c:j},e:{r:i+(x.rs||1)-1,c:j+(x.cs||1)-1}})}));ws["!merges"]=mg;XLSX.utils.book_append_sheet(wb,ws,nm)};
+ add("m","Schedule","Master ");S.data.classes.forEach(c=>add("c",c.n,""));S.data.teachers.forEach(t=>add("t",t,"T "));
+ if(S.ex)XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exRows()),"Exam Schedule");XLSX.writeFile(wb,"Generated_Timetables.xlsx")};
+
+/* ---------- data editors: classes, teachers, subjects ---------- */
+function applySubj(){CORESET=new Set(S.data.subj.filter(s=>s.k=="Y").map(s=>s.c));NOEX=new Set(S.data.subj.filter(s=>s.x=="N").map(s=>s.c))}
+const ED={},TLm=()=>S.data.tl,uniq=(l,p)=>{let n=1;while(l.includes(p+n))n++;return p+n};
+ED.cls={cols:[["n","Class"],["y","Year","n"],["l","Level","s",["","Junior","Middle","Senior"]]],rows:()=>S.data.classes,
+ set(i,k,v){const c=S.data.classes[i];if(k=="n"){v=v.trim();if(!v||S.data.classes.some(x=>x.n==v))return say("Class names must be unique");S.data.al.forEach(a=>{if(a.c==c.n)a.c=v})}c[k]=k=="y"?+v||0:v},
+ del(i){const c=S.data.classes[i];if(!confirm("Delete "+c.n+" and all its allocations?"))return false;S.data.al=S.data.al.filter(a=>a.c!=c.n);S.data.classes.splice(i,1)},
+ add(){S.data.classes.push({n:uniq(S.data.classes.map(c=>c.n),"NEW CLASS "),y:7,l:""})}};
+ED.tch={cols:[["n","Teacher"],["a","Active","s",["Y","N"]],["m","Max periods per day","n"],["u","Unavailable (e.g. MON:1-3;FRI)"]],
+ rows:()=>S.data.teachers.map(n=>({n,a:(TLm()[n]||{}).a||"Y",m:(TLm()[n]||{}).m||"",u:(TLm()[n]||{}).u||""})),
+ set(i,k,v){const o=S.data.teachers[i];if(k=="n"){v=v.trim();if(!v||S.data.teachers.includes(v))return say("Teacher names must be unique");S.data.teachers[i]=v;
+   if(TLm()[o]){TLm()[v]=TLm()[o];delete TLm()[o]}S.data.al.forEach(a=>a.t=a.t.map(x=>x==o?v:x))}else{(TLm()[o]=TLm()[o]||{})[k]=v}},
+ del(i){const o=S.data.teachers[i];if(!confirm("Remove "+o+"? Their lessons will have no teacher."))return false;S.data.teachers.splice(i,1);delete TLm()[o];S.data.al.forEach(a=>a.t=a.t.map(x=>x==o?"":x))},
+ add(){S.data.teachers.push(uniq(S.data.teachers,"NEW TEACHER "))}};
+ED.sub={cols:[["c","Code"],["n","Name"],["x","Exam","s",["Y","N"]],["k","Core","s",["N","Y"]]],rows:()=>S.data.subj,
+ set(i,k,v){const s=S.data.subj[i];if(k=="c"){v=v.trim().toUpperCase();if(!v||S.data.subj.some(x=>x.c==v))return say("Subject codes must be unique");const o=s.c;S.data.al.forEach(a=>a.s=a.s.split(" / ").map(x=>x==o?v:x).join(" / "))}s[k]=v;applySubj()},
+ del(i){const s=S.data.subj[i];if(S.data.al.some(a=>a.s.split(" / ").includes(s.c))){say(s.c+" is used in allocations - remove those first");return false}S.data.subj.splice(i,1);applySubj()},
+ add(){S.data.subj.push({c:uniq(S.data.subj.map(s=>s.c),"SUB"),n:"",x:"Y",k:"N"})}};
+ED.res={cols:[["a","Applies to"],["s","Subject code(s)"],["d","Day"],["p","Period"],["m","Rule","s",["ONLY","NEVER","RESERVE"]]],rows:()=>S.data.rs=S.data.rs||[],
+ set(i,k,v){S.data.rs[i][k]=v},del(i){S.data.rs.splice(i,1)},add(){(S.data.rs=S.data.rs||[]).push({a:"ALL",s:"",d:"MON-FRI",p:"1",m:"ONLY"})}};
+/* ---------- bulk helpers: undo, scopes, tick-and-apply ---------- */
+// every bulk change keeps a snapshot so one click on "Undo" restores data and timetable
+const updUndo=()=>{const u=$("#undo");u.hidden=!S.undo;if(S.undo)u.textContent="↶ Undo: "+S.undo.label};
+function withUndo(label,fn,keep){S.undo={label,snap:JSON.stringify(S.data),pos:JSON.stringify(S.pos)};const p=S.pos;fn();S.pos=keep?p:null;save();updUndo()}
+$("#undo").onclick=()=>{const u=S.undo;if(!u)return;S.data=Object.assign(fresh(),JSON.parse(u.snap));S.pos=JSON.parse(u.pos);S.undo=null;save();refresh();Object.keys(ED).forEach(edDraw);updUndo();drawGrid();say("Undone: "+u.label)};
+ED.tch.ph={n:"Type a teacher name to add",m:"8 (default)",u:"MON:1-3;FRI"};ED.sub.ph={c:"Code, e.g. MTH",n:"Subject name"};
+ED.tch.create=v=>{if(S.data.teachers.includes(v)){say("That teacher already exists");return false}S.data.teachers.push(v)};
+ED.sub.create=v=>{v=v.toUpperCase();if(S.data.subj.some(x=>x.c==v)){say("That subject code already exists");return false}S.data.subj.push({c:v,n:"",x:"Y",k:"N"});applySubj()};
+ED.tch.bulk=["a","m","u"];
+ED.tch.cols=[...ED.tch.cols,["w","Periods / week","r"],["c","Classes","r"],["z","Scheduled Mon-Fri","r"]];
+{const base=ED.tch.rows;ED.tch.rows=()=>{const L=teacherLoads(),T=teacherDays();return base().map(r=>{const o=L[r.n]||{w:0,cls:new Set()},cap=5*(+r.m||8);return{...r,w:barH(o.w,cap)+o.w+(o.w>cap?` (over ${cap})`:` / ${cap}`),c:o.cls.size,z:T?(T[r.n]||[0,0,0,0,0]).join(" · "):"—",_b:o.w>cap}})}}
+ED.tch.foot=()=>{const L=teacherLoads(),G=groupsOf(S.data.al);let tot=0,none=0;Object.values(L).forEach(o=>tot+=o.w);S.data.al.forEach((A,i)=>{if(G.lead[i]===i&&!G.GM[i].some(m=>S.data.al[m].t.some(Boolean)))none+=A.n});
+ return`<p><b>${tot} teacher-periods allocated per week</b> across ${S.data.teachers.length} teachers (a merged class counts once for each teacher). ${none?`<span class=warn>${none} periods have no teacher yet.</span>`:"Every allocation has a teacher."}</p>`};ED.sub.bulk=["x","k"];ED.cls.bulk=["l","y"];ED.cls.year=true;
+ED.res.dup=i=>S.data.rs.splice(i+1,0,{...S.data.rs[i]});
+function bulkPanel(id){const e=ED[id],cols=e.cols.filter(c=>e.bulk.includes(c[0]));
+ return`<div class=row><b>Bulk edit</b><select id=bkf_${id} onchange="bkShow('${id}')">${cols.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("")}</select>`+
+  cols.map(c=>c[2]=="s"?`<select class=bkv_${id} data-k="${c[0]}">${c[3].map(x=>`<option>${x}</option>`).join("")}</select>`:`<input class=bkv_${id} data-k="${c[0]}" ${c[2]=="n"?"type=number":""} style="width:150px">`).join("")+
+  `<button class="b g" onclick="edBulk('${id}','ticked')">Apply to ticked (${(e.sel||new Set()).size})</button><button class="b g" onclick="edBulk('${id}','all')">Apply to all</button>${e.year?`<button class="b g" onclick="edBulk('${id}','year')">Apply to whole year of ticked</button>`:""}</div>`}
+function bkShow(id){const k=$("#bkf_"+id).value;document.querySelectorAll(".bkv_"+id).forEach(x=>x.style.display=x.dataset.k==k?"":"none")}
+function edBulk(id,sc){const e=ED[id],k=$("#bkf_"+id).value,v=document.querySelector(`.bkv_${id}[data-k="${k}"]`).value,rows=e.rows();let idx=[...e.sel||[]];
+ if(sc=="all")idx=rows.map((_,i)=>i);
+ if(sc=="year"){const ys=new Set(idx.map(i=>rows[i].y));idx=rows.map((_,i)=>i).filter(i=>ys.has(rows[i].y))}
+ if(!idx.length)return say("Tick some rows first");
+ withUndo("bulk "+(e.cols.find(c=>c[0]==k)||[])[1],()=>idx.forEach(i=>e.set(i,k,v)));edDraw(id);refresh();say("Applied to "+idx.length+" rows")}
+function edDraw(id){const e=ED[id],rows=e.rows(),sel=e.sel=e.sel||new Set(),bk=!!e.bulk,ph=e.ph||{};
+ const ghost=e.create?`<tr class=ghost>${bk?"<td></td>":""}`+e.cols.map(([k,,t],ci)=>"<td>"+(ci==0?`<input placeholder="${q(ph[k]||"")}" onchange="edGhost('${id}',this)">`:t=="r"||t=="s"?"":`<input disabled placeholder="${q(ph[k]||"")}">`)+"</td>").join("")+"<td></td></tr>":"";
+ $("#e_"+id).innerHTML=(bk?bulkPanel(id):"")+"<table><tr>"+(bk?`<th><input type=checkbox onchange="edAll('${id}',this.checked)"></th>`:"")+e.cols.map(c=>`<th>${c[1]}</th>`).join("")+"<th></th></tr>"+
+  rows.map((r,i)=>"<tr>"+(bk?`<td><input type=checkbox ${sel.has(i)?"checked":""} onchange="edTick('${id}',${i},this.checked)"></td>`:"")+
+   e.cols.map(([k,,t,o])=>"<td>"+(t=="r"?`<span ${k=="w"&&r._b?"class=bad":""}>${r[k]??""}</span>`:t=="s"?`<select onchange="edSet('${id}',${i},'${k}',this.value)">${o.map(x=>`<option ${r[k]==x?"selected":""}>${x}</option>`).join("")}</select>`:`<input ${t=="n"?"type=number":""} value="${q(r[k]??"")}" placeholder="${q(ph[k]||"")}" onchange="edSet('${id}',${i},'${k}',this.value)">`)+"</td>").join("")+
+   `<td style="white-space:nowrap">${e.dup?`<button class="b g" title="Duplicate this row" onclick="edDup('${id}',${i})">⧉</button>`:""}<button class="b g" onclick="edDel('${id}',${i})">✕</button></td></tr>`).join("")+ghost+`</table><small>${rows.length} rows</small>`+(e.foot?e.foot():"");if(bk)bkShow(id)}
+// the blank row: placeholder text is replaced by what you type, and typing a name creates the entry
+function edGhost(id,inp){const v=inp.value.trim();if(!v)return;const r=ED[id].create(v);if(r===false)return;edDone(id);const g=document.querySelector("#e_"+id+" tr.ghost input");if(g)g.focus()}
+const edFocus=id=>{const g=document.querySelector("#e_"+id+" tr.ghost input");if(g){g.scrollIntoView({block:"center"});g.focus()}};
+const edTick=(id,i,on)=>{on?ED[id].sel.add(i):ED[id].sel.delete(i);edDraw(id)};
+const edAll=(id,on)=>{ED[id].sel=new Set(on?ED[id].rows().map((_,i)=>i):[]);edDraw(id)};
+const edDone=id=>{ED[id].sel=new Set();S.pos=null;save();edDraw(id);refresh()};
+function edSet(id,i,k,v){ED[id].set(i,k,v);S.pos=null;save();edDraw(id);refresh()}
+function edDel(id,i){if(ED[id].del(i)===false)return;edDone(id)}
+function edAdd(id){ED[id].add();edDone(id)}
+function edDup(id,i){ED[id].dup(i);edDone(id)}
+
+function subSample(){withUndo("add common subjects",()=>SUBJ0.forEach(([c,n,x,k])=>{if(!S.data.subj.some(s=>s.c==c))S.data.subj.push({c,n,x,k})}),true);applySubj();edDraw("sub");refresh();say("Common subjects added - edit or delete any")}
+function subFromAl(){let n=0;withUndo("subjects from allocations",()=>S.data.al.forEach(A=>comps(A).forEach(c=>{if(!S.data.subj.some(s=>s.c==c)){S.data.subj.push({c,n:"",x:"Y",k:"N"});n++}})),true);applySubj();edDraw("sub");refresh();say(n+" subject code(s) added from the allocations")}
+/* ---------- allocations: apply to same year group / all classes ---------- */
+const scopeOf=(c,sc)=>{const k=clsOf(c);return S.data.classes.filter(x=>sc=="all"||(sc=="year"&&k&&x.y==k.y)||x.n==c).map(x=>x.n)};
+const fillB=()=>$("#ixb").checked;
+// rows of the same subject in the other classes of the chosen scope
+const twins=A=>{const cl=scopeOf(A.c,$("#sc").value);return S.data.al.filter(B=>B!==A&&B.s==A.s&&cl.includes(B.c))};
+const live=(label,A,fn)=>{const gm=A.j?S.data.al.filter(B=>B!==A&&B.j===A.j&&B.s==A.s):[],T=$("#sc").value=="this"?[]:twins(A),all=[...new Set([...T,...gm])];
+ if(!all.length){fn(null);return}withUndo(label+" for "+all.length+" other class(es)",()=>{fn(null);all.forEach(B=>fn(B,gm.includes(B)))});drawAl()};
+function setT(i,k,v){const A=S.data.al[i];live("Teacher "+A.s,A,(B,f)=>{const X=B||A;if(B&&!f&&fillB()&&(X.t[k]||""))return;X.t=comps(X).map((_,j)=>j==k?v:(X.t[j]||""))});S.pos=null;save()}
+function setV(i,k,v){const A=S.data.al[i];live("Venue "+A.s,A,(B,f)=>{const X=B||A;if(B&&!f&&fillB()&&((X.v||[])[k]||""))return;X.v=comps(X).map((_,j)=>j==k?v:(X.v||[])[j]||"")});S.pos=null;save()}
+function setN(i,v){const A=S.data.al[i],n=Math.max(1,+v||1);live("Periods "+A.s,A,B=>{(B||A).n=n});S.pos=null;save();drawAl()}
+function setD(i,v){const A=S.data.al[i];live("Doubles "+A.s,A,B=>{const X=B||A;X.d=Math.min(+v||0,X.n>>1)});S.pos=null;save()}
+// copy fields of A onto B according to the ticked options; returns true if anything changed
+function pour(A,B){const o={n:$("#ixn").checked,t:$("#ixt").checked,v:$("#ixv").checked,f:fillB()};let ch=false;
+ if(o.n&&!o.f){if(B.n!=A.n||(B.d|0)!=(A.d|0))ch=true;B.n=A.n;B.d=Math.min(A.d|0,B.n>>1)}
+ if(o.t){const t=comps(B).map((_,j)=>o.f&&(B.t[j]||"")?B.t[j]:(A.t[j]||""));if(t.join()!=comps(B).map((_,j)=>B.t[j]||"").join())ch=true;B.t=t}
+ if(o.v){const v=comps(B).map((_,j)=>o.f&&((B.v||[])[j]||"")?B.v[j]:((A.v||[])[j]||""));if(v.join()!=comps(B).map((_,j)=>(B.v||[])[j]||"").join())ch=true;B.v=v}
+ return ch}
+function applyRow(i){const A=S.data.al[i];if($("#sc").value=="this")return say("Set 'Apply my edits to' to Same year group or All classes first");
+ const T=twins(A);if(!T.length)return say("No matching subject in the other classes");
+ withUndo("apply "+A.s+" to "+T.length+" class(es)",()=>T.forEach(B=>pour(A,B)));drawAl();say("Applied "+A.s+" to "+T.length+" class(es)")}
+$("#bc").onclick=()=>{const c=$("#cs").value,sc=$("#sc").value;if(sc=="this")return say("Set 'Apply my edits to' to Same year group or All classes first");
+ const src=S.data.al.filter(A=>A.c==c),targets=scopeOf(c,sc).filter(x=>x!=c);if(!src.length||!targets.length)return say("Nothing to copy to");
+ let upd=0,add=0;targets.forEach(t=>src.forEach(A=>{const B=S.data.al.find(x=>x.c==t&&x.s==A.s);B?upd++:add++}));
+ if(!confirm(`Copy ${c}'s ${src.length} subjects to ${targets.length} class(es)?\n${upd} existing rows will be updated and ${add} rows added.`))return;
+ withUndo("copy "+c+" to "+targets.length+" class(es)",()=>targets.forEach(t=>src.forEach(A=>{const B=S.data.al.find(x=>x.c==t&&x.s==A.s);
+  if(B)pour(A,B);else S.data.al.push({c:t,s:A.s,n:A.n,d:$("#ixn").checked?A.d|0:0,t:$("#ixt").checked?[...A.t]:[],v:$("#ixv").checked?[...(A.v||[])]:[]})})));
+ refresh();say(`Copied to ${targets.length} class(es): ${upd} updated, ${add} added`)};
+/* ---------- classes: add a whole year group ---------- */
+const fillYears=()=>{const ys=[...new Set(S.data.classes.map(c=>c.y))].sort((a,b)=>a-b),cur=$("#vy").value;
+ $("#vy").innerHTML='<option value="">all year groups</option>'+ys.map(y=>`<option value=${y}>Year ${y}</option>`).join("");$("#vy").value=cur;
+ const cc=$("#yg_c").value;$("#yg_c").innerHTML='<option value="">nothing</option>'+S.data.classes.map(c=>`<option>${c.n}</option>`).join("");$("#yg_c").value=cc};
+$("#yg_b").onclick=()=>{const y=+$("#yg_y").value,names=$("#yg_n").value.split(/[,;\n]/).map(x=>x.trim().toUpperCase()).filter(Boolean),lv=$("#yg_l").value,src=$("#yg_c").value;
+ if(!y||!names.length)return say("Type the year number and at least one class name");
+ const add=names.map(n=>/^YEAR\s/i.test(n)?n:`YEAR ${y} ${n}`).filter(n=>!S.data.classes.some(c=>c.n==n));if(!add.length)return say("Those classes already exist");
+ withUndo("add "+add.length+" class(es)",()=>add.forEach(n=>{S.data.classes.push({n,y,l:lv});if(src)S.data.al.filter(a=>a.c==src).forEach(a=>S.data.al.push(JSON.parse(JSON.stringify({...a,c:n,j:""}))))}));
+ $("#yg_n").value="";refresh();edDraw("cls");say(`Added ${add.length} class(es)`+(src?" with allocations copied from "+src:""))};
+/* ---------- lesson times: shift everything ---------- */
+$("#shb").onclick=()=>{const n=+$("#sh").value||0,B=S.data.bell;if(!n)return say("Type the number of minutes to shift (negative = earlier)");
+ withUndo("shift times by "+n+" min",()=>{B.s=M2T(T2M(B.s)+n);Object.values(B.m||{}).forEach(v=>{if(v[0])v[0]=M2T(T2M(v[0])+n);if(v[1])v[1]=M2T(T2M(v[1])+n)})},true);loadBell();drawGrid()};
+
+/* ---------- school rules: breaks, lunch, fixed activities ---------- */
+const q=s=>String(s).replace(/"/g,"&quot;");
+function drawRul(){$("#rt").innerHTML="<table><tr><th>Day</th><th>Period</th><th>Applies to</th><th>Activity</th><th>Minutes</th><th>Type</th><th></th></tr>"+S.data.fx.map((r,i)=>"<tr>"+["d","p","a","n","m"].map(k=>`<td><input value="${q(r[k]??"")}" ${k=="m"?"type=number min=0 max=240 style='width:70px'":""} onchange="rl(${i},'${k}',this.value)"></td>`).join("")+
+ `<td><select onchange="rl(${i},'k',this.value)">${["ACTIVITY","BREAK","LUNCH","IN BREAK"].map(x=>`<option ${r.k==x?"selected":""}>${x}</option>`).join("")}</select></td><td style="white-space:nowrap"><button class="b g" title="Duplicate this rule" onclick="rdup(${i})">⧉</button><button class="b g" onclick="rd(${i})">✕</button></td></tr>`).join("")+"</table>"}
+const rch=()=>{setRules();S.pos=null;save();say("Saved - regenerate the timetable");drawLay()};
+function rdup(i){S.data.fx.splice(i+1,0,{...S.data.fx[i]});rch();drawRul()}
+function rl(i,k,v){S.data.fx[i][k]=v;rch()}function rd(i){S.data.fx.splice(i,1);rch();drawRul()}
+$("#ra").onclick=()=>{S.data.fx.push({d:"MON",p:"1",a:"ALL",n:"",k:"ACTIVITY",m:""});rch();drawRul()};
+$("#rr").onclick=()=>{if(confirm("Reset to the default school rules?")){S.data.fx=FX0.map(r=>({...r}));rch();drawRul()}};
+
+/* ---------- day layout: move break, lunch and activities per group of classes and per day ---------- */
+// Changes are stored as overrides on top of the rules table. A group = classes whose fixed layout is identical.
+const tokenFor=names=>{const C=S.data.classes,set=a=>[...a].sort().join("|"),want=set(names),lv=["Junior","Middle","Senior"];
+ for(let m=1;m<8;m++){const pick=lv.filter((_,i)=>m>>i&1),cs=C.filter(c=>pick.includes(lvl(c)));if(cs.length&&set(cs.map(c=>c.n))==want)return pick.join(",")}
+ for(const y of [...new Set(C.map(c=>c.y))]){const cs=C.filter(c=>c.y==y);if(set(cs.map(c=>c.n))==want)return String(y)}
+ return names.join(",")};
+function layGroups(){const g={};S.data.classes.forEach(c=>{const F=fixedMap(c),sig=JSON.stringify([F.f,F.b,F.bt]);(g[sig]=g[sig]||{n:[],F}).n.push(c.n)});return Object.values(g)}
+const isBr=n=>/\b(BREAK|LUNCH)\b/i.test(n||"");
+const layVal=(g,s,d,p)=>{const k=d+","+p;return s=="P"?{n:g.F.f[k]||"",m:null}:{n:g.F.b[k]||"",m:((g.F.bt[k]||[]).find(x=>x[0]=="O")||[])[1]??null}};
+const cellL=(gi,d,s,p,t,cls,st)=>`<td class="${cls}${s=="B"?" lb":""}" style="${st||""}" ${t?"draggable=true":""} data-g=${gi} data-d=${d} data-s=${s} data-p=${p} onclick="layEdit(${gi},${d},'${s}',${p})" title="${s=="B"?"After period "+p+" (break column)":"Period "+p}">${t||(s=="B"?"":"·")}</td>`;
+function drawLay(){const G=layGroups();
+ $("#lay").innerHTML=G.map((g,gi)=>`<div class=box><b>${g.n.join(", ")}</b><div style="overflow-x:auto"><table class=lay><tr><th></th>${PSN.map(p=>`<th>P${p}</th><th class=lb title="break column after P${p}">after ${p}</th>`).join("")}</tr>`+
+  D.map((dn,d)=>`<tr><th>${dn}</th>`+PSN.map(p=>{const f=g.F.f[d+","+p]||"",b=layVal(g,"B",d,p);return cellL(gi,d,"P",p,f,f?"fx":"",f?bgStyle(actCol(f)):"")+cellL(gi,d,"B",p,b.n+(b.n&&b.m!=null?" · "+b.m+"m":""),b.n?"br":"",b.n?bgStyle(actCol(b.n)):"")}).join("")+"</tr>").join("")+"</table></div></div>").join("")+
+  `<div class=box><b>Layout changes (${(S.data.lo||[]).length})</b> <small>applied on top of the rules above</small>`+((S.data.lo||[]).length?`<table><tr><th>Applies to</th><th>Day</th><th>Where</th><th>Becomes</th><th></th></tr>${S.data.lo.map((o,i)=>`<tr><td>${o.a}</td><td>${D[o.d]}</td><td>${o.s=="P"?"period "+o.p:"after period "+o.p}</td><td>${o.n||"(empty)"}${o.m!==""&&o.m!=null?" · "+o.m+"m":""}</td><td><button class="b g" onclick="layDel(${i})">✕</button></td></tr>`).join("")}</table><button class="b g" onclick="layClear()">Clear all layout changes</button>`:"")+"</div>"}
+const parseNM=r=>{const i=r.lastIndexOf(","),t=i>=0?r.slice(i+1).trim():"";return i>=0&&/^\d+$/.test(t)?[r.slice(0,i).trim().toUpperCase(),+t]:[r.trim().toUpperCase(),null]};
+const layDays=d=>{const v=$("#lyd").value;return v=="all"?[0,1,2,3,4]:v=="mt"?[0,1,2,3]:[d]};
+function layPut(tok,d,s,p,n,m){S.data.lo=(S.data.lo||[]).filter(o=>!(o.a==tok&&+o.d==d&&o.s==s&&+o.p==p));S.data.lo.push({a:tok,d,s,p,n,m:m==null?"":m})}
+// Commit a layout change: if a timetable exists, lessons displaced by the new layout are re-placed automatically (or the change is undone)
+function layCommit(lbl){const old=S.pos;setRules();let extra="";
+ if(old){const r=repair(S.data,old,S.seed*5+1);
+  if(!r){$("#undo").click();return say("Not possible: the lessons displaced by this change cannot be re-placed without breaking a rule")}
+  S.pos=r.pos;extra=r.moved?` · ${r.moved} lesson(s) re-placed automatically`:""}
+ if(S.pos)ttDirty=!S.editing;save();drawLay();drawBell();drawGrid();if(S.pos)showDiag();say(lbl+extra)}
+function layEdit(gi,d,s,p){const g=layGroups()[gi],cur=layVal(g,s,d,p),
+ r=prompt(s=="P"?`${D[d]} period ${p}: activity name (blank = free for lessons)`:`${D[d]}, after period ${p} (break column): BREAK, LUNCH or any activity; join several with " + ". Optional minutes after a comma, e.g. PRAYERS, 10. Blank = nothing.`,cur.n+(cur.m!=null?", "+cur.m:""));
+ if(r==null)return;const[n,m]=parseNM(r);if(s=="P"&&isBr(n))return say("Break and lunch go in the break column (the 'after' columns), not in a period");
+ const tok=tokenFor(g.n);withUndo("layout "+D[d]+" "+(s=="P"?"P"+p:"after P"+p),()=>layDays(d).forEach(dd=>layPut(tok,dd,s,p,n,m)),true);layCommit("Layout changed")}
+const runOf=(F,d,p)=>{const nm=F.f[d+","+p];if(!nm)return null;let a=p,z=p;while(F.f[d+","+(a-1)]===nm)a--;while(F.f[d+","+(z+1)]===nm)z++;return{nm,a,z}};
+// Move an activity: a=from {d,s:"P"|"B",p}, t=to {d,s,p}, gi=group of classes. A multi-period activity (e.g. SPORTS P4-P6) moves as one block.
+// Break/lunch move between break slots; other activities move between periods and the break column.
+function layMove(a,t,gi){const g=layGroups()[gi];if(!g)return;if(a.s==t.s&&a.d==t.d&&a.p==t.p)return;
+ const tok=tokenFor(g.n),same=a.d==t.d&&$("#lyd").value!="this",days=same?layDays(a.d):[a.d],plan=[];let err="";
+ for(const dd of days){const sd=same?dd:a.d,td=same?dd:t.d,F=g.F,ops=[];let name,m=null,src=[];
+  if(a.s=="P"){const r=runOf(F,sd,a.p);if(!r){if(!same)err=`Nothing to move at ${D[sd]} period ${a.p}`;continue}name=r.nm;for(let x=r.a;x<=r.z;x++)src.push(x)}
+  else{const v=layVal(g,"B",sd,a.p);if(!v.n){if(!same)err="Nothing to move there";continue}name=v.n;m=v.m}
+  if(t.s=="P"){
+   if(isBr(name)){ // a break dropped on a period goes right after that period
+    const tv=layVal(g,"B",td,t.p);if(a.s=="B")ops.push([sd,"B",a.p,tv.n,tv.m]);ops.push([td,"B",t.p,tv.n&&a.s!="B"?tv.n+" + "+name:name,m]);plan.push(...ops);continue}
+   const L=a.s=="P"?src.length:1,tp=[];for(let x=t.p;x<t.p+L;x++)tp.push(x);
+   if(tp[L-1]>NP){err=`${name} would run past period ${NP}`;break}
+   const cross=tp.slice(1).find(x=>F.b[td+","+(x-1)]);if(cross){err=`${name} cannot run across ${F.b[td+","+(cross-1)]} (after period ${cross-1})`;break}
+   const occ=tp.filter(x=>F.f[td+","+x]&&!(td==sd&&a.s=="P"&&src.includes(x)));
+   if(occ.length){ // swap only with a block of the same shape; otherwise explain
+    const o=runOf(F,td,occ[0]);if(a.s=="P"&&o&&o.a==t.p&&o.z-o.a+1==L&&occ.length==L&&!(td==sd&&src[0]==o.a)){src.forEach((x,i)=>ops.push([sd,"P",x,o.nm,null]));tp.forEach(x=>ops.push([td,"P",x,name,null]))}
+    else if(a.s=="B"&&occ.length==1&&!isBr(F.f[td+","+occ[0]])){const o2=F.f[td+","+occ[0]];ops.push([sd,"B",a.p,o2,null],[td,"P",occ[0],name,null])}
+    else{err=`${D[td]} period ${occ[0]} already holds ${F.f[td+","+occ[0]]} - move that first`;break}}
+   else{if(a.s=="P")src.forEach(x=>ops.push([sd,"P",x,"",null]));else ops.push([sd,"B",a.p,"",null]);tp.forEach(x=>ops.push([td,"P",x,name,null]))}}
+  else{ // target is a break-column slot
+   const tv=layVal(g,"B",td,t.p);
+   if(a.s=="P"){src.forEach(x=>ops.push([sd,"P",x,"",null]));ops.push([td,"B",t.p,tv.n?tv.n+" + "+name:name,tv.n?tv.m:null])}
+   else ops.push([sd,"B",a.p,tv.n,tv.m],[td,"B",t.p,name,m])}
+  plan.push(...ops)}
+ if(err)return say(err);if(!plan.length)return;
+ withUndo("move "+(g.F.f[a.d+","+a.p]||"break"),()=>plan.forEach(([d,s,p,n,m])=>layPut(tok,d,s,p,n,m)),true);layCommit("Moved")}
+let LDg=null;const LY=$("#lay");
+LY.addEventListener("dragstart",e=>{const td=e.target.closest("td[data-g]");LDg=td&&{g:+td.dataset.g,d:+td.dataset.d,s:td.dataset.s,p:+td.dataset.p}});
+LY.addEventListener("dragover",e=>e.preventDefault());
+LY.addEventListener("drop",e=>{e.preventDefault();const td=e.target.closest("td[data-g]");if(!LDg||!td)return;if(+td.dataset.g!=LDg.g){LDg=null;return say("Drop inside the same group of classes")}layMove({d:LDg.d,s:LDg.s,p:LDg.p},{d:+td.dataset.d,s:td.dataset.s,p:+td.dataset.p},LDg.g);LDg=null});
+function layDel(i){withUndo("remove layout change",()=>S.data.lo.splice(i,1),true);layCommit("Removed")}
+function layClear(){if(confirm("Remove all layout changes and go back to the rules table?")){withUndo("clear layout changes",()=>S.data.lo=[],true);layCommit("Cleared")}}
+
+/* ---------- venues & lesson times ---------- */
+function loadVen(){$("#vt").value=(S.data.vn||[]).join("\n")}
+$("#vs").onclick=()=>{S.data.vn=[...new Set($("#vt").value.split("\n").map(x=>x.trim()).filter(Boolean))];S.pos=null;save();drawAl();say("Venues saved - regenerate the timetable")};
+$("#va").onclick=()=>{const M={CHM:"Chemistry Lab",PHY:"Physics Lab",BIO:"Biology Lab",ICT:"ICT Lab",COD:"ICT Lab","A&D":"Art Studio","D&T":"D&T Workshop",MUS:"Music Room",LIBRARY:"Library",PHE:"Sports Field"};
+ const vn=S.data.vn=S.data.vn||[];Object.values(M).forEach(x=>vn.includes(x)||vn.push(x));
+ const yv=$("#vy").value;withUndo("auto-fill venues",()=>S.data.al.forEach(A=>{if(!yv||String((clsOf(A.c)||{}).y)==yv)A.v=comps(A).map(x=>M[x]||"")}));loadVen();drawAl();say("Venues filled in - edit any you like")};
+const PSN=[...Array(NP)].map((_,i)=>i+1);
+const loadBell=()=>{const B=S.data.bell;$("#bs").value=B.s;$("#bl").value=B.l;$("#bb").value=B.b;$("#bu").value=B.u;$("#bo").value=B.o||"";if(!$("#bd").options.length)$("#bd").innerHTML=D.map((d,i)=>`<option value=${i}>${d}</option>`).join("");drawMan();drawBell();drawLay()};
+["bs","bl","bb","bu","bo"].forEach(id=>$("#"+id).onchange=()=>{const m=S.data.bell.m||{};S.data.bell={s:$("#bs").value||"08:00",l:+$("#bl").value||40,b:+$("#bb").value||0,u:+$("#bu").value||0,o:$("#bo").value,m};save();drawBell();drawGrid()});
+$("#bd").onchange=drawBell;
+function drawMan(){const m=S.data.bell.m||{},row=i=>PSN.map(p=>`<td><input type=time value="${(m[p]||[])[i]||""}" onchange="setMan(${p},${i},this.value)" style="min-width:96px"></td>`).join("");
+ $("#bm").innerHTML="<b>Manual period times</b> <small>(optional - type a From and/or To to fix a period's time; blank = calculated. Later periods continue from it.)</small><div style='overflow-x:auto'><table><tr><th></th>"+PSN.map(p=>`<th>P${p}</th>`).join("")+`</tr><tr><th>From</th>${row(0)}</tr><tr><th>To</th>${row(1)}</tr></table></div><button class="b g" onclick="S.data.bell.m={};save();drawMan();drawBell();drawGrid()">Clear manual times</button>`}
+function setMan(p,i,v){const B=S.data.bell;B.m=B.m||{};B.m[p]=B.m[p]||["",""];B.m[p][i]=v;save();drawBell();drawGrid()}
+function drawBell(){const d=+$("#bd").value||0,g={};
+ S.data.classes.forEach(c=>{const bt=fixedMap(c).bt,t=PSN.map(p=>{const[a,z]=slotTime(bt,d,p);return rng2(a,z)});(g[t.join("|")]=g[t.join("|")]||{n:[],t}).n.push(c.n)});
+ $("#bp").innerHTML="<table><tr><th>Classes</th>"+PSN.map(p=>`<th>P${p}</th>`).join("")+"</tr>"+Object.values(g).map(x=>`<tr><th style="text-align:left">${x.n.join(", ")}</th>`+x.t.map(s=>`<td>${s}</td>`).join("")+"</tr>").join("")+"</table>"}
+
+/* ---------- teacher workload overview: strength bars + everything allocated to each teacher ---------- */
+const WLC=f=>f>1?"#d32f2f":f>.85?"#f59e0b":f>.5?"#2e9e5b":"#3b82c4"; // over capacity / high / healthy / light
+const barH=(w,cap)=>{const f=cap?w/cap:0;return`<span class=bar title="${w} of ${cap} periods a week"><i style="width:${Math.min(100,f*100)}%;background:${WLC(f)}"></i></span>`};
+const capOf=t=>5*(+(S.data.tl[t]||{}).m||8);
+function wlSet(i,k,v){const s=$("#sc").value;$("#sc").value="this";setT(i,k,v);$("#sc").value=s;drawWl()}
+function wlMove(t,a,to){const G=groupsOf(S.data.al);withUndo((to?"move":"unassign")+" "+S.data.al[a].s,()=>G.GM[a].forEach(m=>{const A=S.data.al[m];A.t=A.t.map(x=>x==t?to:x)}));drawWl()}
+function drawWl(){const L=teacherLoads(),G=groupsOf(S.data.al),T=teacherDays(),qs=($("#wq").value||"").toLowerCase(),so=$("#ws").value,al=S.data.al,tn=S.data.teachers;
+ const lines={},un=[];let tot=0,unp=0;
+ al.forEach((A,a)=>{if(G.lead[a]!==a)return;const mem=G.GM[a],ts=new Set();mem.forEach(m=>al[m].t.filter(Boolean).forEach(t=>ts.add(t)));
+  const row={a,A,cls:mem.map(m=>al[m].c)};if(!ts.size){un.push(row);unp+=A.n}ts.forEach(t=>(lines[t]=lines[t]||[]).push(row))});
+ tn.forEach(t=>tot+=(L[t]||{w:0}).w);
+ let list=tn.filter(t=>!qs||t.toLowerCase().includes(qs)||(lines[t]||[]).some(r=>(r.A.s+" "+r.cls.join(" ")).toLowerCase().includes(qs)));
+ list.sort((x,y)=>so=="hi"?(L[y]||{w:0}).w-(L[x]||{w:0}).w:so=="lo"?(L[x]||{w:0}).w-(L[y]||{w:0}).w:x.localeCompare(y));
+ const open=$("#wx").checked?"open":"",sel=(fn,i,k,x)=>`<select onchange="${fn}(${i},${k},this.value)"><option value="">${x}: assign…</option>${tn.map(t=>`<option value="${q(t)}">${t} (${(L[t]||{w:0}).w}/${capOf(t)})</option>`).join("")}</select>`;
+ const card=t=>{const w=(L[t]||{w:0}).w,cap=capOf(t),ls=(lines[t]||[]).slice().sort((x,y)=>x.A.s.localeCompare(y.A.s)||x.cls[0].localeCompare(y.cls[0])),bySub={};
+  ls.forEach(r=>{const o=bySub[r.A.s]=bySub[r.A.s]||{n:0,c:0};o.n+=r.A.n;o.c+=r.cls.length});
+  const chips=Object.entries(bySub).map(([s,o])=>`<span class=chip style="background:hsl(${typeof subCol(s)=="number"?subCol(s):200} 45% 85%);color:#10181f" title="${o.c} class(es), ${o.n} periods">${s} · ${o.n}</span>`).join(" ");
+  const mini=T?`<span class=mini title="Scheduled per day: ${(T[t]||[0,0,0,0,0]).join(", ")}">${(T[t]||[0,0,0,0,0]).map(n=>`<i style="height:${n*4+2}px"></i>`).join("")}</span>`:"";
+  return`<details class=wt ${open}><summary>${barH(w,cap)}<b>${t}</b> <span class=${w>cap?"bad":""}>${w} / ${cap} periods</span> · ${(L[t]||{cls:{size:0}}).cls.size} class(es) ${mini}<div>${chips||"<small>nothing allocated yet</small>"}</div></summary>`+
+   (ls.length?`<table><tr><th>Subject</th><th>Class(es)</th><th>Periods</th><th>Venue</th><th>Change</th></tr>${ls.map(r=>`<tr><td>${r.A.s}</td><td style="text-align:left">${r.cls.join(", ")}${r.cls.length>1?" 🔗":""}</td><td>${r.A.n}${r.A.d?` (${r.A.d} double)`:""}</td><td>${(r.A.v||[]).filter(Boolean).join(" / ")||"—"}</td><td style="white-space:nowrap"><select onchange="wlMove('${q(t)}',${r.a},this.value)"><option value="">move to…</option>${tn.filter(x=>x!=t).map(x=>`<option value="${q(x)}">${x}</option>`).join("")}</select><button class="b g" onclick="wlMove('${q(t)}',${r.a},'')">Unassign</button></td></tr>`).join("")}</table>`:"")+"</details>"};
+ $("#wlbox").innerHTML=`<div class=row><b>${tn.length} teachers</b> · ${tot} teacher-periods allocated · average ${tn.length?(tot/tn.length).toFixed(1):0} per teacher · <span class=${unp?"warn":"ok"}>${unp} periods have no teacher</span></div>`+
+  `<div class=row><small>Bar colours: <span style="color:#3b82c4">■</span> light (under half) <span style="color:#2e9e5b">■</span> healthy <span style="color:#f59e0b">■</span> high (over 85%) <span style="color:#d32f2f">■</span> over capacity. Capacity = 5 × the teacher's daily limit.${T?" The small columns show periods scheduled Monday to Friday.":""}</small></div>`+
+  (list.length?list.map(card).join(""):`<p>${tn.length?"No teacher matches your search.":"No teachers yet - add them in the Teachers tab."}</p>`)+
+  (un.length?`<h4>Allocations with no teacher (${un.length})</h4><table><tr><th>Class(es)</th><th>Subject</th><th>Periods</th><th>Assign</th></tr>${un.map(r=>`<tr><td style="text-align:left">${r.cls.join(", ")}${r.cls.length>1?" 🔗":""}</td><td>${r.A.s}</td><td>${r.A.n}</td><td style="text-align:left">${comps(r.A).map((x,k)=>sel("wlSet",r.a,k,x)).join(" ")}</td></tr>`).join("")}</table>`:"")}
+["wq","ws","wx"].forEach(id=>$("#"+id).oninput=drawWl);
+
+/* ---------- colours editor ---------- */
+function hexOf(c){if(typeof c=="string"&&c[0]=="#")return c;const[hh,s,l]=typeof c=="string"?[+c.slice(1),34,82]:[c,65,84],a=s/100*Math.min(l/100,1-l/100),fn=n=>{const k=(n+hh/30)%12;return Math.round(255*(l/100-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,"0")};return"#"+fn(0)+fn(8)+fn(4)}
+function drawClr(){const C=CLR(),sw=(n,def)=>`<label class=sw><input type=color value="${C[n]||hexOf(def)}" data-n="${q(n)}" onchange="setClr(this.dataset.n,this.value)"><span>${n}${C[n]?"":" <small>(auto)</small>"}</span>${C[n]?`<button class="b g" data-n="${q(n)}" onclick="rstClr(this.dataset.n)" title="Back to automatic">↺</button>`:""}</label>`;
+ $("#clrbox").innerHTML="<b>Subjects</b><div class=row>"+S.data.subj.map(s=>sw(s.c,col(s.c))).join("")+"</div><b>Activities, break and lunch</b><div class=row>"+actNames().map(n=>sw(n,actCol(n))).join("")+"</div>"}
+function setClr(n,v){withUndo("colour "+n,()=>{S.data.colors=S.data.colors||{};S.data.colors[n.toUpperCase()]=v},true);drawClr();drawGrid();drawLay()}
+function rstClr(n){withUndo("reset colour "+n,()=>{delete S.data.colors[n]},true);drawClr();drawGrid();drawLay()}
+$("#cr").onclick=()=>{withUndo("reset all colours",()=>{S.data.colors={}},true);drawClr();drawGrid();drawLay()};
+
+/* ---------- versions ---------- */
+function drawVer(){$("#vl").innerHTML=(S.vers.length?"":"<p>No saved versions yet. Generate a timetable, then use <b>Save as version</b>.</p>")+S.vers.map((v,i)=>
+ `<div class=box><b>${v.name}</b> <small>${v.date}</small> ${S.active===v.id?'<b class=ok>● deployed</b>':""} ${S.editing===v.id?'<b class=warn>✎ editing</b>':""} ${v.pos?"":'<small class=bad>(no timetable)</small>'}<div class=row><button class=b onclick="act(${i})">Deploy</button><button class="b a" onclick="editVer(${i})">Edit by drag &amp; drop</button><button class="b g" onclick="ren(${i})">Rename</button><button class="b g" onclick="del(${i})">Delete</button></div></div>`).join("")}
+$("#sv").onclick=()=>{if(!S.pos)return say("Generate a timetable first");const n=prompt("Version name","Term "+(S.vers.length+1));if(n!==null&&!n.trim())return say("Version not saved: please type a name");if(!n)return;
+ S.vers.push({id:vid(),name:n,date:new Date().toLocaleString(),data:cl(S.data),pos:cl(S.pos)});ttDirty=false;save();drawVer();say("Version saved")};
+function act(i){const v=S.vers[i];if(v.data)S.data=Object.assign(fresh(),JSON.parse(JSON.stringify(v.data)));else S.data.al.forEach((a,k)=>a.t=v.t[k]||[]);S.pos=cl(v.pos);refresh();S.active=v.id;S.editing=null;ttDirty=false;save();drawVer();drawGrid();say("Deployed: "+v.name)}
+function updBar(){const b=$("#vbar"),v=S.editing&&S.vers.find(x=>x.id===S.editing);b.hidden=!v;
+ if(v)b.innerHTML=`✎ Editing saved version <b>${v.name}</b> - every drag-and-drop change is saved into it automatically. <small>(Changing data such as allocations clears its timetable until you regenerate.)</small> <button class="b g" onclick="stopEdit()">Stop editing</button><button class="b g" onclick="saveCopy()">Save as new version</button>`}
+function editVer(i){const v=S.vers[i];if(!v.pos&&!confirm("This version has no timetable (its data was edited). Open it anyway?"))return;
+ S.data=Object.assign(fresh(),JSON.parse(JSON.stringify(v.data||{})));if(!v.data)S.data.al.forEach((a,k)=>a.t=v.t[k]||[]);S.pos=cl(v.pos);S.editing=v.id;ttDirty=false;S.undo=null;
+ save();refresh();updUndo();document.querySelector("nav button[data-t=gen]").click();drawGrid();say("Editing: "+v.name)}
+function stopEdit(){S.editing=null;save();drawVer();say("Stopped editing")}
+function saveCopy(){const n=prompt("Name for the new version","Copy of "+((S.vers.find(x=>x.id===S.editing)||{}).name||"version"));if(!n)return;
+ S.vers.push({id:vid(),name:n,date:new Date().toLocaleString(),data:cl(S.data),pos:cl(S.pos)});save();say("Saved as a new version")}
+function ren(i){const n=prompt("New name",S.vers[i].name);if(n){S.vers[i].name=n;save();drawVer()}}
+function del(i){if(confirm("Delete this version?")){if(S.editing===S.vers[i].id)S.editing=null;if(S.active===S.vers[i].id)S.active=null;S.vers.splice(i,1);save();drawVer()}}
+
+/* ---------- emergency day ---------- */
+const absent=new Set((()=>{try{return JSON.parse(LS.ttAbs||"[]")}catch(e){return[]}})()),COV=(()=>{try{return JSON.parse(LS.ttCov||"{}")}catch(e){return{}}})();
+const saveEmg=()=>{try{LS.ttAbs=JSON.stringify([...absent]);LS.ttCov=JSON.stringify(COV)}catch(e){}};
+// one entry per lesson on day d (merged classes count once): start period p, span s, teachers T
+function emgLessons(d){const G=groupsOf(S.data.al),out=[];
+ S.pos.forEach((ps,a)=>{if(G.lead[a]!==a)return;const v=ps[d];if(v==null||v<0)return;
+  out.push({a,p:PP(v),s:SPN(v),cls:G.GM[a].map(m=>S.data.al[m].c).join(" + "),subj:S.data.al[a].s,T:[...new Set(G.GM[a].flatMap(m=>S.data.al[m].t.filter(Boolean)))]})});return out}
+// everything the cover list needs for day d: lessons needing cover, each teacher's own load, who may cover what
+function emgModel(d){const T=S.data.teachers,tl=S.data.tl||{},L=emgLessons(d),busy={},load={},un={};
+ T.forEach(t=>{load[t]=0;un[t]=parseUn(tl[t]&&tl[t].u)});
+ L.forEach(x=>x.T.forEach(t=>{load[t]=(load[t]||0)+x.s;for(let i=0;i<x.s;i++)busy[t+"|"+(x.p+i)]=1}));
+ const rows=[];L.forEach(x=>x.T.forEach(t=>{if(absent.has(t))rows.push({...x,t,key:d+"|"+x.cls+"|"+x.subj+"|"+t+"|"+x.p})}));
+ rows.sort((x,y)=>x.p-y.p||x.cls.localeCompare(y.cls));
+ const mine=r=>COV[r.key]&&!absent.has(COV[r.key])?COV[r.key]:null;
+ // teachers who may cover row r, given the cover already given to the other rows
+ const free=r=>T.filter(x=>{if(absent.has(x))return false;const max=(tl[x]&&+tl[x].m)||8;let extra=0;
+  for(let i=0;i<r.s;i++){const k=r.p+i;if(busy[x+"|"+k]||un[x].has(d+","+k))return false}
+  for(const o of rows){if(o===r||mine(o)!==x)continue;if(o.p<r.p+r.s&&r.p<o.p+o.s)return false;extra+=o.s}
+  return load[x]+extra+r.s<=max});
+ const cv=x=>rows.reduce((n,o)=>n+(mine(o)===x?o.s:0),0);
+ return{T,rows,free,cv,load,mine}}
+function drawEmg(){const d=+$("#ed").value,T=S.data.teachers;
+ $("#ea").innerHTML="<b>Who is absent?</b><div class=row>"+T.map(t=>`<label><input type=checkbox ${absent.has(t)?"checked":""} data-t="${q(t)}" onchange="tog(this.dataset.t,this.checked)"> ${t}</label>`).join("")+"</div>";
+ if(!S.pos||S.pos.length!=S.data.al.length){$("#eo").textContent="Generate or deploy a timetable first.";$("#ep").innerHTML="";return}
+ const M=emgModel(d);
+ M.rows.forEach(r=>{if(COV[r.key]&&!M.free(r).includes(COV[r.key]))delete COV[r.key]}); // a stored choice that is no longer valid
+ const done=M.rows.filter(r=>COV[r.key]).length;
+ $("#eo").innerHTML=M.rows.length?`<div class=row><b>${M.rows.length} lesson(s) need cover on ${D[d]} · ${done} assigned</b><button class="b a" onclick="autoCov()">Auto-assign cover</button><button class="b g" onclick="clearCov()">Clear cover</button><button class="b a" onclick="fixDay()">${fixOn?"Hide day plan":"Rearrange the day"}</button><button class="b g" onclick="copyCov()">Copy list</button><button class="b g" onclick="print()">Print cover sheet</button></div><table><tr><th>Period</th><th>Class</th><th>Subject</th><th>Absent</th><th>Cover by</th></tr>`+M.rows.map(r=>{
+  const f=M.free(r),sel=COV[r.key]||"";
+  return`<tr><td>${r.s>1?`P${r.p}-${r.p+r.s-1}`:"P"+r.p}</td><td>${r.cls}</td><td>${r.subj}</td><td>${r.t}</td><td>${f.length?`<select data-k="${q(r.key)}" onchange="setCov(this.dataset.k,this.value)"><option value="">- choose cover -</option>${f.slice().sort((x,y)=>M.load[x]+M.cv(x)-M.load[y]-M.cv(y)).map(x=>`<option value="${q(x)}" ${sel==x?"selected":""}>${x} (${M.load[x]+M.cv(x)} periods today)</option>`).join("")}</select>`:'<span class=bad>No free teacher</span>'}</td></tr>`}).join("")+"</table>":"No lessons affected on this day.";
+$("#ep").innerHTML=fixOn&&M.rows.length?dayHtml(d):"";saveEmg()}
+/* ---- emergency day re-plan: lessons with cover stay put, lessons without cover are cancelled, the rest of each affected class moves up so free periods fall at the end of the day ---- */
+let fixOn=false;
+function emgDay(d){const M=emgModel(d),data=JSON.parse(JSON.stringify(S.data)),pos=S.pos.map(r=>[...r]),{GM}=groupsOf(data.al),by={},cover=new Set(),cancel=new Set(),touched=new Set(),notes=[],oc={};
+ M.rows.forEach(r=>(by[r.a]=by[r.a]||[]).push(r));
+ Object.keys(by).map(Number).forEach(a=>{const rs=by[a];GM[a].forEach(m=>touched.add(data.al[m].c));
+  if(rs.every(r=>M.mine(r))){cover.add(a);const cm={};rs.forEach(r=>cm[r.t]=M.mine(r));GM[a].forEach(m=>{data.al[m].t=data.al[m].t.map(t=>cm[t]||t)})}
+  else{cancel.add(a);GM[a].forEach(m=>{pos[m][d]=-1})}});
+ S.pos.forEach((ps,a)=>{if(ps[d]>=0)oc[a]=PP(ps[d])});
+ const E=mk(data,pos),al=data.al,cs=new Set(touched),vac=new Set(),at=(c,p)=>{const m=E.ck[c+"|"+d+","+p];return m==null?null:E.lead[m]};
+ cancel.forEach(a=>GM[a].forEach(m=>{for(let i=0;i<(S.pos[a][d]>=100?2:1);i++)vac.add(al[m].c+"|"+(oc[a]+i))})); // only slots an absence has emptied are refilled
+ for(let pass=0;pass<40;pass++){let ch=false;
+  for(const c of [...cs])for(let p=1;p<=NP;p++){if(!vac.has(c+"|"+p)||E.ck[c+"|"+d+","+p]!=null)continue;
+   for(let q=p+1;q<=NP;q++){const a=at(c,q);if(a==null||cover.has(a)||PP(pos[a][d])!=q)continue;
+    const v=pos[a][d],s=SPN(v);E.out(a,d);const ev=E.conf(a,d,p,s);
+    if(ev&&!ev.size){E.put(a,d,p+(s>1?100:0));ch=true;GM[a].forEach(m=>{const cn=al[m].c;cs.add(cn);for(let i=0;i<s;i++)vac.add(cn+"|"+(q+i));for(let i=0;i<s;i++)vac.delete(cn+"|"+(p+i))});break}E.put(a,d,v)}}
+  if(!ch)break}
+ const nm=a=>GM[a].map(m=>al[m].c).join(" + ")+" "+al[a].s,P=(p,s)=>s>1?`P${p}-${p+s-1}`:"P"+p;
+ M.rows.forEach(r=>{if(cover.has(r.a))notes.push(`${P(oc[r.a],r.s)} ${nm(r.a)}: ${r.t} absent, covered by ${M.mine(r)}`)});
+ cancel.forEach(a=>notes.push(`${P(oc[a],S.pos[a][d]>=100?2:1)} ${nm(a)}: cancelled, no cover (${by[a].map(r=>r.t).join(", ")} absent)`));
+ pos.forEach((ps,a)=>{if(E.lead[a]!==a||cancel.has(a)||ps[d]<0||oc[a]==null||PP(ps[d])==oc[a])return;
+  notes.push(`${nm(a)}: moved ${P(oc[a],SPN(ps[d]))} to ${P(PP(ps[d]),SPN(ps[d]))} (${al[a].t.filter(Boolean).join(" / ")||"no teacher"})`)});
+ const cls=[...cs].sort(),rows=cls.map(c=>{const f=fixedMap(data.classes.find(x=>x.n==c)).f,cells=[];
+  for(let p=1;p<=NP;p++){const a=at(c,p);
+   if(a==null){cells.push(f[d+","+p]?{t:"fix",x:f[d+","+p]}:{t:"free"});continue}
+   const sj=al[a].s;
+   if(cover.has(a))cells.push({t:"cover",s:sj,x:by[a].map(r=>M.mine(r)).join(", ")});
+   else if(PP(pos[a][d])!=oc[a])cells.push({t:"moved",s:sj,x:"was P"+oc[a]});
+   else cells.push({t:"ok",s:sj})}
+  return{c,cells}});
+ return{rows,notes,data,pos,cover,cancel}}
+function dayHtml(d){const R=emgDay(d),cell=c=>c.t=="free"?'<td style="background:rgba(128,128,128,.22)"><small>Free / supervised</small></td>':c.t=="fix"?`<td><small>${c.x}</small></td>`:c.t=="cover"?`<td style="background:rgba(232,184,74,.4)">${c.s}<br><small>cover: ${c.x}</small></td>`:c.t=="moved"?`<td style="background:rgba(70,140,220,.3)">${c.s}<br><small>${c.x}</small></td>`:`<td>${c.s}</td>`;
+ return`<b>Plan for ${D[d]}</b> <small>Lessons with cover stay in place (gold). Lessons with no cover are cancelled, and the rest of that class moves up (blue) so free periods fall at the end of the day (grey). Every move obeys fixed slots, teacher and venue clashes, unavailability and daily limits. Only classes affected by an absence are shown.</small>`+
+ `<div style="overflow-x:auto"><table><tr><th>Class</th>${Array.from({length:NP},(_,i)=>"<th>P"+(i+1)+"</th>").join("")}</tr>${R.rows.map(r=>`<tr><td style="text-align:left"><b>${r.c}</b></td>${r.cells.map(cell).join("")}</tr>`).join("")}</table></div>`+
+ `<div class=row><button class="b g" onclick="copyFix()">Copy changes</button><button class="b g" onclick="print()">Print day plan</button></div><details open><summary>${R.notes.length} change(s) to announce</summary><ul>${R.notes.map(n=>"<li>"+n+"</li>").join("")}</ul></details>`}
+function fixDay(){fixOn=!fixOn;drawEmg()}
+function copyFix(){const d=+$("#ed").value,R=emgDay(d);(navigator.clipboard?navigator.clipboard.writeText(D[d]+" changes\n"+R.notes.join("\n")):Promise.reject()).then(()=>say("Changes copied"),()=>say("Could not copy - use Print day plan instead"))}
+function tog(t,on){on?absent.add(t):absent.delete(t);saveEmg();drawEmg()}
+function setCov(k,v){v?COV[k]=v:delete COV[k];saveEmg();drawEmg()}
+function clearCov(){const d=+$("#ed").value;Object.keys(COV).forEach(k=>{if(k.split("|")[0]==d)delete COV[k]});saveEmg();drawEmg()}
+// fill every uncovered lesson, hardest first (fewest possible teachers), picking the least loaded teacher
+function autoCov(){const d=+$("#ed").value;if(!S.pos)return;let left=true,miss=0;
+ for(let guard=0;guard<500&&left;guard++){const M=emgModel(d),todo=M.rows.filter(r=>!COV[r.key]).map(r=>({r,f:M.free(r)})).filter(x=>x.f.length);
+  left=todo.length>0;if(!left)break;todo.sort((x,y)=>x.f.length-y.f.length);const{r,f}=todo[0];
+  COV[r.key]=f.slice().sort((x,y)=>M.load[x]+M.cv(x)-M.load[y]-M.cv(y))[0]}
+ const M=emgModel(d);miss=M.rows.filter(r=>!COV[r.key]).length;saveEmg();drawEmg();say(miss?`${miss} lesson(s) have no free teacher and need a manual decision`:"Cover assigned for every lesson",4000)}
+function copyCov(){const d=+$("#ed").value,M=emgModel(d),txt=D[d]+" cover list\n"+M.rows.map(r=>`${r.s>1?`P${r.p}-${r.p+r.s-1}`:"P"+r.p} | ${r.cls} | ${r.subj} | absent: ${r.t} | cover: ${COV[r.key]||"NOT ASSIGNED"}`).join("\n");
+ (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>say("Cover list copied"),()=>say("Could not copy - use Print cover sheet instead"))}
+$("#ed").innerHTML=D.map((d,i)=>`<option value=${i}>${d}</option>`).join("");$("#ed").onchange=drawEmg;
+
+/* ---------- navigation, init, PWA ---------- */
+// grouped menu: hover (desktop) or click/tap opens a group; choosing a page may ask for confirmation if the page you are leaving has unsaved input
+let curTab="data",ttDirty=false;
+function leaveCheck(from,to){if(from===to)return true;let m="";
+ if(from=="ven"&&$("#vt").value.split("\n").map(x=>x.trim()).filter(Boolean).join("|")!==(S.data.vn||[]).join("|"))m="You typed venues but have not pressed “Save venues”.";
+ else if(from=="data"&&$("#ns").value.trim())m="You typed a subject in “Add to this class” but have not pressed Add.";
+ else if(from=="cls"&&$("#yg_n").value.trim())m="You typed class names in “Add a year group” but have not pressed Add classes.";
+ else if(from=="gen"&&ttDirty&&!S.editing)m="This timetable has not been saved as a version. It stays in this browser, but any change to your data will clear it.";
+ if(!m)return true;if(!confirm(m+"\n\nLeave this page anyway?"))return false;if(from=="gen")ttDirty=false;return true}
+const closeMenus=()=>document.querySelectorAll(".ng.open").forEach(g=>{g.classList.remove("open");const b=g.querySelector(".gb");if(b)b.setAttribute("aria-expanded","false")});
+function goTab(t,force){if(!force&&!leaveCheck(curTab,t))return;curTab=t;
+ document.querySelectorAll("nav [data-t],section").forEach(e=>e.classList.remove("on"));const b=document.querySelector(`nav [data-t="${t}"]`);if(b)b.classList.add("on");$("#"+t).classList.add("on");
+ document.querySelectorAll(".ng").forEach(g=>g.querySelector(".gb").classList.toggle("on",!!g.querySelector(`[data-t="${t}"]`)));closeMenus();
+ if(ED[t])edDraw(t);if(t=="clr")drawClr();if(t=="wl")drawWl();if(t=="ver")drawVer();if(t=="rul"){drawRul();loadBell()}if(t=="emg")drawEmg();if(t=="gen")drawGrid()}
+document.querySelectorAll(".ng").forEach(g=>{const gb=g.querySelector(".gb"),items=[...g.querySelectorAll("[data-t]")],hov=matchMedia("(hover:hover)").matches;
+ const open=()=>{closeMenus();g.classList.add("open");gb.setAttribute("aria-expanded","true")};
+ gb.onclick=e=>{e.stopPropagation();if(items.length==1)return goTab(items[0].dataset.t);g.classList.contains("open")?closeMenus():open()};
+ if(hov&&items.length>1){let tm;g.onmouseenter=()=>{clearTimeout(tm);open()};g.onmouseleave=()=>{tm=setTimeout(()=>{g.classList.remove("open");gb.setAttribute("aria-expanded","false")},200)}}
+ items.forEach(b=>b.onclick=e=>{e.stopPropagation();goTab(b.dataset.t)})});
+document.addEventListener("click",closeMenus);document.addEventListener("keydown",e=>{if(e.key=="Escape")closeMenus()});
+const isDark=()=>(document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"))=="dark";
+const lab=()=>$("#th").textContent=isDark()?"☀ Light":"🌙 Dark";if(LS.ttTheme)document.documentElement.dataset.theme=LS.ttTheme;lab();
+$("#th").onclick=()=>{const n=isDark()?"light":"dark";document.documentElement.dataset.theme=n;LS.ttTheme=n;lab()};
+fillSel();whoList();updBar();if(S.pos){showDiag();drawGrid()}goTab("data",true);
+let ip;addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;$("#inst").hidden=false});
+$("#inst").onclick=async()=>{ip.prompt();await ip.userChoice;$("#inst").hidden=true};
+if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script></body></html>
