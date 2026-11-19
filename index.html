@@ -12,8 +12,11 @@
 header{background:var(--ink);color:#fff;padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:100}
 header h1{font:600 17px Georgia,serif;margin:0 auto 0 0}
 .brand{display:flex;align-items:center;gap:10px}.brand svg{width:40px;height:40px;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}.brand .nm{display:block;font:700 25px/1 "Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;letter-spacing:.02em;color:#fff}.brand .nm b{color:var(--acc)}.brand small{display:block;margin-top:4px;font:600 10.5px/1 "Segoe UI",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#a9c4da}
-nav{display:flex;flex-wrap:wrap;gap:2px}.ng{position:relative}.gb{background:none;border:0;color:#cfe0ee;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:3px solid transparent}
-.gb.on,.ng.open .gb{color:#fff;border-color:var(--acc)}.gm{display:none;position:absolute;left:0;top:100%;min-width:210px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:4px;z-index:30}.ng.open .gm{display:block}.gm button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--tx);padding:8px 12px;border-radius:6px;font:inherit;cursor:pointer}.gm button:hover,.gm button:focus-visible{background:var(--line)}.gm button.on{font-weight:700;border-left:3px solid var(--acc)}
+nav{display:flex;flex-wrap:wrap;gap:2px}.gb{background:none;border:0;color:#cfe0ee;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}.gb b{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:rgba(255,255,255,.16);font-size:12px;margin-right:5px}
+.gb:hover{color:#fff}.gb.on{color:#fff;border-color:var(--acc)}.gb.on b{background:var(--acc);color:#241c00}
+#subnav[hidden]{display:none}#subnav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}#subnav button{border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}#subnav button:hover{border-color:var(--acc)}#subnav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+#gdesc{margin:0 0 10px}.sm{font-size:12px;opacity:.8;font-weight:400}
+details.tools{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 10px;margin:8px 0}details.tools>summary{padding:8px 0;cursor:pointer;font-weight:600}details.tools[open]>summary{border-bottom:1px solid var(--line);margin-bottom:8px}details.tools[open]{padding-bottom:6px}details.inl{display:inline-block;margin:0 0 0 auto;vertical-align:top}
 main{padding:14px;max-width:1100px;margin:auto}section{display:none}section.on{display:block}
 button,select,input,textarea{font:inherit;color:inherit}
 .b{background:var(--ink);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;margin:2px}
@@ -32,16 +35,12 @@ td.br.e{background:transparent}label.sw{display:inline-flex;align-items:center;g
 #vbar{border-color:var(--acc);background:var(--card)}
 .bar{display:inline-block;width:110px;height:12px;background:var(--line);border-radius:6px;vertical-align:middle;overflow:hidden;margin-right:6px}.bar i{display:block;height:100%;border-radius:6px}
 details.wt{border:1px solid var(--line);border-radius:8px;margin:6px 0;background:var(--card);padding:0 8px}details.wt summary{padding:8px 0;cursor:pointer}details.wt table{margin-bottom:8px}.chip{display:inline-block;border-radius:10px;padding:1px 8px;margin:2px 2px 0 0;font-size:12px}.mini{display:inline-flex;gap:2px;align-items:flex-end;height:40px;margin-left:8px;vertical-align:middle}.mini i{display:block;width:7px;background:var(--acc);border-radius:2px}tr.ghost input{border-style:dashed}
-@media(max-width:700px){header{position:static;padding:5px 8px;gap:2px}.brand svg{width:30px;height:30px}.brand .nm{font-size:19px}.brand small{font-size:8.5px;letter-spacing:.12em}.gb{padding:5px 7px;font-size:13px}}
+@media(max-width:700px){header{position:static;padding:5px 8px;gap:2px 6px}header h1.brand{order:1;margin-right:auto}#th,#undo,#inst{order:2;padding:4px 10px}nav{order:3;width:100%}.gb{padding:6px 7px;font-size:12.5px}.gb b{display:none}#subnav button{padding:5px 11px;font-size:13px}.brand svg{width:30px;height:30px}.brand .nm{font-size:19px}.brand small{font-size:8.5px;letter-spacing:.12em}.gb{padding:5px 7px;font-size:13px}}
 </style></head><body>
-<header><h1 class=brand><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="var(--acc)"/><g fill="var(--ink)"><rect x="4.5" y="4.5" width="5" height="5" rx="1.2"/><rect x="10.7" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="4.5" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="4.5" width="5" height="5" rx="1.2"/><rect x="4.5" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="10.7" width="5" height="5" rx="1.2"/><rect x="16.9" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="10.7" width="5" height="5" rx="1.2"/><rect x="29.3" y="10.7" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="16.9" width="5" height="5" rx="1.2"/><rect x="23.1" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="16.9" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="23.1" width="5" height="5" rx="1.2" opacity=".22"/><rect x="4.5" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="10.7" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="16.9" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="23.1" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/><rect x="29.3" y="29.3" width="5" height="5" rx="1.2" opacity=".22"/></g></svg><span><span class=nm>Versa<b>X</b></span><small>School Timetable Generator</small></span></h1>
-<nav id=nav>
-  <div class=ng><button class="gb on" aria-haspopup=true aria-expanded=false>Allocations &amp; Rules ▾</button><div class=gm><button data-t=data class=on>Allocations</button><button data-t=res>Reservations</button><button data-t=rul>Breaks &amp; Fixed Slots</button></div></div>
- <div class=ng><button class=gb aria-haspopup=true aria-expanded=false>Timetable ▾</button><div class=gm><button data-t=xls>Import / Export</button><button data-t=gen>Generate &amp; View</button><button data-t=ver>Saved Versions</button><button data-t=emg>Emergency Day</button></div></div>
-<div class=ng><button class=gb aria-haspopup=true aria-expanded=false>Setup ▾</button><div class=gm><button data-t=cls>Classes</button><button data-t=sub>Subjects</button><button data-t=tch>Teacher List &amp; Limits</button><button data-t=wl>Teacher Workload</button><button data-t=ven>Venues</button><button data-t=clr>Colours</button></div></div>
-</nav>
+<header><h1 class=brand><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#fff"/><g fill="#1f6fc2"><rect x="4.5" y="4.5" width="5" height="5" rx="1.2"/><rect x="10.7" y="4.5" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="16.9" y="4.5" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="23.1" y="4.5" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="29.3" y="4.5" width="5" height="5" rx="1.2"/><rect x="4.5" y="10.7" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="10.7" y="10.7" width="5" height="5" rx="1.2"/><rect x="16.9" y="10.7" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="23.1" y="10.7" width="5" height="5" rx="1.2"/><rect x="29.3" y="10.7" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="4.5" y="16.9" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="10.7" y="16.9" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="16.9" y="16.9" width="5" height="5" rx="1.2"/><rect x="23.1" y="16.9" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="29.3" y="16.9" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="4.5" y="23.1" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="10.7" y="23.1" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="16.9" y="23.1" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="23.1" y="23.1" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="29.3" y="23.1" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="4.5" y="29.3" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="10.7" y="29.3" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="16.9" y="29.3" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="23.1" y="29.3" width="5" height="5" rx="1.2" fill="#bcd6f0"/><rect x="29.3" y="29.3" width="5" height="5" rx="1.2" fill="#bcd6f0"/></g></svg><span><span class=nm>Versa<b>X</b></span><small>School Timetable Generator</small></span></h1>
+<nav id=nav></nav>
 <button class="b g" id=undo hidden style="color:#fff;border-color:#8aa"></button><button class="b g" id=th style="color:#fff;border-color:#8aa"></button><button class="b a" id=inst hidden>Install app</button></header>
-<main><div id=vbar class=box hidden></div>
+<main><div id=vbar class=box hidden></div><div id=subnav></div><p id=gdesc class=sm></p>
 <section id=cls><div class=row><button class=b onclick="edAdd('cls')">Add class</button></div><p class=warn>Class name, year number and level. The level (Junior / Middle / Senior) decides which break and lunch rules apply. Renaming a class keeps its allocations.</p><div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Add a year group</b><label>Year <input id=yg_y type=number value=7 min=1 max=13 style="width:64px"></label><label>Class names <input id=yg_n placeholder="NOAH, JOSEPH, DANIEL" style="width:220px"></label>
  <label>Level <select id=yg_l><option value="">auto</option><option>Junior</option><option>Middle</option><option>Senior</option></select></label><label>Copy allocations from <select id=yg_c></select></label><button class=b id=yg_b>Add classes</button></div>
  <div class=box id=e_cls></div></section>
@@ -55,26 +54,43 @@ details.wt{border:1px solid var(--line);border-radius:8px;margin:6px 0;backgroun
  <div class=row><button class="b a" id=imp>Import Excel / CSV</button><input type=file id=file accept=".xlsx,.xls,.csv" hidden></div><div id=impmsg></div></div>
  <div class=box><b>Start over</b><div class=row><button class="b g" id=reset2>Load a sample school (12 classes)</button><button class="b g" id=empty>Start with empty data</button></div></div></section>
 <section id=data class=on>
- <div class=row><label>Class <select id=cs></select></label><button class="b g" id=demo>Auto-fill teachers (demo)</button></div>
- <div class=row><b>Add to this class</b><input id=ns list=sl placeholder="MTH or ADD / ACC" style="width:190px"><datalist id=sl></datalist><label>Periods <input id=np type=number value=2 min=1 max=20 style="width:64px"></label><button class=b id=na>Add</button><label>Copy all from <select id=cf></select></label><button class="b g" id=cp>Copy</button></div>
- <div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Apply to other classes</b>
-  <label>Apply my edits to <select id=sc><option value=this>this class only</option><option value=year>same year group</option><option value=all>all classes</option></select></label>
+ <div class=row><label><b>Class</b> <select id=cs></select></label><span class=sm id=scl></span></div>
+ <div class=row><b>Add a subject</b><input id=ns list=sl placeholder="MTH or ADD / ACC" style="width:190px"><datalist id=sl></datalist><label>Periods <input id=np type=number value=2 min=1 max=20 style="width:64px"></label><button class=b id=na>Add</button></div>
+ <details class=tools><summary>Quick tools <span class=sm>copy a class · auto-assign teachers</span></summary>
+  <div class=row><label>Copy all subjects from <select id=cf></select></label><button class="b g" id=cp>Copy</button><button class="b g" id=demo>Auto-assign teachers (demo)</button></div></details>
+ <details class=tools><summary>Apply edits to other classes <span class=sm>same year group or all classes</span></summary>
+  <div class=row><label>Apply my edits to <select id=sc><option value=this>this class only</option><option value=year>same year group</option><option value=all>all classes</option></select></label>
   <label><input type=checkbox id=ixn checked> periods &amp; doubles</label><label><input type=checkbox id=ixt checked> teachers</label><label><input type=checkbox id=ixv checked> venues</label><label><input type=checkbox id=ixb> fill blanks only</label>
-  <button class=b id=bc>Copy this whole class to the scope</button><small>With a scope chosen, every teacher / venue / periods / doubles you change here is also applied to the same subject in those classes. The ⇉ button on a row applies that row.</small></div>
- <div class=row style="border:1px dashed var(--line);border-radius:8px;padding:6px"><b>Merged classes</b>
-  <label>Subject <select id=msj></select></label><button class="b g" id=msb>Merge it across this year group</button><button class="b g" id=mb>Merge all blocks that have equal periods in parallel classes</button><button class="b g" id=mu>Unmerge all</button>
-  <small>A merged class meets at the same time with the same teachers and venue, so the teacher / venue "clash" between its classes is allowed; every other rule (fixed slots, other classes, limits, reservations) still applies. Use the "merge with…" box on a row for single subjects or odd pairs.</small></div>
+  <button class=b id=bc>Copy this whole class to the scope</button></div><p class=sm>With a scope chosen, every teacher / venue / periods / doubles you change is also applied to the same subject in those classes. The ⇉ button on a row applies just that row.</p></details>
+ <details class=tools><summary>Merged classes <span class=sm>classes that meet together</span></summary>
+  <div class=row><label>Subject <select id=msj></select></label><button class="b g" id=msb>Merge it across this year group</button><button class="b g" id=mb>Merge all blocks that have equal periods in parallel classes</button><button class="b g" id=mu>Unmerge all</button></div>
+  <p class=sm>A merged class meets at the same time with the same teachers and venue, so the teacher / venue clash between its classes is allowed; every other rule still applies. Use the "merge with…" box on a row for single subjects or odd pairs.</p></details>
  <div class=box id=al></div></section>
 <section id=gen>
- <div class=row><button class=b id=go>Generate timetable</button><button class="b g" id=re>Regenerate (new variation)</button>
- <button class="b g" id=xl>Download Excel</button><button class="b g" onclick="print()">Print / PDF</button><label><input type=checkbox id=st> Show times</label><select id=fmt><option>PNG</option><option>JPG</option></select><button class="b g" id=ei>Export image</button><button class="b g" id=ez>Export all as ZIP</button><button class="b a" id=sv>Save this version</button></div>
+ <div class=row><button class=b id=go>Generate timetable</button><button class="b g" id=re>Regenerate (new variation)</button><button class="b a" id=sv>Save this version</button></div>
  <div id=diag class=box></div>
- <div class=row><select id=kind><option value=c>By class</option><option value=t>By teacher</option><option value=m>Master schedule</option></select><select id=who></select></div>
- <p><small>Class view: drag a lesson - green cells are valid moves. If a move breaks a rule, the reasons and possible alternatives appear below the timetable.</small></p><label>Moving a break / activity applies to <select id=lyd2 onchange="$('#lyd').value=this.value"><option value=this>this day only</option><option value=mt>Monday to Thursday</option><option value=all>every day</option></select></label> <small>(drag sports, etiquette, assembly, break or lunch cells; a break dropped on a period goes right after it; lessons displaced are re-placed automatically)</small><br><label><input type=checkbox id=par> also move the same subject in the other classes of this year to the same new slot (works when they have different teachers)</label><div id=dnd></div>
+ <div class=row><label>View <select id=kind><option value=c>By class</option><option value=t>By teacher</option><option value=m>Master schedule</option></select></label><select id=who></select><label><input type=checkbox id=st> Show times</label>
+  <details class="tools inl"><summary>Export &amp; print</summary><div class=row><button class="b g" id=xl>Download Excel</button><button class="b g" onclick="print()">Print / PDF</button><select id=fmt><option>PNG</option><option>JPG</option></select><button class="b g" id=ei>Export image</button><button class="b g" id=ez>Export all as ZIP</button></div></details></div>
+ <p class=sm>Class view: drag a lesson to move it. Green cells are valid moves; if a move breaks a rule, the reasons and alternatives appear below the timetable.</p>
+ <details class=tools><summary>Drag-and-drop options <span class=sm>breaks, activities, parallel classes</span></summary>
+  <label>Moving a break / activity applies to <select id=lyd2 onchange="$('#lyd').value=this.value"><option value=this>this day only</option><option value=mt>Monday to Thursday</option><option value=all>every day</option></select></label> <small>(drag sports, etiquette, assembly, break or lunch cells; a break dropped on a period goes right after it; lessons displaced are re-placed automatically)</small><br><label><input type=checkbox id=par> also move the same subject in the other classes of this year to the same new slot (works when they have different teachers)</label></details>
+ <div id=dnd></div>
  <div class=box id=grid>Generate a timetable to see it here.</div>
- <div class=row><b>Exams</b><label>Days <input id=xd type=number value=10 min=3 max=20 style="width:64px"></label><button class=b id=gx>Generate exam timetable</button></div><div class=box id=ex>Exam timetable appears here.</div></section>
+ </section>
+<section id=exm>
+ <div class=box><b>Exam timetable</b> <small>Same-year classes sit each paper together, no class has two papers at once, and every sitting gets an invigilator.</small>
+  <div class=row><label>Exam days <input id=xd type=number value=10 min=3 max=20 style="width:64px"></label>
+   <label>Morning <input id=xtm placeholder="08:30 - 10:30" style="width:120px"></label><label>Afternoon <input id=xta placeholder="12:30 - 14:30" style="width:120px"></label>
+   <button class=b id=gx>Generate exam timetable</button><button class="b g" id=gx2>Regenerate (new variation)</button></div>
+  <details class=tools><summary>Exam venues <span id=xvs class=sm></span></summary>
+   <p class=sm>One venue per line (halls, labs, library). Each sitting gets its own venue; if there are too few, classes sitting the same paper share a hall. Leave blank and every class sits in its own classroom.</p>
+   <textarea id=xv rows=5 placeholder="Main Hall&#10;Hall B&#10;ICT Lab&#10;Library" style="width:100%;max-width:360px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea>
+   <div class=row><button class="b g" id=xvb>Save exam venues</button></div></details></div>
+ <div class=row><label>View <select id=xkind><option value=c>By class</option><option value=t>By invigilator</option><option value=v>By venue</option><option value=m>Master schedule</option></select></label><select id=xwho></select>
+  <details class="tools inl"><summary>Export &amp; print</summary><div class=row><button class="b g" id=xxl>Download Excel</button><button class="b g" onclick="print()">Print / PDF</button><select id=xfmt><option>PNG</option><option>JPG</option></select><button class="b g" id=xei>Export image</button><button class="b g" id=xez>Export all as ZIP</button></div></details></div>
+ <div id=xsum></div><div class=box id=ex>Exam timetable appears here.</div></section>
 <section id=ven>
- <p class=warn>One venue per line. A venue can only host one lesson at a time, so give each lab or workshop that is shared between classes its own line. Choose a venue per subject in the Allocations tab.</p>
+ <p class=warn>One venue per line. A venue can only host one lesson at a time, so give each lab or workshop that is shared between classes its own line. Choose a venue per subject on the Allocations page.</p>
  <textarea id=vt rows=10 placeholder="One venue per line, e.g.&#10;Chemistry Lab&#10;ICT Lab&#10;Art Studio" style="width:100%;max-width:420px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea>
  <div class=row><button class=b id=vs>Save venues</button><label>Auto-fill for <select id=vy></select></label><button class="b g" id=va>Auto-fill venues (labs, ICT, art...)</button></div></section>
 <section id=clr><div class=row><button class="b g" id=cr>Reset all colours</button></div>
@@ -274,12 +290,12 @@ const $=s=>document.querySelector(s),LS=localStorage;let S={data:fresh(),pos:nul
 const cl=x=>x==null?x:JSON.parse(JSON.stringify(x)),vid=()=>Date.now()*1000+Math.floor(Math.random()*1000); // deep copy / unique id
 const save=()=>{try{
  if(S.editing){const v=S.vers.find(x=>x.id===S.editing);if(v){v.data=JSON.parse(JSON.stringify(S.data));v.pos=cl(S.pos);v.date=new Date().toLocaleString();v.edited=1}else S.editing=null}
- LS.tt=JSON.stringify({data:S.data,pos:S.pos,seed:S.seed,vers:S.vers,active:S.active,editing:S.editing||null});S._sf=0}catch(e){if(!S._sf){S._sf=1;say("\u26A0 NOT SAVED: browser storage is full or blocked. Use Excel > Export current data to keep a copy, and delete old saved versions.",12000)}}
+ LS.tt=JSON.stringify({data:S.data,pos:S.pos,seed:S.seed,vers:S.vers,active:S.active,editing:S.editing||null,ex:S.ex||null,exSeed:S.exSeed||0});S._sf=0}catch(e){if(!S._sf){S._sf=1;say("\u26A0 NOT SAVED: browser storage is full or blocked. Use Excel > Export current data to keep a copy, and delete old saved versions.",12000)}}
  if(typeof updBar=="function")updBar()};
 try{const s=JSON.parse(LS.tt||"null");if(s){
  if(s.data)S.data=Object.assign(fresh(),s.data);
  else{S.data.al.forEach((a,i)=>{a.t=s.t[i]||[];a.d=(s.d||[])[i]|0;a.v=(s.v||[])[i]||[]});if(s.vn)S.data.vn=s.vn;if(s.bell)S.data.bell=s.bell;S.data.tl=s.tl||{};if(s.fx)S.data.fx=s.fx}
- S.pos=s.pos;S.seed=s.seed||1;S.vers=s.vers||[];S.active=s.active;S.editing=s.editing||null}}catch(e){}
+ S.pos=s.pos;S.seed=s.seed||1;S.vers=s.vers||[];S.active=s.active;S.editing=s.editing||null;S.ex=s.ex||null;S.exSeed=s.exSeed||0}}catch(e){}
 let sayT;const say=(m,ms=2600)=>{const e=$("#msg");e.textContent=m;e.style.display="block";clearTimeout(sayT);sayT=setTimeout(()=>e.style.display="none",ms)};
 const col=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
 // ---- colours: subjects use a hue, activities a muted hue ("a<hue>"), custom colours are hex and stay the same in both themes
@@ -301,21 +317,23 @@ function drawAl(){const c=$("#cs").value,T=S.data.teachers,V=S.data.vn||[],L=tea
   return opts.length?`<select onchange="mergeWith(${i},this.value)"><option value="">merge with…</option>${opts.map(o=>`<option>${o}</option>`).join("")}</select>`:`<small>—</small>`};
  const rows=S.data.al.map((A,i)=>A.c!=c?"":`<tr><td>${A.s}</td><td><input type=number min=1 max=20 value=${A.n} style="width:56px" onchange="setN(${i},this.value)"></td><td><input type=number min=0 max=${A.n>>1} value=${A.d|0} style="width:56px" onchange="setD(${i},this.value)"></td><td style="text-align:left">${comps(A).map((x,k)=>sel("setT",i,k,x,T,A.t[k],t=>`${t} (${(L[t]||{w:0}).w})`)).join(" ")}</td><td style="text-align:left">${comps(A).map((x,k)=>sel("setV",i,k,x,V,(A.v||[])[k])).join(" ")}</td><td>${mergeCell(A,i)}</td><td style="white-space:nowrap"><button class="b g" title="Apply this row to the scope chosen above" onclick="applyRow(${i})">⇉</button><button class="b g" onclick="delA(${i})">✕</button></td></tr>`).join("");
  const cl=clsOf(c),tot=S.data.al.filter(A=>A.c==c).reduce((s,A)=>s+A.n,0),free=cl?NP*5-Object.keys(fixedMap(cl).f).length:0;
- $("#al").innerHTML=c?(T.length?"":'<p class=warn>No teachers yet - add them in the Teachers tab (type a name in the blank row) or import them.</p>')+"<table><tr><th>Subject / block</th><th>Periods</th><th>Doubles</th><th>Teacher per subject <small>(weekly periods)</small></th><th>Venue per subject</th><th>Merged class</th><th></th></tr>"+rows+`</table><small class=${tot>free?"bad":""}>${tot} periods per week allocated · ${free} free periods in this class's week</small>`:"Nothing here yet - add a class in the Classes tab (use \"Add a year group\" for several at once), import a workbook in the Excel tab, or load the sample school there.";
+ $("#al").innerHTML=c?(T.length?"":'<p class=warn>No teachers yet - add them in Setup > Teachers (type a name in the blank row) or import them.</p>')+"<table><tr><th>Subject / block</th><th>Periods</th><th>Doubles</th><th>Teacher per subject <small>(weekly periods)</small></th><th>Venue per subject</th><th>Merged class</th><th></th></tr>"+rows+`</table><small class=${tot>free?"bad":""}>${tot} periods per week allocated · ${free} free periods in this class's week</small>`:"Nothing here yet - add a class in Setup > Classes (use \"Add a year group\" for several at once), import a workbook on the Data page, or load the sample school there.";
  $("#msj").innerHTML=S.data.al.filter(A=>A.c==c).map(A=>`<option>${A.s}</option>`).join("")}
 // ---- merged (joint) classes
 const gid=()=>"g"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 function harmonize(src,G){G.forEach(x=>{if(x!==src){x.n=src.n;x.d=src.d;x.t=[...src.t];x.v=[...(src.v||[])]}})}
 function mergeGroup(rows,id){id=id||rows.map(r=>r.j).find(Boolean)||gid();const src=rows.slice().sort((a,b)=>b.t.filter(Boolean).length-a.t.filter(Boolean).length)[0];rows.forEach(r=>r.j=id);harmonize(src,rows)}
 function mergeWith(i,cn){const A=S.data.al[i],B=S.data.al.find(x=>x.c==cn&&x.s==A.s);if(!B)return;
- if(A.n!=B.n&&!confirm(`${A.c} has ${A.n} period(s) and ${cn} has ${B.n}. A merged class needs the same number, so ${cn} will use ${A.n}. Continue?`))return drawAl();
+ if((A.n!=B.n||(A.d|0)!=(B.d|0))&&!confirm(`${A.c} has ${A.n} period(s) (${A.d|0} double) and ${cn} has ${B.n} (${B.d|0} double). A merged class needs the same, so ${cn} will use ${A.n} (${A.d|0} double). Continue?`))return drawAl();
  withUndo("merge "+A.s+": "+A.c+" + "+cn,()=>{const G=[A,B,...S.data.al.filter(x=>x.j&&x.j==A.j&&x.s==A.s)];const id=A.j||B.j||gid();G.forEach(r=>r.j=id);harmonize(A,G)});drawAl();say(`${A.c} and ${cn} now meet together for ${A.s} (same periods, teachers and venue as ${A.c})`)}
 function unmerge(i){const A=S.data.al[i];withUndo("unmerge "+A.s,()=>{const G=S.data.al.filter(x=>x.j&&x.j===A.j&&x.s==A.s);if(G.length<=2)G.forEach(x=>x.j="");else A.j=""});drawAl()}
 // make members of a group identical to its first member (called before solving)
-function fixGroups(){const G=groupsOf(S.data.al);let n=0;S.data.al.forEach((A,i)=>{const L=S.data.al[G.lead[i]];if(L!==A&&(A.n!=L.n||(A.d|0)!=(L.d|0)||A.t.join()!=L.t.join()||(A.v||[]).join()!=(L.v||[]).join())){A.n=L.n;A.d=L.d;A.t=[...L.t];A.v=[...(L.v||[])];n++}});return n}
+function fixGroups(dry){const G=groupsOf(S.data.al),log=[];S.data.al.forEach((A,i)=>{const L=S.data.al[G.lead[i]];if(L!==A&&(A.n!=L.n||(A.d|0)!=(L.d|0)||A.t.join()!=L.t.join()||(A.v||[]).join()!=(L.v||[]).join())){
+ if(A.n!=L.n||(A.d|0)!=(L.d|0))log.push(`${A.c} ${A.s}: ${A.n} period(s)${A.d|0?` (${A.d|0} double)`:""} becomes ${L.n}${L.d|0?` (${L.d|0} double)`:""} to match ${L.c}`);
+ if(!dry){A.n=L.n;A.d=L.d;A.t=[...L.t];A.v=[...(L.v||[])]}}});return log}
 $("#msb").onclick=()=>{const c=$("#cs").value,s=$("#msj").value,k=clsOf(c);if(!s)return;const rows=S.data.al.filter(A=>A.s==s&&(clsOf(A.c)||{}).y==k.y);
  if(rows.length<2)return say("No other class of this year group has "+s);if(rows.some(r=>r.j&&!rows.every(x=>x.j==r.j)))return say("Some of them are already merged elsewhere - unmerge first");
- const odd=rows.filter(r=>r.n!=rows[0].n);if(odd.length&&!confirm(`Periods differ between the classes (${rows.map(r=>r.c+": "+r.n).join(", ")}). They will all use ${rows.find(r=>r.c==c).n}. Continue?`))return;
+ const odd=rows.filter(r=>r.n!=rows[0].n||(r.d|0)!=(rows[0].d|0));if(odd.length&&!confirm(`Periods differ between the classes (${rows.map(r=>r.c+": "+r.n+(r.d|0?" +"+(r.d|0)+" double":"")).join(", ")}). They will all use ${rows.find(r=>r.c==c).n}. Continue?`))return;
  const lead=rows.find(r=>r.c==c);withUndo("merge "+s+" in Year "+k.y,()=>{const id=rows.map(r=>r.j).find(Boolean)||gid();rows.forEach(r=>r.j=id);harmonize(lead,rows)});drawAl();say(`${s} is now one merged class for ${rows.length} classes of Year ${k.y}`)};
 $("#mb").onclick=()=>{const by={};S.data.al.forEach(A=>{if(!A.s.includes(" / "))return;const y=(clsOf(A.c)||{}).y;(by[y+"|"+A.s]=by[y+"|"+A.s]||[]).push(A)});
  const ok=[],skip=[];Object.entries(by).forEach(([k,r])=>{if(r.length<2||r.some(x=>x.j))return;(r.every(x=>x.n==r[0].n)?ok:skip).push(r)});
@@ -340,7 +358,7 @@ $("#na").onclick=()=>{const c=$("#cs").value,s=parts($("#ns").value).map(x=>x.to
 $("#cp").onclick=()=>{const c=$("#cs").value,f=$("#cf").value;if(!c||c==f)return say("Pick a different class to copy from");if(!confirm(`Replace ${c}'s allocations with those of ${f}?`))return;
  S.data.al=S.data.al.filter(a=>a.c!=c).concat(S.data.al.filter(a=>a.c==f).map(a=>JSON.parse(JSON.stringify({...a,c,j:""}))));S.pos=null;save();refresh()};
 $("#cs").onchange=drawAl;
-$("#demo").onclick=()=>{if(!S.data.al.length)return say("Add classes and allocations first (or load the sample school in the Excel tab)");if(!S.data.teachers.length)for(let i=1;i<=25;i++)S.data.teachers.push("TEACHER "+String(i).padStart(2,"0"));const{al,teachers}=S.data,load={},asg={},bad={};teachers.forEach(t=>load[t]=0);
+$("#demo").onclick=()=>{if(!S.data.al.length)return say("Add classes and allocations first (or load the sample school on the Data page)");if(!S.data.teachers.length)for(let i=1;i<=25;i++)S.data.teachers.push("TEACHER "+String(i).padStart(2,"0"));const{al,teachers}=S.data,load={},asg={},bad={};teachers.forEach(t=>load[t]=0);
  const key=(A,x)=>A.c.split(" ")[1]+x;al.forEach(A=>{const ks=comps(A).map(x=>key(A,x));ks.forEach(k=>{bad[k]=bad[k]||new Set();ks.forEach(o=>o!=k&&bad[k].add(o))})});
  const ld={};al.forEach(A=>comps(A).forEach(x=>ld[key(A,x)]=(ld[key(A,x)]||0)+A.n));
  Object.keys(ld).sort((a,b)=>ld[b]-ld[a]).forEach(k=>{const no=new Set([...bad[k]].map(o=>asg[o]));
@@ -375,7 +393,7 @@ function importWb(wb){const msg=[],rd=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(w
 // Builds the workbook: blank=true gives headers only (to fill in Excel), otherwise the current data.
 function buildWb(blank,d){const wb=XLSX.utils.book_new(),B=d.bell,body=r=>blank?[]:r,
  add=(n,rows)=>{const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=rows[0].map((_,j)=>({wch:Math.min(60,Math.max(12,...rows.map(r=>String(r[j]??"").length+2)))}));XLSX.utils.book_append_sheet(wb,ws,n)};
- add("READ ME",[["How to use this workbook"],[""],["Fill in the sheets, save, then use Import in the Excel tab of the app. Only the Allocations sheet is required."],
+ add("READ ME",[["How to use this workbook"],[""],["Fill in the sheets, save, then use Import on the Data page of the app. Only the Allocations sheet is required."],
   ["Subjects: Code, Name, Exam (Y/N), Core (Y/N). A class gets at most 1 core exam per day."],["Teachers: Teacher, Active (Y/N), Max_Periods_Per_Day (blank = 8), Unavailable e.g. MON:1-3;FRI"],
   ["Classes: Class, Year (e.g. YEAR 7), Level (Junior / Middle / Senior)"],["Fixed_Slots: Day (MON, MON-THU, TUE,WED, ALL), Period (3 or 4-6), Applies_To (ALL, Junior, YEAR 9 or a class name), Activity, Type (ACTIVITY, BREAK or LUNCH - break and lunch happen AFTER the period)"],
   ["Allocations: one row per class and subject. A concurrent elective block is written ADD / ACC. Merged_Group: give the same code (e.g. M1) to the same subject in classes that meet together. Teachers and Venues list one name per subject in the same order, separated by  /  . Double_Periods = how many of the Periods are doubles."],["Venues: one room per row. Reservations: Applies_To, Subject, Day, Period, Mode (ONLY / NEVER / RESERVE). Layout: day-by-day moves of break, lunch and activities (Slot P4 = period 4, B4 = break column after period 4). Settings: first period start, period / break / lunch lengths in minutes; Manual times like 1=08:00-08:40;3=-09:30."]]);
@@ -402,12 +420,13 @@ $("#reset2").onclick=()=>{if(confirm("Replace everything with the sample school 
 $("#empty").onclick=()=>{if(confirm("Clear all classes, teachers and allocations and start from empty?")){const d=fresh();d.classes=[];d.al=[];d.teachers=[];d.tl={};S.data=d;S.editing=null;S.pos=null;save();refresh();$("#impmsg").textContent=""}};
 
 /* ---------- generate & view ---------- */
-function run(){if(!S.data.al.length)return say("Add classes and allocations first");fixGroups();if(S.editing&&!confirm("You are editing a saved version. Generating a new timetable replaces that version's timetable. Continue?"))return;const t0=performance.now();let pos=null;
+function run(){if(!S.data.al.length)return say("Add classes and allocations first");{const fg=fixGroups(true);if(fg.length&&!confirm("Merged classes must have identical periods, so generating will change:\n\n"+fg.slice(0,12).join("\n")+(fg.length>12?"\n...and "+(fg.length-12)+" more":"")+"\n\nContinue?"))return;fixGroups()}if(S.editing&&!confirm("You are editing a saved version. Generating a new timetable replaces that version's timetable. Continue?"))return;const t0=performance.now();let pos=null;
  for(let k=0;k<12&&!pos;k++)pos=solve(S.data,S.seed*7+k);
  if(!pos){$("#diag").innerHTML='<p class=bad>No timetable found. Check that no class has more periods than free slots and no teacher is overloaded.</p>';return}
  S.pos=pos;ttDirty=!S.editing;save();showDiag(((performance.now()-t0)/1000).toFixed(1));drawGrid()}
 function showDiag(sec){const noT=S.data.al.filter(a=>!a.t.filter(Boolean).length).length,r=check(S.data,S.pos);
- $("#diag").innerHTML=r.r.map(([g,t])=>`<div class=${g?"ok":"bad"}>${g?"✔":"✘"} ${t}</div>`).join("")+(noT?`<div class=warn>⚠ ${noT} allocation(s) have no teacher, so teacher clashes are not checked for them.</div>`:"")+(sec?`<small>Solved in ${sec}s</small>`:"")}
+ const L=r.r.map(([g,t])=>`<div class=${g?"ok":"bad"}>${g?"✔":"✘"} ${t}</div>`).join("");
+ $("#diag").innerHTML=(r.ok?`<details><summary class=ok style="cursor:pointer"><b>✔ All ${r.r.length} timetable rules are satisfied</b>${sec?` <small>· solved in ${sec}s</small>`:""}</summary>${L}</details>`:L)+(noT?`<div class=warn>⚠ ${noT} allocation(s) have no teacher, so teacher clashes are not checked for them.</div>`:"")+(sec&&!r.ok?`<small>Solved in ${sec}s</small>`:"")}
 function whoList(){const k=$("#kind").value;$("#who").style.display=k=="m"?"none":"";$("#who").innerHTML=(k=="c"?S.data.classes.map(c=>c.n):k=="t"?S.data.teachers:[]).map(x=>`<option>${x}</option>`).join("")}
 // ---- lesson times: automatic from the bell settings and each class's break/lunch positions, optionally overridden per period
 const T2M=s=>{const[a,b]=String(s||"08:00").split(":").map(Number);return a*60+(b||0)},M2T=m=>String(m/60|0).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
@@ -508,11 +527,68 @@ $("#ez").onclick=async()=>{if(!S.pos)return say("Generate a timetable first");co
  await add("Master schedule."+ext,imgFor("m",""));dl(zipStore(files),"Timetables_"+f+".zip");say(files.length+" images zipped")};
 $("#st").checked=showT();$("#st").onchange=()=>{LS.ttTime=$("#st").checked?"1":"0";drawGrid()};
 // exams
-const dayName=s=>{const d=s>>1;return`W${(d/5|0)+1} ${D[d%5]}`};
+const dayName=s=>{const d=s>>1;return`W${(d/5|0)+1} ${D[d%5]}`},SESS=["Morning","Afternoon"];
+const exV=()=>(S.data.xv||[]).filter(Boolean);
+// give every sitting a venue: own venue when there are enough, otherwise classes of one paper share a hall
+function examVenues(ex,data){const V=(data.xv||[]).filter(Boolean),by={};ex.short=[];
+ ex.sit.forEach(z=>{if(z.s==null)return;(by[z.s]=by[z.s]||[]).push(z)});
+ Object.keys(by).map(Number).forEach(sl=>{const L=by[sl].sort((a,b)=>a.k.localeCompare(b.k)||a.c.localeCompare(b.c)),papers=[...new Set(L.map(z=>z.k))];
+  L.forEach(z=>{z.v="";z.sh=0});
+  if(!V.length){L.forEach(z=>{z.v="Own classroom"});return}
+  const r=sl%V.length,pool=V.map((_,i)=>V[(i+r)%V.length]);
+  if(L.length<=V.length)L.forEach((z,i)=>{z.v=pool[i]});
+  else if(papers.length<=V.length){L.forEach(z=>{z.v=pool[papers.indexOf(z.k)];z.sh=1})}
+  else{L.forEach(z=>{const i=papers.indexOf(z.k);if(i<V.length){z.v=pool[i];z.sh=1}});ex.short.push({s:sl,need:papers.length-V.length})}});
+ ex.vok=!ex.short.length}
+// egrid(kind,name): same cell shape as grid(): DAYS down the rows, SESSIONS across the columns. kind: c=class, t=invigilator, v=venue, m=master
+function egrid(kind,name){const x=S.ex,rows=[],nd=x.days||10,sit=x.sit.filter(z=>z.s!=null),inv=z=>z.i.length?"Invigilator: "+z.i.join(" / "):"No invigilator";
+ const txt=(z,k)=>k=="c"?[z.k.split("|")[1],z.v,inv(z)]:k=="t"?[z.c+(z.sh?"":""),z.k.split("|")[1],z.v]:[z.c,z.k.split("|")[1],inv(z)];
+ const mk=(L,k)=>{if(!L.length)return{t:""};const sj=L[0].k.split("|")[1];
+  const t=k=="c"?L.map(z=>[z.k.split("|")[1],z.v,inv(z)].filter(Boolean).join("\n")).join("\n+\n"):k=="t"?L.map(z=>[z.c,z.k.split("|")[1],z.v].filter(Boolean).join("\n")).join("\n+\n"):L.map(z=>[z.c,z.k.split("|")[1],inv(z)].filter(Boolean).join("\n")).join("\n+\n");
+  return{t,c:subCol(sj),i:L.map(z=>`${z.k.split("|")[1]} · ${z.c} · ${z.v}${z.i.length?" · "+z.i.join(" / "):""}`).join("; ")}};
+ const pick=(f,d,j)=>sit.filter(z=>z.s==d*2+j&&f(z));
+ if(kind=="m"){rows.push([{t:"Day",k:"h"},{t:"Class",k:"h"},...SESS.map(t=>({t,k:"h"}))]);
+  for(let d=0;d<nd;d++)S.data.classes.forEach(c=>rows.push([{t:dayName(d*2),k:"h"},{t:c.n,k:"h"},...SESS.map((_,j)=>mk(pick(z=>z.c==c.n,d,j),"c"))]));return rows}
+ const f=kind=="c"?z=>z.c==name:kind=="t"?z=>z.i.includes(name):z=>z.v==name;
+ rows.push([{t:"",k:"h"},...SESS.map(t=>({t,k:"h"}))]);
+ for(let d=0;d<nd;d++)rows.push([{t:dayName(d*2),k:"h"},...SESS.map((_,j)=>mk(pick(f,d,j),kind))]);return rows}
+const exTimes=()=>{const g=n=>($("#"+n).value||"").trim();return[g("xtm"),g("xta")]};
 function exRows(){const x=S.ex,yr=n=>S.data.classes.find(c=>c.n==n).y;
- return[["Day","Session","Subject","Year","Class","Invigilator(s)"],...x.sit.filter(z=>z.s!=null).sort((a,b)=>a.s-b.s||yr(a.c)-yr(b.c)||a.k.localeCompare(b.k)).map(z=>[dayName(z.s),z.s%2?"Afternoon":"Morning",z.k.split("|")[1],"Year "+yr(z.c),z.c,z.i.join(" / ")])]}
-function drawEx(){const x=S.ex;if(!x)return;$("#ex").innerHTML=`<div class=${x.ok?"ok":"bad"}>${x.ok?"✔ Same-year classes sit together · no class clash · max 1 core exam per class per day · every sitting has an invigilator":"✘ Not all rules could be met: add exam days or reduce invigilation limits"}</div><table>`+exRows().map((r,i)=>"<tr>"+r.map(c=>i?`<td>${c}</td>`:`<th>${c}</th>`).join("")+"</tr>").join("")+"</table>"}
-$("#gx").onclick=()=>{let best=null;for(let k=0;k<5&&!(best&&best.ok);k++)best=exams(S.data,+$("#xd").value||10,S.seed*13+k);S.ex=best;drawEx()};
+ return[["Day","Session","Subject","Year","Class","Venue","Invigilator(s)"],...x.sit.filter(z=>z.s!=null).sort((a,b)=>a.s-b.s||yr(a.c)-yr(b.c)||a.k.localeCompare(b.k)).map(z=>[dayName(z.s),z.s%2?"Afternoon":"Morning",z.k.split("|")[1],"Year "+yr(z.c),z.c,z.v||"",z.i.join(" / ")])]}
+function exWho(){const k=$("#xkind").value,w=$("#xwho"),x=S.ex,cur=w.value;
+ const L=k=="c"?S.data.classes.map(c=>c.n):k=="t"?[...new Set((x?x.sit:[]).flatMap(z=>z.i))].sort():k=="v"?[...new Set((x?x.sit:[]).map(z=>z.v).filter(Boolean))].sort():[];
+ w.hidden=k=="m";w.innerHTML=L.map(n=>`<option>${n}</option>`).join("");if(L.includes(cur))w.value=cur}
+function drawEx(){const x=S.ex;if(!x){$("#ex").textContent="Exam timetable appears here.";$("#xsum").innerHTML="";return}
+ const sh=x.sit.filter(z=>z.sh).length,tm=exTimes();
+ $("#xsum").innerHTML=`<div class=${x.ok&&x.vok?"ok":"bad"}>${x.ok?"✔ Same-year classes sit together · no class clash · max 1 core exam per class per day · every sitting has an invigilator":"✘ Not all rules could be met: add exam days or reduce invigilation limits"}</div>`+
+  (x.vok?(exV().length&&sh?`<div class=warn>Not enough venues for one each: ${sh} sitting(s) share a hall with another class sitting the same paper.</div>`:""):`<div class=bad>✘ Not enough exam venues in ${x.short.length} session(s) (${x.short.slice(0,4).map(q=>dayName(q.s)+" "+SESS[q.s%2]+": "+q.need+" short").join(", ")}). Add venues or exam days.</div>`)+
+  (tm[0]||tm[1]?`<div class=sm>Morning ${tm[0]||"-"} · Afternoon ${tm[1]||"-"}</div>`:"");
+ const kd=$("#xkind").value;
+ $("#ex").innerHTML="<table>"+egrid(kd,$("#xwho").value).map(r=>"<tr>"+r.map(c=>{if(c.skip)return"";if(c.k=="h")return`<th>${c.t}</th>`;const l=c.t.split("\n");
+  return`<td${c.c!=null?` style="${bgStyle(c.c)}"`:""}${c.i?` title="${q(c.i)}"`:""}>${l[0]}${l.length>1?"<small>"+l.slice(1).join("<br>")+"</small>":""}</td>`}).join("")+"</tr>").join("")+"</table>"}
+function runEx(bump){const days=+$("#xd").value||10;S.data.xv=[...new Set($("#xv").value.split("\n").map(x=>x.trim()).filter(Boolean))];S.data.xt=exTimes();
+ if(bump)S.exSeed=(S.exSeed||0)+1;let best=null;for(let k=0;k<5&&!(best&&best.ok);k++)best=exams(S.data,days,S.seed*13+k+(S.exSeed||0)*101);
+ best.days=days;examVenues(best,S.data);S.ex=best;save();exWho();drawEx();exVs()}
+const exVs=()=>{const n=exV().length;$("#xvs").textContent=n?"· "+n+" venue"+(n>1?"s":""):"· none (classes use their own rooms)"};
+$("#gx").onclick=()=>runEx(false);$("#gx2").onclick=()=>runEx(true);
+$("#xvb").onclick=()=>{S.data.xv=[...new Set($("#xv").value.split("\n").map(x=>x.trim()).filter(Boolean))];if(S.ex){examVenues(S.ex,S.data);exWho()}save();exVs();drawEx();say("Exam venues saved")};
+["#xtm","#xta"].forEach(i=>$(i).onchange=()=>{S.data.xt=exTimes();save();drawEx()});
+$("#xkind").onchange=()=>{exWho();drawEx()};$("#xwho").onchange=drawEx;
+$("#xv").value=(S.data.xv||[]).join("\n");$("#xtm").value=(S.data.xt||[])[0]||"";$("#xta").value=(S.data.xt||[])[1]||"";
+const exImg=(k,n)=>{const t=exTimes();return drawImg(egrid(k,n),k=="m"?"EXAM MASTER SCHEDULE":n,(k=="c"?"Exam timetable (class)":k=="t"?"Invigilation timetable":k=="v"?"Venue timetable":"All classes")+(t[0]||t[1]?" · Morning "+(t[0]||"-")+" · Afternoon "+(t[1]||"-"):""))};
+$("#xei").onclick=async()=>{if(!S.ex)return say("Generate the exam timetable first");const k=$("#xkind").value,n=k=="m"?"Exam master":$("#xwho").value;dl(await blobOf(exImg(k,n),$("#xfmt").value),safe("Exam "+n)+"."+$("#xfmt").value.toLowerCase())};
+$("#xez").onclick=async()=>{if(!S.ex)return say("Generate the exam timetable first");const f=$("#xfmt").value,ext=f.toLowerCase(),files=[];say("Building images ...");
+ const add=async(p,c)=>files.push({name:p,data:new Uint8Array(await(await blobOf(c,f)).arrayBuffer())});
+ for(const c of S.data.classes)await add("Classes/"+safe(c.n)+"."+ext,exImg("c",c.n));
+ for(const t of[...new Set(S.ex.sit.flatMap(z=>z.i))].sort())await add("Invigilators/"+safe(t)+"."+ext,exImg("t",t));
+ for(const v of[...new Set(S.ex.sit.map(z=>z.v).filter(Boolean))].sort())await add("Venues/"+safe(v)+"."+ext,exImg("v",v));
+ await add("Exam master."+ext,exImg("m",""));dl(zipStore(files),"Exam_timetables_"+f+".zip");say(files.length+" images zipped")};
+$("#xxl").onclick=()=>{if(!S.ex)return say("Generate the exam timetable first");const wb=XLSX.utils.book_new(),used=new Set();
+ const add=(k,n,pre)=>{let nm=(pre+n).replace(/[\[\]:*?\/\\]/g,"-").slice(0,31);while(used.has(nm))nm=nm.slice(0,28)+"~";used.add(nm);
+  const rows=egrid(k,n),ws=XLSX.utils.aoa_to_sheet(rows.map(r=>r.map(x=>x.t)));XLSX.utils.book_append_sheet(wb,ws,nm)};
+ add("m","Schedule","Exam master ");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exRows()),"Exam list");
+ S.data.classes.forEach(c=>add("c",c.n,"X "));[...new Set(S.ex.sit.flatMap(z=>z.i))].sort().forEach(t=>add("t",t,"Inv "));
+ [...new Set(S.ex.sit.map(z=>z.v).filter(Boolean))].sort().forEach(v=>add("v",v,"Venue "));XLSX.writeFile(wb,"Exam_Timetable.xlsx")};
 $("#kind").onchange=()=>{whoList();drawGrid()};$("#who").onchange=drawGrid;
 $("#go").onclick=()=>{S.seed=S.seed||1;run()};$("#re").onclick=()=>{S.seed++;run()};
 $("#xl").onclick=()=>{if(!S.pos)return say("Generate a timetable first");const wb=XLSX.utils.book_new(),used=new Set();
@@ -590,7 +666,7 @@ const fillB=()=>$("#ixb").checked;
 // rows of the same subject in the other classes of the chosen scope
 const twins=A=>{const cl=scopeOf(A.c,$("#sc").value);return S.data.al.filter(B=>B!==A&&B.s==A.s&&cl.includes(B.c))};
 const live=(label,A,fn)=>{const gm=A.j?S.data.al.filter(B=>B!==A&&B.j===A.j&&B.s==A.s):[],T=$("#sc").value=="this"?[]:twins(A),all=[...new Set([...T,...gm])];
- if(!all.length){fn(null);return}withUndo(label+" for "+all.length+" other class(es)",()=>{fn(null);all.forEach(B=>fn(B,gm.includes(B)))});drawAl()};
+ if(!all.length){fn(null);return}withUndo(label+" for "+all.length+" other class(es)",()=>{fn(null);all.forEach(B=>fn(B,gm.includes(B)))});drawAl();if(/^(Periods|Doubles)/.test(label))say(label+" also changed in "+all.length+" other class(es): "+all.slice(0,4).map(B=>B.c).join(", ")+(all.length>4?", ...":"")+". Press Undo to revert, or set \"Apply my edits to\" to this class only.",8000)};
 function setT(i,k,v){const A=S.data.al[i];live("Teacher "+A.s,A,(B,f)=>{const X=B||A;if(B&&!f&&fillB()&&(X.t[k]||""))return;X.t=comps(X).map((_,j)=>j==k?v:(X.t[j]||""))});S.pos=null;save()}
 function setV(i,k,v){const A=S.data.al[i];live("Venue "+A.s,A,(B,f)=>{const X=B||A;if(B&&!f&&fillB()&&((X.v||[])[k]||""))return;X.v=comps(X).map((_,j)=>j==k?v:(X.v||[])[j]||"")});S.pos=null;save()}
 function setN(i,v){const A=S.data.al[i],n=Math.max(1,+v||1);live("Periods "+A.s,A,B=>{(B||A).n=n});S.pos=null;save();drawAl()}
@@ -734,7 +810,7 @@ function drawWl(){const L=teacherLoads(),G=groupsOf(S.data.al),T=teacherDays(),q
    (ls.length?`<table><tr><th>Subject</th><th>Class(es)</th><th>Periods</th><th>Venue</th><th>Change</th></tr>${ls.map(r=>`<tr><td>${r.A.s}</td><td style="text-align:left">${r.cls.join(", ")}${r.cls.length>1?" 🔗":""}</td><td>${r.A.n}${r.A.d?` (${r.A.d} double)`:""}</td><td>${(r.A.v||[]).filter(Boolean).join(" / ")||"—"}</td><td style="white-space:nowrap"><select onchange="wlMove('${q(t)}',${r.a},this.value)"><option value="">move to…</option>${tn.filter(x=>x!=t).map(x=>`<option value="${q(x)}">${x}</option>`).join("")}</select><button class="b g" onclick="wlMove('${q(t)}',${r.a},'')">Unassign</button></td></tr>`).join("")}</table>`:"")+"</details>"};
  $("#wlbox").innerHTML=`<div class=row><b>${tn.length} teachers</b> · ${tot} teacher-periods allocated · average ${tn.length?(tot/tn.length).toFixed(1):0} per teacher · <span class=${unp?"warn":"ok"}>${unp} periods have no teacher</span></div>`+
   `<div class=row><small>Bar colours: <span style="color:#3b82c4">■</span> light (under half) <span style="color:#2e9e5b">■</span> healthy <span style="color:#f59e0b">■</span> high (over 85%) <span style="color:#d32f2f">■</span> over capacity. Capacity = 5 × the teacher's daily limit.${T?" The small columns show periods scheduled Monday to Friday.":""}</small></div>`+
-  (list.length?list.map(card).join(""):`<p>${tn.length?"No teacher matches your search.":"No teachers yet - add them in the Teachers tab."}</p>`)+
+  (list.length?list.map(card).join(""):`<p>${tn.length?"No teacher matches your search.":"No teachers yet - add them in Setup > Teachers."}</p>`)+
   (un.length?`<h4>Allocations with no teacher (${un.length})</h4><table><tr><th>Class(es)</th><th>Subject</th><th>Periods</th><th>Assign</th></tr>${un.map(r=>`<tr><td style="text-align:left">${r.cls.join(", ")}${r.cls.length>1?" 🔗":""}</td><td>${r.A.s}</td><td>${r.A.n}</td><td style="text-align:left">${comps(r.A).map((x,k)=>sel("wlSet",r.a,k,x)).join(" ")}</td></tr>`).join("")}</table>`:"")}
 ["wq","ws","wx"].forEach(id=>$("#"+id).oninput=drawWl);
 
@@ -852,21 +928,26 @@ function leaveCheck(from,to){if(from===to)return true;let m="";
  else if(from=="cls"&&$("#yg_n").value.trim())m="You typed class names in “Add a year group” but have not pressed Add classes.";
  else if(from=="gen"&&ttDirty&&!S.editing)m="This timetable has not been saved as a version. It stays in this browser, but any change to your data will clear it.";
  if(!m)return true;if(!confirm(m+"\n\nLeave this page anyway?"))return false;if(from=="gen")ttDirty=false;return true}
-const closeMenus=()=>document.querySelectorAll(".ng.open").forEach(g=>{g.classList.remove("open");const b=g.querySelector(".gb");if(b)b.setAttribute("aria-expanded","false")});
+// ---- navigation: five steps, each with its own sub-pages
+const GR={setup:{n:"Setup",num:1,d:"Describe your school: classes, subjects, teachers, rooms and the school day.",p:[["cls","Classes"],["sub","Subjects"],["tch","Teachers"],["ven","Venues"],["rul","School day"],["clr","Colours"]]},
+ alloc:{n:"Allocations",num:2,d:"Decide who teaches what in each class, and how many periods a week.",p:[["data","Allocations"],["wl","Teacher workload"],["res","Reservations"]]},
+ tt:{n:"Timetable",num:3,d:"Generate the timetable, adjust it, save versions, and handle teacher absences.",p:[["gen","Generate & view"],["ver","Saved versions"],["emg","Emergency day"]]},
+ exm:{n:"Exams",num:4,d:"Generate the exam timetable with venues and invigilators.",p:[["exm","Exam timetable"]]},
+ dat:{n:"Data",num:0,d:"Bring data in from Excel, take it out, or start again from a sample school.",p:[["xls","Import / Export"]]}};
+const PG={},lastIn={};Object.entries(GR).forEach(([g,o])=>o.p.forEach(p=>PG[p[0]]=g));
+$("#nav").innerHTML=Object.entries(GR).map(([g,o])=>`<button class=gb data-g=${g}>${o.num?`<b>${o.num}</b>`:""}${o.n}</button>`).join("");
+$("#nav").onclick=e=>{const b=e.target.closest("[data-g]");if(b)goTab(lastIn[b.dataset.g]||GR[b.dataset.g].p[0][0])};
+$("#subnav").onclick=e=>{const b=e.target.closest("[data-t]");if(b)goTab(b.dataset.t)};
+function drawNav(t){const g=PG[t],o=GR[g];lastIn[g]=t;document.querySelectorAll("#nav .gb").forEach(b=>b.classList.toggle("on",b.dataset.g==g));
+ $("#subnav").hidden=o.p.length<2;$("#subnav").innerHTML=o.p.map(p=>`<button data-t="${p[0]}"${p[0]==t?" class=on":""}>${p[1]}</button>`).join("");$("#gdesc").textContent=o.d}
 function goTab(t,force){if(!force&&!leaveCheck(curTab,t))return;curTab=t;
- document.querySelectorAll("nav [data-t],section").forEach(e=>e.classList.remove("on"));const b=document.querySelector(`nav [data-t="${t}"]`);if(b)b.classList.add("on");$("#"+t).classList.add("on");
- document.querySelectorAll(".ng").forEach(g=>g.querySelector(".gb").classList.toggle("on",!!g.querySelector(`[data-t="${t}"]`)));closeMenus();
- if(ED[t])edDraw(t);if(t=="clr")drawClr();if(t=="wl")drawWl();if(t=="ver")drawVer();if(t=="rul"){drawRul();loadBell()}if(t=="emg")drawEmg();if(t=="gen")drawGrid()}
-document.querySelectorAll(".ng").forEach(g=>{const gb=g.querySelector(".gb"),items=[...g.querySelectorAll("[data-t]")],hov=matchMedia("(hover:hover)").matches;
- const open=()=>{closeMenus();g.classList.add("open");gb.setAttribute("aria-expanded","true")};
- gb.onclick=e=>{e.stopPropagation();if(items.length==1)return goTab(items[0].dataset.t);g.classList.contains("open")?closeMenus():open()};
- if(hov&&items.length>1){let tm;g.onmouseenter=()=>{clearTimeout(tm);open()};g.onmouseleave=()=>{tm=setTimeout(()=>{g.classList.remove("open");gb.setAttribute("aria-expanded","false")},200)}}
- items.forEach(b=>b.onclick=e=>{e.stopPropagation();goTab(b.dataset.t)})});
-document.addEventListener("click",closeMenus);document.addEventListener("keydown",e=>{if(e.key=="Escape")closeMenus()});
+ document.querySelectorAll("section").forEach(e=>e.classList.remove("on"));$("#"+t).classList.add("on");drawNav(t);
+ if(ED[t])edDraw(t);if(t=="clr")drawClr();if(t=="wl")drawWl();if(t=="ver")drawVer();if(t=="rul"){drawRul();loadBell()}if(t=="emg")drawEmg();if(t=="gen")drawGrid();if(t=="exm"){exWho();exVs();drawEx()}scrollTo(0,0)}
+const updScope=()=>{const v=$("#sc").value;$("#scl").innerHTML=v=="this"?"Edits apply to this class only":`<span class=warn>⚠ Edits also apply to ${v=="year"?"the same year group":"all classes"}</span>`};$("#sc").addEventListener("change",updScope);updScope();
 const isDark=()=>(document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"))=="dark";
 const lab=()=>$("#th").textContent=isDark()?"☀ Light":"🌙 Dark";if(LS.ttTheme)document.documentElement.dataset.theme=LS.ttTheme;lab();
 $("#th").onclick=()=>{const n=isDark()?"light":"dark";document.documentElement.dataset.theme=n;LS.ttTheme=n;lab()};
-fillSel();whoList();updBar();if(S.pos){showDiag();drawGrid()}goTab("data",true);
+fillSel();whoList();updBar();if(S.pos){showDiag();drawGrid()}goTab(!S.data.al.length?"xls":S.pos?"gen":"data",true);
 let ip;addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;$("#inst").hidden=false});
 $("#inst").onclick=async()=>{ip.prompt();await ip.userChoice;$("#inst").hidden=true};
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
