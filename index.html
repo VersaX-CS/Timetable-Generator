@@ -16,7 +16,10 @@ nav{display:flex;flex-wrap:wrap;gap:2px}.gb{background:none;border:0;color:#cfe0
 .gb:hover{color:#fff}.gb.on{color:#fff;border-color:var(--acc)}.gb.on b{background:var(--acc);color:#241c00}
 #subnav[hidden]{display:none}#subnav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}#subnav button{border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}#subnav button:hover{border-color:var(--acc)}#subnav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 #gdesc{margin:0 0 10px}.sm{font-size:12px;opacity:.8;font-weight:400}
-details.tools{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 10px;margin:8px 0}details.tools>summary{padding:8px 0;cursor:pointer;font-weight:600}details.tools[open]>summary{border-bottom:1px solid var(--line);margin-bottom:8px}details.tools[open]{padding-bottom:6px}details.inl{display:inline-block;margin:0 0 0 auto;vertical-align:top}
+details.tools{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 10px;margin:8px 0}details.tools>summary{padding:8px 0;cursor:pointer;font-weight:600}details.tools[open]>summary{border-bottom:1px solid var(--line);margin-bottom:8px}details.tools[open]{padding-bottom:6px}.xg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-bottom:10px}.xg3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.xg3 label{display:block;font-weight:600}.xg3 textarea{width:100%;display:block;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-weight:400}
+#xset fieldset{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0 0 8px}#xset legend{font-weight:600;padding:0 6px}.xcv{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 12px}.xcv label{display:flex;flex-direction:column;font-size:12px;font-weight:600}.xcv input{font-weight:400}.xf label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0}.xf input{width:120px}.xi input{width:58px}.xi td,.xi th{padding:4px 8px}
+td.xok{outline:3px solid #2e9e50;outline-offset:-3px}td.xno{opacity:.45}#ex td[draggable=true]{cursor:grab}
+details.inl{display:inline-block;margin:0 0 0 auto;vertical-align:top}
 main{padding:14px;max-width:1100px;margin:auto}section{display:none}section.on{display:block}
 button,select,input,textarea{font:inherit;color:inherit}
 .b{background:var(--ink);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;margin:2px}
@@ -78,17 +81,25 @@ details.wt{border:1px solid var(--line);border-radius:8px;margin:6px 0;backgroun
  <div class=box id=grid>Generate a timetable to see it here.</div>
  </section>
 <section id=exm>
- <div class=box><b>Exam timetable</b> <small>Same-year classes sit each paper together, no class has two papers at once, and every sitting gets an invigilator.</small>
-  <div class=row><label>Exam days <input id=xd type=number value=10 min=3 max=20 style="width:64px"></label>
-   <label>Morning <input id=xtm placeholder="08:30 - 10:30" style="width:120px"></label><label>Afternoon <input id=xta placeholder="12:30 - 14:30" style="width:120px"></label>
-   <button class=b id=gx>Generate exam timetable</button><button class="b g" id=gx2>Regenerate (new variation)</button></div>
-  <details class=tools><summary>Exam venues <span id=xvs class=sm></span></summary>
-   <p class=sm>One venue per line (halls, labs, library). Each sitting gets its own venue; if there are too few, classes sitting the same paper share a hall. Leave blank and every class sits in its own classroom.</p>
-   <textarea id=xv rows=5 placeholder="Main Hall&#10;Hall B&#10;ICT Lab&#10;Library" style="width:100%;max-width:360px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea>
-   <div class=row><button class="b g" id=xvb>Save exam venues</button></div></details></div>
- <div class=row><label>View <select id=xkind><option value=c>By class</option><option value=t>By invigilator</option><option value=v>By venue</option><option value=m>Master schedule</option></select></label><select id=xwho></select>
+ <div class=box><b>Exam timetable</b> <small>Each class sits theory in its own exam venue. Every subject's MCQ is a CBT turn in the labs, group by group. Practicals use their special rooms. A team of invigilators stays with each class all day.</small>
+  <div class=row><button class=b id=gx>Generate exam timetable</button><button class="b g" id=gx2>Regenerate (new variation)</button><button class="b g" id=xun hidden>Undo last change</button></div>
+  <details class=tools id=xset><summary>Exam settings <span class=sm>schedule · CBT turns · invigilator teams · venues</span></summary>
+   <div class=xg>
+    <fieldset><legend>Schedule</legend><div class=xf>
+     <label>Exam days <input id=xd type=number min=3 max=20></label><label>Morning session <input id=xtm placeholder="08:30 - 10:30"></label><label>Afternoon session <input id=xta placeholder="12:30 - 14:30"></label>
+     <label>Students per class <input id=xsz type=number min=1 max=200></label><label>CBT turns per session <input id=xtn type=number min=2 max=6></label><label>Invigilators per class (all day) <input id=xin type=number min=0 max=8></label></div>
+     <p class=sm>A session is split into turns. A group of classes sits the CBT in the labs each turn while the others do theory in their venues.</p></fieldset>
+    <fieldset><legend>Special venues</legend>
+     <p class=sm>One per line, seats after a colon, e.g. <b>CBT Lab 1: 40</b>. For a practical room, add <b>| subject codes</b> to reserve it for those subjects, e.g. <b>ICT Lab: 30 | ICT, COD</b>. Blank = no limit.</p>
+     <div class=xg3><label>CBT labs<textarea id=xpC rows=5 placeholder="CBT Lab 1: 40&#10;CBT Lab 2: 40"></textarea></label><label>Practical rooms<textarea id=xpP rows=5 placeholder="Chemistry Lab: 30 | CHM&#10;ICT Lab: 30 | ICT, COD&#10;Art Room: 30"></textarea></label></div></fieldset></div>
+   <fieldset><legend>Class exam venues (theory papers, all through the exam period)</legend>
+    <div class=row><label>Set a whole year <select id=xyf></select></label><input id=xyv placeholder="Main Hall: 120" style="width:170px"><button class="b g" id=xyb>Apply to the year</button></div>
+    <p class=sm>Blank = the class sits in its own classroom. Add seats after a colon if classes share a hall (e.g. <b>Main Hall: 120</b>). Classes sharing a venue sit the same paper at the same time.</p>
+    <div id=xcv class=xcv></div></fieldset>
+   <div class=row><button class="b g" id=xre hidden>Apply venue / team settings to this timetable</button><small>Settings save automatically. Days, class size, CBT turns and subject formats take effect when you generate again.</small></div></details></div>
+ <div class=row><label>View <select id=xkind><option value=c>By class</option><option value=t>By invigilator</option><option value=v>By venue</option><option value=m>Master schedule</option><option value=g>CBT schedule (groups per turn)</option><option value=r>Invigilation teams (editable)</option><option value=p>Papers (move to a slot)</option></select></label><select id=xwho></select>
   <details class="tools inl"><summary>Export &amp; print</summary><div class=row><button class="b g" id=xxl>Download Excel</button><button class="b g" onclick="print()">Print / PDF</button><select id=xfmt><option>PNG</option><option>JPG</option></select><button class="b g" id=xei>Export image</button><button class="b g" id=xez>Export all as ZIP</button></div></details></div>
- <div id=xsum></div><div class=box id=ex>Exam timetable appears here.</div></section>
+ <div id=xsum></div><div id=xdnd></div><div class=box id=ex>Exam timetable appears here.</div></section>
 <section id=ven>
  <p class=warn>One venue per line. A venue can only host one lesson at a time, so give each lab or workshop that is shared between classes its own line. Choose a venue per subject on the Allocations page.</p>
  <textarea id=vt rows=10 placeholder="One venue per line, e.g.&#10;Chemistry Lab&#10;ICT Lab&#10;Art Studio" style="width:100%;max-width:420px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:8px"></textarea>
@@ -139,6 +150,7 @@ const kindOf=n=>/^LUNCH$/i.test(n)?"L":/^BREAK$/i.test(n)?"B":"O";
 const compileLo=lo=>lo.map(o=>({ay:/^(ALL|\*)?$/i.test(String(o.a||"").trim())?"*":o.a,d:+o.d,s:o.s,p:+o.p,n:String(o.n||"").trim(),m:o.m===""||o.m==null?null:+o.m}));
 function setRules(){RULES=compile(S.data.fx);LOV=compileLo(S.data.lo||[])}
 const VN0=["Chemistry Lab","Physics Lab","Biology Lab","ICT Lab","Art Studio","D&T Workshop","Music Room","Library","Sports Field"];
+const DEFFMT={PHY:"CBT + Practical + Hall",CHM:"CBT + Practical + Hall",BIO:"CBT + Practical + Hall","D&T":"CBT + Practical + Hall",ICT:"CBT + Practical",COD:"CBT + Practical"};
 const SUBJ0=[["MTH","Mathematics","Y","Y"],["ENG","English Language","Y","Y"],["ECO","Economics","Y","Y"],["PHY","Physics","Y","Y"],["CHM","Chemistry","Y","Y"],["BIO","Biology","Y","Y"],["CIV","Civic Education","Y","Y"],["ICT","ICT","Y","N"],["FRN","French","Y","N"],["D&T","Design & Technology","Y","N"],["HIS","History","Y","N"],["LIT","Literature","Y","N"],["ADD","Additional Mathematics","Y","N"],["ACC","Accounting","Y","N"],["BUS","Business Studies","Y","N"],["GEO","Geography","Y","N"],["A&D","Art & Design","Y","N"],["GOV","Government","Y","N"],["AGR","Agricultural Science","Y","N"],["COM","Commerce","Y","N"],["COD","Coding","Y","N"],["SOS","Social Studies","Y","N"],["PHE","Physical & Health Education","Y","N"],["MUS","Music","Y","N"],["IBM","Introduction to Business Management","Y","N"],["CRK","Christian Religious Knowledge","Y","N"],["COUNSELLING","Counselling","N","N"],["LIBRARY","Library","N","N"]];
 let CORESET=new Set(CORE),NOEX=new Set(["COUNSELLING","LIBRARY"]);
 const freshWith=sample=>{const classes=sample?Object.keys(CL).map(n=>({n,y:+n.split(" ")[1]})):[],al=[];
@@ -264,25 +276,110 @@ function check(data,pos){const{al,classes,tl={}}=data,{GM,lead}=groupsOf(al),cs=
  const dupN=m=>Object.keys(m).some(k=>m[k]>1),dupS=m=>Object.keys(m).some(k=>m[k].size>1);
  const r=[[!dupN(cs),"No class has two lessons in one period"],[!dupS(ts),"No teacher is in two places at once (merged classes count as one lesson)"],[!dupS(vs),"No venue is double-booked (merged classes count as one lesson)"],[!fxh,"No lesson uses a fixed school-wide slot"],[!rv,"Subject reservations are respected"],[!mg,"Merged classes meet at the same times"],[!cnt,"Every subject has exactly its weekly periods (max 1 lesson per day)"],[!lim,"No teacher exceeds the daily limit"]];
  return{ok:r.every(x=>x[0]),r}}
-// Exams: papers = (year, subject). Same-year classes sit together; a class never has two exams in one session
-// (parallel electives of one block excepted); max 1 core exam per class per day; invigilators balanced.
-function exams(data,days=10,seed=1){
- const R=rng(seed),K=days*2,{al,classes,teachers}=data,NE=["COUNSELLING","LIBRARY"],yr=n=>classes.find(c=>c.n==n).y,P={},cs={},ex={};
- al.forEach(A=>{const cm=comps(A).filter(x=>!NOEX.has(x));cm.forEach(x=>{const k=yr(A.c)+"|"+x;(P[k]=P[k]||new Set()).add(A.c);(cs[A.c]=cs[A.c]||new Set()).add(x);cm.forEach(z=>x!=z&&(ex[A.c]=ex[A.c]||new Set()).add(x+"|"+z))})});
- const keys=Object.keys(P),cf={},dc={};keys.forEach(k=>{cf[k]=new Set();dc[k]=new Set()});
- for(const c in cs){const y=yr(c),L=[...cs[c]];L.forEach(x=>L.forEach(z=>{if(x==z)return;const a=y+"|"+x,b=y+"|"+z;
-  if(!(ex[c]&&ex[c].has(x+"|"+z)))cf[a].add(b);if(CORESET.has(x)&&CORESET.has(z))dc[a].add(b)}))}
+// ---- Exams v3.
+// Theory papers: each class sits in ITS OWN exam venue for the whole exam period.
+// CBT (MCQ): classes go into the CBT labs in groups, one group per time turn inside the session (a session is split into turns).
+// Practicals: special rooms, packed by seats. Invigilators: a team is attached to each class for each exam day and follows it everywhere.
+// Paper types: H theory only, C CBT only, B CBT + theory in one session (CBT in one turn, theory in the others), P practical.
+const XFMT={"Hall":["H"],"CBT":["C"],"Practical":["P"],"CBT + Hall":["B"],"Practical + Hall":["P","H"],"CBT + Practical":["C","P"],"CBT + Practical + Hall":["B","P"]},XDEF="CBT + Hall",XTS={H:"Theory",C:"CBT",B:"CBT + Theory",P:"Practical"};
+const XS0=()=>({days:10,tm:"08:30 - 10:30",ta:"12:30 - 14:30",size:30,turns:2,inv:2,pool:{C:"",P:""},cv:{}});
+function xs(d){const o=XS0(),x=d.xs||{};if(!d.xs&&d.xt){o.tm=d.xt[0]||"";o.ta=d.xt[1]||""}
+ Object.assign(o,x);o.pool={C:(x.pool||{}).C||"",P:(x.pool||{}).P||""};o.cv=x.cv||{};
+ if(typeof x.inv!="number")o.inv=x.inv&&Array.isArray(x.inv.H)?(x.inv.H[0]|0):2;return o}
+const parsePool=t=>String(t||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const[h,r]=l.split("|"),sub=r?r.split(/[\s,;]+/).filter(Boolean):null,m=h.trim().match(/^(.*?)\s*[:=]\s*(\d+)\s*$/);return m?{n:m[1].trim(),cap:+m[2],sub}:{n:h.trim(),cap:0,sub}});
+function exPools(data){const X=xs(data),sz=X.size||30,p={};["C","P"].forEach(T=>{const seen=new Set();p[T]=parsePool(X.pool[T]).filter(v=>v.n&&!seen.has(v.n)&&seen.add(v.n)).map(v=>({n:v.n,cap:v.cap||sz,sub:v.sub}))});return p}
+const exCv=(data,c)=>{const t=String((xs(data).cv||{})[c]||"").trim(),m=t.match(/^(.*?)\s*[:=]\s*(\d+)\s*$/);return m?{n:m[1].trim()||c+" classroom",cap:+m[2]}:{n:t||c+" classroom",cap:0}};
+const exFmt=(data,x)=>{const s=data.subj.find(q=>q.c==x);return XFMT[(s&&s.e)||XDEF]||XFMT[XDEF]};
+function exPairs(data){const ex={};data.al.forEach(A=>{const cm=comps(A).filter(x=>!NOEX.has(x));cm.forEach(x=>exFmt(data,x).forEach(T=>cm.forEach(z=>{if(z!=x&&exFmt(data,z).includes(T))(ex[A.c]=ex[A.c]||new Set()).add(x+"|"+T+">"+z+"|"+T)})))});return ex}
+const exDay=s=>`W${((s>>1)/5|0)+1} ${D[(s>>1)%5]}`,exSlot=s=>exDay(s)+" "+(s&1?"Afternoon":"Morning");
+// split a session ("08:30 - 10:30") into equal turns
+function exTurnTimes(txt,T){const m=String(txt||"").match(/(\d{1,2}):(\d{2})\s*(?:-|–|to)\s*(\d{1,2}):(\d{2})/);if(!m)return Array.from({length:T},(_,i)=>"turn "+(i+1));
+ const a=+m[1]*60+ +m[2],b=+m[3]*60+ +m[4],L=(b-a)/T,f=x=>{x=Math.round(x);return String(x/60|0).padStart(2,"0")+":"+String(x%60).padStart(2,"0")};return Array.from({length:T},(_,i)=>f(a+L*i)+"-"+f(a+L*(i+1)))}
+const exPerTurn=(pool,sz)=>{if(!pool.length)return 0;const u=pool.reduce((a,v)=>a+Math.floor(v.cap/sz),0);return u||Math.max(1,Math.floor(pool.reduce((a,v)=>a+v.cap,0)/sz))};
+function exFit(pool,L){const V=pool.map(v=>({cap:v.cap,sub:v.sub})).sort((a,b)=>a.cap-b.cap);for(const it of[...L].sort((a,b)=>b.n-a.n)){let need=it.n;const ok=v=>!v.sub||v.sub.includes(it.x),i=V.findIndex(v=>v.cap>=need&&ok(v));if(i>=0){V.splice(i,1);continue}while(need>0){let j=-1;for(let q=V.length-1;q>=0;q--)if(ok(V[q])){j=q;break}if(j<0)return false;need-=V[j].cap;V.splice(j,1)}}return true}
+function exams(data,days,seed,deadline){
+ const X=xs(data),R=rng(seed||1),{al,classes}=data,yr=n=>classes.find(c=>c.n==n).y,sz=X.size||30,TN=Math.max(2,X.turns|0||2),K=(days||X.days||10)*2,pools=exPools(data),ex=exPairs(data);
+ const perTurn=exPerTurn(pools.C,sz),Lc=pools.C.length?TN*perTurn:0,capP=pools.P.reduce((a,v)=>a+v.cap,0);
+ const B={};al.forEach(A=>comps(A).filter(x=>!NOEX.has(x)).forEach(x=>exFmt(data,x).forEach(T=>{const k=yr(A.c)+"|"+x+"|"+T;(B[k]=B[k]||new Set()).add(A.c)})));
+ const papers={},keys=[];
+ Object.keys(B).forEach(base=>{const[y,x,T]=base.split("|"),L=[...B[base]].sort();let lim=0;
+  if(T=="P"&&pools.P.length)lim=Math.max(1,exPerTurn(pools.P.filter(v=>!v.sub||v.sub.includes(x)),sz));if((T=="C"||T=="B")&&Lc)lim=Lc;
+  const g=[];if(lim){for(let i=0;i<L.length;i+=lim)g.push(L.slice(i,i+lim))}else g.push(L);
+  g.forEach((cl,i)=>{const k=g.length>1?base+"|"+(i+1):base;papers[k]={k,base,y,x,T,b:g.length>1?i+1:0,cls:cl,seats:cl.length*sz,s:null};keys.push(k)})});
+ const cf={},dc={},byC={};keys.forEach(k=>{cf[k]=new Set();dc[k]=new Set();papers[k].cls.forEach(c=>(byC[c]=byC[c]||[]).push(k))});
+ for(const c in byC){const L=byC[c];L.forEach(a=>L.forEach(b=>{if(a==b)return;const pa=papers[a],pb=papers[b];
+  if(!(ex[c]&&ex[c].has(pa.x+"|"+pa.T+">"+pb.x+"|"+pb.T)))cf[a].add(b);if(pa.x!=pb.x&&CORESET.has(pa.x)&&CORESET.has(pb.x))dc[a].add(b)}))}
+ // classes that share one exam venue cannot sit different theory papers at the same time
+ const vc={};classes.forEach(c=>{const v=exCv(data,c.n).n;(vc[v]=vc[v]||[]).push(c.n)});
+ Object.values(vc).filter(g=>g.length>1).forEach(g=>{const ps=keys.filter(k=>(papers[k].T=="H"||papers[k].T=="B")&&papers[k].cls.some(c=>g.includes(c)));
+  ps.forEach(a=>ps.forEach(b=>{if(a==b)return;const pa=papers[a],pb=papers[b];if(pa.cls.some(c1=>g.includes(c1)&&pb.cls.some(c2=>g.includes(c2)&&c1!=c2))&&!pa.cls.some(c=>ex[c]&&ex[c].has(pa.x+"|"+pa.T+">"+pb.x+"|"+pb.T)))cf[a].add(b)}))});
  const slot={},q=[...keys].sort(()=>R()-.5),cnt=Array(K).fill(0);
- for(let it=0;q.length&&it<100000;it++){const k=q.shift(),core=CORESET.has(k.split("|")[1]),o=[];
-  for(let s=0;s<K;s++){const ev=keys.filter(z=>slot[z]!=null&&((cf[k].has(z)&&slot[z]==s)||(dc[k].has(z)&&(slot[z]>>1)==(s>>1))));o.push([ev.length*100+(core&&s%2?3:0)+cnt[s]*.8+R()*2,s,ev])}
+ for(let it=0;q.length&&it<20000;it++){if(deadline&&it%40==0&&performance.now()>deadline)break;const k=q.shift(),p=papers[k],core=CORESET.has(p.x),o=[];
+  for(let s=0;s<K;s++){const ev=new Set(keys.filter(z=>slot[z]!=null&&((cf[k].has(z)&&slot[z]==s)||(dc[k].has(z)&&(slot[z]>>1)==(s>>1)))));
+   if(p.T=="P"&&pools.P.length){const rest=keys.filter(z=>slot[z]===s&&papers[z].T=="P"&&!ev.has(z));while(rest.length&&!exFit(pools.P,[...rest.map(z=>({n:papers[z].seats,x:papers[z].x})),{n:p.seats,x:p.x}]))ev.add(rest.splice(R()*rest.length|0,1)[0])}
+   if((p.T=="C"||p.T=="B")&&Lc){const rest=keys.filter(z=>slot[z]===s&&(papers[z].T=="C"||papers[z].T=="B")&&!ev.has(z));let n=rest.reduce((a,z)=>a+papers[z].cls.length,0);
+    while(rest.length&&n+p.cls.length>Lc){const z=rest.splice(R()*rest.length|0,1)[0];ev.add(z);n-=papers[z].cls.length}}
+   o.push([ev.size*100+(core&&s%2?3:0)+cnt[s]*.8+R()*2,s,[...ev]])}
   const pk=R()<.03?o[R()*K|0]:o.reduce((m,x)=>x[0]<m[0]?x:m);
   pk[2].forEach(z=>{cnt[slot[z]]--;delete slot[z];q.push(z)});slot[k]=pk[1];cnt[pk[1]]++}
- let viol=q.length;keys.forEach(a=>{cf[a].forEach(b=>{if(slot[a]==slot[b])viol++});dc[a].forEach(b=>{if((slot[a]>>1)==(slot[b]>>1))viol++})});
- const duty={},busy={},dd={},sit=[],ow={};teachers.forEach(t=>duty[t]=0);
- keys.forEach(k=>{const[y,x]=k.split("|"),r=new Set();al.forEach(A=>{if(yr(A.c)==y&&comps(A).includes(x))A.t.filter(Boolean).forEach(t=>r.add(t))});ow[k]=r;[...P[k]].forEach(c=>sit.push({k,c,s:slot[k],i:[]}))});
- sit.sort(()=>R()-.5).forEach(z=>{const t=teachers.filter(t=>!(data.tl&&data.tl[t]&&data.tl[t].a=="N")&&!busy[t+z.s]&&(dd[t+(z.s>>1)]||0)<2&&!ow[z.k].has(t)).sort((a,b)=>duty[a]-duty[b]||R()-.5)[0];
-  if(t){z.i.push(t);busy[t+z.s]=1;duty[t]++;dd[t+(z.s>>1)]=(dd[t+(z.s>>1)]||0)+1}});
- return{sit,duty,ok:viol==0&&sit.every(z=>z.i.length)}}
+ keys.forEach(k=>{papers[k].s=slot[k]==null?null:slot[k]});
+ const sit=[];keys.forEach(k=>papers[k].cls.forEach(c=>sit.push({k,c,s:papers[k].s,T:papers[k].T,parts:[],v:"",i:[]})));
+ const out={papers,sit,teams:{},short:[],days:K/2,seed:seed||1};exAlloc(out,data);exStatus(out,data);return out}
+// (re)build venues, CBT turns and teams for the given slots (all when omitted); other slots are left untouched
+function exAlloc(ex,data,only){const X=xs(data),sz=X.size||30,TN=Math.max(2,X.turns|0||2),all=Object.values(ex.papers),slots=new Set(only||all.map(p=>p.s).filter(s=>s!=null)),pools=exPools(data),TT=[...Array(TN).keys()];
+ const perTurn=exPerTurn(pools.C,sz);
+ ex.short=ex.short.filter(q=>!slots.has(q.s));
+ ex.sit.forEach(z=>{if(slots.has(z.s)||slots.has(ex.papers[z.k].s))z.parts=[]});
+ const labOf=x=>{for(const A of data.al)if(comps(A).includes(x)){const v=(A.v||[]).filter(Boolean)[0];if(v)return v}return"Practical room"};
+ [...slots].sort((a,b)=>a-b).forEach(s=>{const ps=all.filter(p=>p.s===s),sit=k=>ex.sit.filter(z=>z.k==k);
+  ps.filter(p=>p.T=="H"||p.T=="B").forEach(p=>sit(p.k).forEach(z=>z.parts.push({p:"H",v:exCv(data,z.c).n,tn:p.T=="H"?TT:null})));
+  const pp=ps.filter(p=>p.T=="P").sort((a,b)=>b.seats-a.seats||a.k.localeCompare(b.k));
+  if(pp.length){if(!pools.P.length)pp.forEach(p=>sit(p.k).forEach(z=>z.parts.push({p:"P",v:labOf(p.x),tn:TT})));
+   else{const rot=s%pools.P.length,V=pools.P.map((_,i)=>pools.P[(i+rot)%pools.P.length]).map(v=>({n:v.n,rem:v.cap,paper:null,sub:v.sub}));
+    pp.forEach(p=>{let left=p.seats;sit(p.k).forEach(z=>{let need=sz;const used=[];
+     while(need>0){let v=V.find(x=>x.paper===p.k&&x.rem>0);if(!v){const fr=V.filter(x=>!x.paper&&(!x.sub||x.sub.includes(p.x)));v=fr.filter(x=>x.rem>=left).sort((a,b)=>a.rem-b.rem)[0]||fr.sort((a,b)=>b.rem-a.rem)[0]}
+      if(!v){ex.short.push({s,T:"P",k:p.k,c:z.c,need});break}v.paper=p.k;const take=Math.min(need,v.rem);v.rem-=take;need-=take;left-=take;if(!used.includes(v.n))used.push(v.n)}
+     z.parts.push({p:"P",v:used.join(" + "),tn:TT})})})}}
+  // CBT: classes of the session go in turn by turn, same-year classes together
+  const cz=[];ps.filter(p=>p.T=="C"||p.T=="B").forEach(p=>sit(p.k).forEach(z=>cz.push(z)));cz.sort((a,b)=>ex.papers[a.k].y-ex.papers[b.k].y||a.c.localeCompare(b.c));
+  if(cz.length){const per=perTurn||Math.ceil(cz.length/TN);
+   for(let t=0;t<TN;t++){const grp=cz.slice(t*per,t==TN-1?cz.length:(t+1)*per),V=pools.C.map(v=>({n:v.n,rem:v.cap}));
+    grp.forEach(z=>{let need=sz;const used=[];if(!V.length)used.push("CBT lab");
+     while(V.length&&need>0){const v=V.filter(x=>x.rem>=need).sort((a,b)=>a.rem-b.rem)[0]||V.slice().sort((a,b)=>b.rem-a.rem)[0];if(!v||v.rem<=0){ex.short.push({s,T:"C",k:z.k,c:z.c,need});break}const take=Math.min(need,v.rem);v.rem-=take;need-=take;if(!used.includes(v.n))used.push(v.n)}
+     z.parts.push({p:"C",v:used.join(" + "),tn:[t]});const th=z.parts.find(q=>q.p=="H");if(th&&!th.tn)th.tn=TT.filter(q=>q!=t)})}
+   if(per&&cz.length>per*TN)cz.slice(per*TN).forEach(z=>ex.short.push({s,T:"C",k:z.k,c:z.c,need:sz}))}
+  ps.filter(p=>p.T=="B").forEach(p=>sit(p.k).forEach(z=>{const th=z.parts.find(q=>q.p=="H");if(th&&!th.tn)th.tn=TT}))});
+ exTeams(ex,data,new Set([...slots].map(s=>s>>1)),!only);exSync(ex)}
+// a team of invigilators is attached to each class for the whole exam day and follows it everywhere
+function exTeams(ex,data,days,fresh){const X=xs(data),N=X.inv|0,act=data.teachers.filter(t=>!(data.tl&&data.tl[t]&&data.tl[t].a=="N")),yrOf=n=>data.classes.find(c=>c.n==n).y,dutyDays={};
+ data.teachers.forEach(t=>dutyDays[t]=0);if(fresh)ex.teams={};
+ Object.entries(ex.teams).forEach(([k,L])=>{if(!days.has(+k.split("|")[1]))L.forEach(t=>dutyDays[t]=(dutyDays[t]||0)+1)});
+ const R=rng((ex.seed||1)*5+[...days].reduce((a,b)=>a+b,0)+1);
+ [...days].sort((a,b)=>a-b).forEach(d=>{const cls=[...new Set(ex.sit.filter(z=>z.s!=null&&(z.s>>1)==d).map(z=>z.c))].sort();
+  Object.keys(ex.teams).forEach(k=>{const[c,dd]=k.split("|");if(+dd==d&&!cls.includes(c))delete ex.teams[k]});
+  const used=new Set();cls.forEach(c=>(ex.teams[c+"|"+d]||[]).forEach(t=>used.add(t)));
+  cls.forEach(c=>{const key=c+"|"+d,L=ex.teams[key]=ex.teams[key]||[];if(L.length>=N)return;
+   const subs=new Set(ex.sit.filter(z=>z.c==c&&(z.s>>1)==d).map(z=>ex.papers[z.k].x)),y=yrOf(c),own=new Set();
+   data.al.forEach(A=>{if(yrOf(A.c)==y&&comps(A).some(x=>subs.has(x)))A.t.filter(Boolean).forEach(t=>own.add(t))});
+   while(L.length<N){const t=act.filter(t=>!used.has(t)).sort((a,b)=>(own.has(a)?1:0)-(own.has(b)?1:0)||dutyDays[a]-dutyDays[b]||R()-.5)[0];if(!t)break;L.push(t);used.add(t);dutyDays[t]++}})})}
+function exSync(ex){ex.sit.forEach(z=>{const p=ex.papers[z.k];z.s=p.s;z.T=p.T;z.v=[...new Set((z.parts||[]).flatMap(q=>String(q.v).split(" + ")))].join(" + ");z.i=p.s==null?[]:(ex.teams[z.c+"|"+(p.s>>1)]||[])})}
+// every rule, checked from scratch. t: hard (must fix), staff (team too small), soft (preference)
+function exIssues(ex,data){const L=[],X=xs(data),P=ex.papers,pex=exPairs(data),N=X.inv|0,sz=X.size||30,nm=k=>{const p=P[k];return p.x+" ("+XTS[p.T]+(p.b?" #"+p.b:"")+")"};
+ Object.values(P).forEach(p=>{if(p.s==null)L.push({t:"hard",m:`${nm(p.k)} for Year ${p.y} could not be placed`})});
+ const byC={};ex.sit.forEach(z=>{if(z.s!=null)(byC[z.c]=byC[z.c]||[]).push(z)});
+ for(const c in byC){const l=byC[c];l.forEach((a,i)=>l.slice(i+1).forEach(b=>{const pa=P[a.k],pb=P[b.k];if(a.s==b.s&&!(pex[c]&&pex[c].has(pa.x+"|"+pa.T+">"+pb.x+"|"+pb.T)))L.push({t:"hard",m:`${c} has ${nm(a.k)} and ${nm(b.k)} at ${exSlot(a.s)}`});
+   if(a.s!=b.s&&(a.s>>1)==(b.s>>1)&&pa.x!=pb.x&&CORESET.has(pa.x)&&CORESET.has(pb.x))L.push({t:"soft",m:`${c} has two core papers on ${exDay(a.s)}: ${pa.x} and ${pb.x}`})}))}
+ ex.short.forEach(q=>L.push({t:"hard",m:`${exSlot(q.s)}: not enough ${q.T=="C"?"CBT lab":"practical room"} space for ${nm(q.k)} (${q.c})`}));
+ const vu={};ex.sit.forEach(z=>{if(z.s==null)return;(z.parts||[]).forEach(q=>{if(q.p!="H")return;const k=z.s+"|"+q.v,o=vu[k]=vu[k]||{ps:new Set(),seats:0,cap:exCv(data,z.c).cap};o.ps.add(z.k);o.seats+=sz;o.cap=Math.max(o.cap,exCv(data,z.c).cap)})});
+ for(const k in vu){const i=k.indexOf("|"),s=+k.slice(0,i),v=k.slice(i+1),o=vu[k];if(o.ps.size>1)L.push({t:"hard",m:`${exSlot(s)}: ${v} is used for two different papers`});if(o.cap&&o.seats>o.cap)L.push({t:"hard",m:`${exSlot(s)}: ${v} seats ${o.cap} but ${o.seats} students sit there`})}
+ const day={};ex.sit.forEach(z=>{if(z.s!=null)(day[z.c+"|"+(z.s>>1)]=day[z.c+"|"+(z.s>>1)]||[]).push(z)});
+ const used={};
+ Object.keys(day).forEach(k=>{const[c,d]=k.split("|"),T=ex.teams[k]||[];if(T.length<N)L.push({t:"staff",m:`${c} on ${exDay(d*2)}: ${T.length} of ${N} invigilators`});
+  T.forEach(t=>{const u=t+"|"+d;if(used[u]&&used[u]!=c)L.push({t:"hard",m:`${t} is attached to ${used[u]} and ${c} on ${exDay(d*2)}`});used[u]=c});
+  const subs=new Set(day[k].map(z=>P[z.k].x)),y=data.classes.find(q=>q.n==c).y;
+  T.forEach(t=>{if(data.al.some(A=>data.classes.find(q=>q.n==A.c).y==y&&A.t.includes(t)&&comps(A).some(x=>subs.has(x))))L.push({t:"soft",m:`${t} (with ${c} on ${exDay(d*2)}) teaches a subject that class sits that day`})})});
+ return L}
+function exStatus(ex,data){ex.issues=exIssues(ex,data);ex.ok=!ex.issues.some(i=>i.t!="soft");return ex}
 /*ENDCORE*/
 
 /* ---------- state & storage ---------- */
@@ -295,7 +392,7 @@ const save=()=>{try{
 try{const s=JSON.parse(LS.tt||"null");if(s){
  if(s.data)S.data=Object.assign(fresh(),s.data);
  else{S.data.al.forEach((a,i)=>{a.t=s.t[i]||[];a.d=(s.d||[])[i]|0;a.v=(s.v||[])[i]||[]});if(s.vn)S.data.vn=s.vn;if(s.bell)S.data.bell=s.bell;S.data.tl=s.tl||{};if(s.fx)S.data.fx=s.fx}
- S.pos=s.pos;S.seed=s.seed||1;S.vers=s.vers||[];S.active=s.active;S.editing=s.editing||null;S.ex=s.ex||null;S.exSeed=s.exSeed||0}}catch(e){}
+ S.pos=s.pos;S.seed=s.seed||1;S.vers=s.vers||[];S.active=s.active;S.editing=s.editing||null;S.ex=s.ex&&s.ex.papers&&s.ex.teams?s.ex:null;S.exSeed=s.exSeed||0}}catch(e){}
 let sayT;const say=(m,ms=2600)=>{const e=$("#msg");e.textContent=m;e.style.display="block";clearTimeout(sayT);sayT=setTimeout(()=>e.style.display="none",ms)};
 const col=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
 // ---- colours: subjects use a hue, activities a muted hue ("a<hue>"), custom colours are hex and stay the same in both themes
@@ -370,8 +467,8 @@ const minsOf=v=>typeof v=="number"&&v<1?Math.round(v*1440):T2M(cellS(v));
 function importWb(wb){const msg=[],rd=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(wb.Sheets[n],{defval:""}):null,cur=S.data;
  const AR=rd("Allocations")||(wb.SheetNames.length==1?rd(wb.SheetNames[0]):null);
  if(!AR||!AR.length)return{d:null,msg:["No allocation rows found. The workbook needs an Allocations sheet with Class, Subject and Periods columns."]};
- const d=fresh();d.classes=[];d.al=[];d.teachers=[];d.tl={};d.fx=cur.fx;d.bell=cur.bell;
- const SR=rd("Subjects");d.subj=SR&&SR.some(r=>cellS(r.Code))?SR.filter(r=>cellS(r.Code)).map(r=>({c:cellS(r.Code).toUpperCase(),n:cellS(r.Name),x:/^n/i.test(cellS(r.Exam))?"N":"Y",k:/^y/i.test(cellS(r.Core))?"Y":"N"})):cur.subj;
+ const d=fresh();d.classes=[];d.al=[];d.teachers=[];d.tl={};d.fx=cur.fx;d.bell=cur.bell;d.xs=cur.xs;d.xv=cur.xv;d.xt=cur.xt;
+ const SR=rd("Subjects");d.subj=SR&&SR.some(r=>cellS(r.Code))?SR.filter(r=>cellS(r.Code)).map(r=>({c:cellS(r.Code).toUpperCase(),n:cellS(r.Name),x:/^n/i.test(cellS(r.Exam))?"N":"Y",k:/^y/i.test(cellS(r.Core))?"Y":"N",e:fmtIn(cellS(r.Exam_Format))})):cur.subj;
  const known=new Set(d.subj.map(s=>s.c)),TR=rd("Teachers"),CR=rd("Classes"),FR=rd("Fixed_Slots"),VR=rd("Venues"),ST=rd("Settings");
  if(TR)TR.forEach(r=>{const n=cellS(r.Teacher);if(!n||d.teachers.includes(n))return;d.teachers.push(n);d.tl[n]={a:/^n/i.test(cellS(r.Active))?"N":"Y",m:cellS(r.Max_Periods_Per_Day),u:cellS(r.Unavailable)}});
  if(CR)CR.forEach(r=>{const n=cellS(r.Class);if(n&&!d.classes.some(c=>c.n==n))d.classes.push({n,y:+(cellS(r.Year||n).match(/\d+/)||[0])[0],l:cellS(r.Level)})});
@@ -394,10 +491,10 @@ function importWb(wb){const msg=[],rd=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(w
 function buildWb(blank,d){const wb=XLSX.utils.book_new(),B=d.bell,body=r=>blank?[]:r,
  add=(n,rows)=>{const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=rows[0].map((_,j)=>({wch:Math.min(60,Math.max(12,...rows.map(r=>String(r[j]??"").length+2)))}));XLSX.utils.book_append_sheet(wb,ws,n)};
  add("READ ME",[["How to use this workbook"],[""],["Fill in the sheets, save, then use Import on the Data page of the app. Only the Allocations sheet is required."],
-  ["Subjects: Code, Name, Exam (Y/N), Core (Y/N). A class gets at most 1 core exam per day."],["Teachers: Teacher, Active (Y/N), Max_Periods_Per_Day (blank = 8), Unavailable e.g. MON:1-3;FRI"],
+  ["Subjects: Code, Name, Exam (Y/N), Core (Y/N), Exam_Format (Hall, CBT, Practical, CBT + Hall, Practical + Hall, CBT + Practical or CBT + Practical + Hall; blank = CBT + Hall). A class gets at most 1 core exam per day."],["Teachers: Teacher, Active (Y/N), Max_Periods_Per_Day (blank = 8), Unavailable e.g. MON:1-3;FRI"],
   ["Classes: Class, Year (e.g. YEAR 7), Level (Junior / Middle / Senior)"],["Fixed_Slots: Day (MON, MON-THU, TUE,WED, ALL), Period (3 or 4-6), Applies_To (ALL, Junior, YEAR 9 or a class name), Activity, Type (ACTIVITY, BREAK or LUNCH - break and lunch happen AFTER the period)"],
   ["Allocations: one row per class and subject. A concurrent elective block is written ADD / ACC. Merged_Group: give the same code (e.g. M1) to the same subject in classes that meet together. Teachers and Venues list one name per subject in the same order, separated by  /  . Double_Periods = how many of the Periods are doubles."],["Venues: one room per row. Reservations: Applies_To, Subject, Day, Period, Mode (ONLY / NEVER / RESERVE). Layout: day-by-day moves of break, lunch and activities (Slot P4 = period 4, B4 = break column after period 4). Settings: first period start, period / break / lunch lengths in minutes; Manual times like 1=08:00-08:40;3=-09:30."]]);
- add("Subjects",[["Code","Name","Exam","Core"],...body(d.subj.map(s=>[s.c,s.n,s.x,s.k]))]);
+ add("Subjects",[["Code","Name","Exam","Core","Exam_Format"],...body(d.subj.map(s=>[s.c,s.n,s.x,s.k,s.e||"CBT + Hall"]))]);
  add("Teachers",[["Teacher","Active","Max_Periods_Per_Day","Unavailable"],...body(d.teachers.map(n=>{const l=d.tl[n]||{};return[n,l.a||"Y",l.m||"",l.u||""]}))]);
  add("Classes",[["Class","Year","Level"],...body(d.classes.map(c=>[c.n,"YEAR "+c.y,c.l||""]))]);
  add("Fixed_Slots",[["Day","Period","Applies_To","Activity","Type","Minutes"],...body(d.fx.map(r=>[r.d,r.p,r.a,r.n,r.k,r.m??""]))]);
@@ -527,68 +624,110 @@ $("#ez").onclick=async()=>{if(!S.pos)return say("Generate a timetable first");co
  await add("Master schedule."+ext,imgFor("m",""));dl(zipStore(files),"Timetables_"+f+".zip");say(files.length+" images zipped")};
 $("#st").checked=showT();$("#st").onchange=()=>{LS.ttTime=$("#st").checked?"1":"0";drawGrid()};
 // exams
-const dayName=s=>{const d=s>>1;return`W${(d/5|0)+1} ${D[d%5]}`},SESS=["Morning","Afternoon"];
-const exV=()=>(S.data.xv||[]).filter(Boolean);
-// give every sitting a venue: own venue when there are enough, otherwise classes of one paper share a hall
-function examVenues(ex,data){const V=(data.xv||[]).filter(Boolean),by={};ex.short=[];
- ex.sit.forEach(z=>{if(z.s==null)return;(by[z.s]=by[z.s]||[]).push(z)});
- Object.keys(by).map(Number).forEach(sl=>{const L=by[sl].sort((a,b)=>a.k.localeCompare(b.k)||a.c.localeCompare(b.c)),papers=[...new Set(L.map(z=>z.k))];
-  L.forEach(z=>{z.v="";z.sh=0});
-  if(!V.length){L.forEach(z=>{z.v="Own classroom"});return}
-  const r=sl%V.length,pool=V.map((_,i)=>V[(i+r)%V.length]);
-  if(L.length<=V.length)L.forEach((z,i)=>{z.v=pool[i]});
-  else if(papers.length<=V.length){L.forEach(z=>{z.v=pool[papers.indexOf(z.k)];z.sh=1})}
-  else{L.forEach(z=>{const i=papers.indexOf(z.k);if(i<V.length){z.v=pool[i];z.sh=1}});ex.short.push({s:sl,need:papers.length-V.length})}});
- ex.vok=!ex.short.length}
+const SESS=["Morning","Afternoon"],XSUBJ=z=>z.k.split("|")[1],PL={H:"Theory",C:"CBT",P:"Practical"},xlab=k=>{const p=S.ex.papers[k];return p.x+" · "+XTS[p.T]+(p.b?" #"+p.b:"")};
+const exTN=()=>Math.max(2,xs(S.data).turns|0||2),normSubj=()=>S.data.subj.forEach(s=>{if(!s.e||!XFMT[s.e])s.e=XDEF});
+function trange(tn,times){if(!tn||!tn.length||tn.length>=exTN())return"";if(!/-/.test(times[0]))return tn.map(i=>times[i]).join(", ");const ok=tn.every((v,i)=>i==0||v==tn[i-1]+1);return ok?times[tn[0]].split("-")[0]+"-"+times[tn[tn.length-1]].split("-")[1]:tn.map(i=>times[i]).join(", ")}
+function partLines(z){const X=xs(S.data),times=exTurnTimes(z.s&1?X.ta:X.tm,exTN()),ps=(z.parts||[]).slice().sort((a,b)=>((a.tn&&a.tn[0])||0)-((b.tn&&b.tn[0])||0));
+ return ps.map(q=>{const r=trange(q.tn,times);return PL[q.p]+(r?" "+r:"")+": "+(q.v||"no venue")})}
+function exRead(){const x=xs(S.data);x.days=Math.min(20,Math.max(3,+$("#xd").value||10));x.tm=$("#xtm").value.trim();x.ta=$("#xta").value.trim();x.size=Math.max(1,+$("#xsz").value||30);
+ x.turns=Math.min(6,Math.max(2,+$("#xtn").value||2));x.inv=Math.max(0,Math.min(8,+$("#xin").value|0));x.pool={C:$("#xpC").value,P:$("#xpP").value};
+ if(document.querySelector("#xcv input[data-c]")){const cv={};document.querySelectorAll("#xcv input[data-c]").forEach(i=>{if(i.value.trim())cv[i.dataset.c]=i.value.trim()});x.cv=cv}
+ S.data.xs=x;delete S.data.xv;delete S.data.xt;return x}
+function exUi(){const x=xs(S.data);$("#xd").value=x.days;$("#xtm").value=x.tm;$("#xta").value=x.ta;$("#xsz").value=x.size;$("#xtn").value=x.turns;$("#xin").value=x.inv;$("#xpC").value=x.pool.C;$("#xpP").value=x.pool.P;
+ $("#xcv").innerHTML=S.data.classes.map(c=>`<label>${c.n}<input data-c="${q(c.n)}" value="${q(x.cv[c.n]||"")}" placeholder="${q(c.n)} classroom"></label>`).join("");
+ $("#xyf").innerHTML=[...new Set(S.data.classes.map(c=>c.y))].sort((a,b)=>a-b).map(y=>`<option value=${y}>Year ${y}</option>`).join("")}
+$("#xyb").onclick=()=>{const y=+$("#xyf").value,v=$("#xyv").value.trim();document.querySelectorAll("#xcv input[data-c]").forEach(i=>{if((S.data.classes.find(c=>c.n==i.dataset.c)||{}).y==y)i.value=v});exRead();save();say(v?`Year ${y} classes will sit in ${v.split(":")[0]}`:`Year ${y} classes will sit in their own classrooms`)};
 // egrid(kind,name): same cell shape as grid(): DAYS down the rows, SESSIONS across the columns. kind: c=class, t=invigilator, v=venue, m=master
-function egrid(kind,name){const x=S.ex,rows=[],nd=x.days||10,sit=x.sit.filter(z=>z.s!=null),inv=z=>z.i.length?"Invigilator: "+z.i.join(" / "):"No invigilator";
- const txt=(z,k)=>k=="c"?[z.k.split("|")[1],z.v,inv(z)]:k=="t"?[z.c+(z.sh?"":""),z.k.split("|")[1],z.v]:[z.c,z.k.split("|")[1],inv(z)];
- const mk=(L,k)=>{if(!L.length)return{t:""};const sj=L[0].k.split("|")[1];
-  const t=k=="c"?L.map(z=>[z.k.split("|")[1],z.v,inv(z)].filter(Boolean).join("\n")).join("\n+\n"):k=="t"?L.map(z=>[z.c,z.k.split("|")[1],z.v].filter(Boolean).join("\n")).join("\n+\n"):L.map(z=>[z.c,z.k.split("|")[1],inv(z)].filter(Boolean).join("\n")).join("\n+\n");
-  return{t,c:subCol(sj),i:L.map(z=>`${z.k.split("|")[1]} · ${z.c} · ${z.v}${z.i.length?" · "+z.i.join(" / "):""}`).join("; ")}};
- const pick=(f,d,j)=>sit.filter(z=>z.s==d*2+j&&f(z));
- if(kind=="m"){rows.push([{t:"Day",k:"h"},{t:"Class",k:"h"},...SESS.map(t=>({t,k:"h"}))]);
-  for(let d=0;d<nd;d++)S.data.classes.forEach(c=>rows.push([{t:dayName(d*2),k:"h"},{t:c.n,k:"h"},...SESS.map((_,j)=>mk(pick(z=>z.c==c.n,d,j),"c"))]));return rows}
- const f=kind=="c"?z=>z.c==name:kind=="t"?z=>z.i.includes(name):z=>z.v==name;
- rows.push([{t:"",k:"h"},...SESS.map(t=>({t,k:"h"}))]);
- for(let d=0;d<nd;d++)rows.push([{t:dayName(d*2),k:"h"},...SESS.map((_,j)=>mk(pick(f,d,j),kind))]);return rows}
-const exTimes=()=>{const g=n=>($("#"+n).value||"").trim();return[g("xtm"),g("xta")]};
-function exRows(){const x=S.ex,yr=n=>S.data.classes.find(c=>c.n==n).y;
- return[["Day","Session","Subject","Year","Class","Venue","Invigilator(s)"],...x.sit.filter(z=>z.s!=null).sort((a,b)=>a.s-b.s||yr(a.c)-yr(b.c)||a.k.localeCompare(b.k)).map(z=>[dayName(z.s),z.s%2?"Afternoon":"Morning",z.k.split("|")[1],"Year "+yr(z.c),z.c,z.v||"",z.i.join(" / ")])]}
-function exWho(){const k=$("#xkind").value,w=$("#xwho"),x=S.ex,cur=w.value;
- const L=k=="c"?S.data.classes.map(c=>c.n):k=="t"?[...new Set((x?x.sit:[]).flatMap(z=>z.i))].sort():k=="v"?[...new Set((x?x.sit:[]).map(z=>z.v).filter(Boolean))].sort():[];
- w.hidden=k=="m";w.innerHTML=L.map(n=>`<option>${n}</option>`).join("");if(L.includes(cur))w.value=cur}
-function drawEx(){const x=S.ex;if(!x){$("#ex").textContent="Exam timetable appears here.";$("#xsum").innerHTML="";return}
- const sh=x.sit.filter(z=>z.sh).length,tm=exTimes();
- $("#xsum").innerHTML=`<div class=${x.ok&&x.vok?"ok":"bad"}>${x.ok?"✔ Same-year classes sit together · no class clash · max 1 core exam per class per day · every sitting has an invigilator":"✘ Not all rules could be met: add exam days or reduce invigilation limits"}</div>`+
-  (x.vok?(exV().length&&sh?`<div class=warn>Not enough venues for one each: ${sh} sitting(s) share a hall with another class sitting the same paper.</div>`:""):`<div class=bad>✘ Not enough exam venues in ${x.short.length} session(s) (${x.short.slice(0,4).map(q=>dayName(q.s)+" "+SESS[q.s%2]+": "+q.need+" short").join(", ")}). Add venues or exam days.</div>`)+
-  (tm[0]||tm[1]?`<div class=sm>Morning ${tm[0]||"-"} · Afternoon ${tm[1]||"-"}</div>`:"");
- const kd=$("#xkind").value;
- $("#ex").innerHTML="<table>"+egrid(kd,$("#xwho").value).map(r=>"<tr>"+r.map(c=>{if(c.skip)return"";if(c.k=="h")return`<th>${c.t}</th>`;const l=c.t.split("\n");
-  return`<td${c.c!=null?` style="${bgStyle(c.c)}"`:""}${c.i?` title="${q(c.i)}"`:""}>${l[0]}${l.length>1?"<small>"+l.slice(1).join("<br>")+"</small>":""}</td>`}).join("")+"</tr>").join("")+"</table>"}
-function runEx(bump){const days=+$("#xd").value||10;S.data.xv=[...new Set($("#xv").value.split("\n").map(x=>x.trim()).filter(Boolean))];S.data.xt=exTimes();
- if(bump)S.exSeed=(S.exSeed||0)+1;let best=null;for(let k=0;k<5&&!(best&&best.ok);k++)best=exams(S.data,days,S.seed*13+k+(S.exSeed||0)*101);
- best.days=days;examVenues(best,S.data);S.ex=best;save();exWho();drawEx();exVs()}
-const exVs=()=>{const n=exV().length;$("#xvs").textContent=n?"· "+n+" venue"+(n>1?"s":""):"· none (classes use their own rooms)"};
+function egrid(kind,name){const x=S.ex,X=xs(S.data),rows=[],nd=x.days||10,sit=x.sit.filter(z=>z.s!=null),inv=z=>z.i.length?"Invigilators: "+z.i.join(" / "):"No invigilators";
+ const cellS=(L,s)=>{if(!L.length)return{t:"",sl:s};const z0=L[0];return{t:L.map(z=>[xlab(z.k),...partLines(z),inv(z)].join("\n")).join("\n+\n"),c:subCol(XSUBJ(z0)),pk:z0.k,sl:s,i:L.map(z=>`${xlab(z.k)} · ${z.c} · ${partLines(z).join(" | ")}`).join("; ")}};
+ const cellT=(L,s)=>L.length?{t:L.map(z=>[z.c,xlab(z.k),z.v||"no venue"].join("\n")).join("\n+\n"),c:subCol(XSUBJ(L[0])),sl:s,i:L.map(z=>`${z.c} · ${xlab(z.k)} · ${z.v}`).join("; ")}:{t:"",sl:s};
+ const cellV=(name,s)=>{const E=[];sit.filter(z=>z.s==s).forEach(z=>(z.parts||[]).forEach(q=>{if(String(q.v).split(" + ").includes(name))E.push({z,q})}));if(!E.length)return{t:"",sl:s};
+  const times=exTurnTimes(s&1?X.ta:X.tm,exTN()),g={};E.forEach(({z,q})=>{const r=trange(q.tn,times),k=PL[q.p]+(r?" "+r:"")+" · "+XSUBJ(z);(g[k]=g[k]||[]).push(z.c)});
+  return{t:Object.keys(g).map(k=>k+"\n"+g[k].join(" + ")).join("\n+\n"),c:subCol(XSUBJ(E[0].z)),sl:s}};
+ const H=SESS.map(t=>({t,k:"h"}));
+ if(kind=="m"){rows.push([{t:"Day",k:"h"},{t:"Class",k:"h"},...H]);for(let d=0;d<nd;d++)S.data.classes.forEach(c=>rows.push([{t:exDay(d*2),k:"h"},{t:c.n,k:"h"},...SESS.map((_,j)=>cellS(sit.filter(z=>z.c==c.n&&z.s==d*2+j),d*2+j))]));return rows}
+ rows.push([{t:"",k:"h"},...H]);
+ for(let d=0;d<nd;d++)rows.push([{t:exDay(d*2),k:"h"},...SESS.map((_,j)=>{const s=d*2+j;return kind=="c"?cellS(sit.filter(z=>z.c==name&&z.s==s),s):kind=="t"?cellT(sit.filter(z=>z.s==s&&(x.teams[z.c+"|"+d]||[]).includes(name)),s):cellV(name,s)})]);
+ return rows}
+function exRows(){const x=S.ex,yr=n=>S.data.classes.find(c=>c.n==n).y;return[["Day","Session","Subject","Type","Year","Class","Where (and when)","Invigilators"],...x.sit.filter(z=>z.s!=null).sort((a,b)=>a.s-b.s||yr(a.c)-yr(b.c)||a.k.localeCompare(b.k)).map(z=>[exDay(z.s),SESS[z.s&1],XSUBJ(z),XTS[z.T],"Year "+yr(z.c),z.c,partLines(z).join("; "),z.i.join(" / ")])]}
+function exTeamRows(){const x=S.ex,nd=x.days||10,days=[...Array(nd).keys()];return[["Class",...days.map(d=>exDay(d*2))],...S.data.classes.map(c=>[c.n,...days.map(d=>(x.teams[c.n+"|"+d]||[]).join(" / "))])]}
+function cbtMap(){const r={};S.ex.sit.forEach(z=>{if(z.s==null)return;(z.parts||[]).forEach(q=>{if(q.p!="C")return;const c=((r[z.s]=r[z.s]||{})[q.tn[0]]=r[z.s][q.tn[0]]||{});String(q.v).split(" + ").forEach(v=>(c[v]=c[v]||[]).push(z.c+" "+XSUBJ(z)))})});return r}
+function cbtRows(){const X=xs(S.data),TN=exTN(),r=cbtMap(),out=[["Session","Turn","Time","CBT lab","Classes"]];Object.keys(r).map(Number).sort((a,b)=>a-b).forEach(s=>{const tm=exTurnTimes(s&1?X.ta:X.tm,TN);Object.keys(r[s]).map(Number).sort().forEach(t=>Object.keys(r[s][t]).sort().forEach(v=>out.push([exSlot(s),"Turn "+(t+1),tm[t],v,r[s][t][v].join(", ")])))});return out}
+const exVenues=()=>[...new Set(S.ex.sit.flatMap(z=>String(z.v).split(" + ")).filter(Boolean))].sort(),exInvs=()=>[...new Set(Object.values(S.ex.teams).flat())].sort();
+function exWho(){const k=$("#xkind").value,w=$("#xwho"),cur=w.value,L=k=="c"?S.data.classes.map(c=>c.n):k=="t"&&S.ex?exInvs():k=="v"&&S.ex?exVenues():[];
+ w.hidden=!(k=="c"||k=="t"||k=="v");w.innerHTML=L.map(n=>`<option>${n}</option>`).join("");if(L.includes(cur))w.value=cur}
+function exSummary(x){const X=xs(S.data),bad=x.issues.filter(i=>i.t=="hard"),stf=x.issues.filter(i=>i.t=="staff"),sf=x.issues.filter(i=>i.t=="soft"),np=Object.keys(x.papers).length,by={H:0,C:0,B:0,P:0};Object.values(x.papers).forEach(p=>by[p.T]++);
+ let h=!x.issues.length?`<div class=ok>✔ All ${np} papers are placed: no clashes, every class has its exam venue, CBT turns and invigilator team</div>`:bad.length||stf.length?`<div class=bad>✘ ${bad.length+stf.length} problem(s) need attention${sf.length?` and ${sf.length} preference(s) are not met`:""}</div>`:`<div class=warn>⚠ ${sf.length} preference(s) not met</div>`;
+ if(x.issues.length)h+=`<details class=tools><summary>${x.issues.length} issue(s)</summary><ul>${x.issues.slice(0,40).map(i=>`<li class=${i.t=="soft"?"warn":"bad"}>${i.m}</li>`).join("")}${x.issues.length>40?`<li>... and ${x.issues.length-40} more</li>`:""}</ul></details>`;
+ if(bad.length||stf.length){const pl=exPools(S.data),K=(x.days||10)*2,TN=exTN(),sz=X.size||30,hh=[];
+  if(pl.C.length){const per=exPerTurn(pl.C,sz),n=x.sit.filter(z=>z.T=="C"||z.T=="B").length;if(n>K*TN*per)hh.push(`CBT: ${n} class sittings but the labs take ${per} class(es) per turn x ${TN} turns x ${K} sessions = ${K*TN*per}.`)}
+  const perDay={};x.sit.forEach(z=>{if(z.s!=null)(perDay[z.s>>1]=perDay[z.s>>1]||new Set()).add(z.c)});const mx=Math.max(0,...Object.values(perDay).map(s=>s.size)),act=S.data.teachers.filter(t=>!(S.data.tl&&S.data.tl[t]&&S.data.tl[t].a=="N")).length;
+  if(mx*X.inv>act)hh.push(`Invigilators: up to ${mx*X.inv} are needed on one day (${mx} classes x ${X.inv}) but only ${act} teachers are active.`);
+  if(hh.length)h+=`<div class=warn>${hh.join(" ")} Add labs, turns, teachers or exam days.</div>`}
+ return h+`<div class=sm>${np} papers: ${by.H} theory · ${by.B} CBT + theory · ${by.C} CBT only · ${by.P} practical · ${Object.keys(x.teams).length} class-day teams of ${X.inv}</div>`}
+function teamsHtml(){const x=S.ex,N=xs(S.data).inv|0,act=S.data.teachers.filter(t=>!(S.data.tl&&S.data.tl[t]&&S.data.tl[t].a=="N")),nd=x.days||10,days=[...Array(nd).keys()],used={},duty={};
+ Object.entries(x.teams).forEach(([k,L])=>{const d=k.split("|")[1];L.forEach(t=>{used[t+"|"+d]=1;duty[t]=(duty[t]||0)+1})});const active=new Set(x.sit.filter(z=>z.s!=null).map(z=>z.c+"|"+(z.s>>1)));
+ return`<p class=sm>The same team stays with a class for the whole day, in every venue it goes to. Teachers already attached to another class that day are greyed out; the number is each teacher's total duty days.</p><div style="overflow-x:auto"><table><tr><th>Class</th>${days.map(d=>`<th>${exDay(d*2)}</th>`).join("")}</tr>`+
+  S.data.classes.map(c=>`<tr><td><b>${c.n}</b></td>${days.map(d=>{const k=c.n+"|"+d;if(!active.has(k))return"<td><small>no paper</small></td>";const L=x.teams[k]||[];
+   return"<td>"+Array.from({length:Math.max(N,L.length)},(_,j)=>`<select class=xtm data-k="${q(k)}" data-j=${j}><option value="">-</option>${act.map(t=>`<option value="${q(t)}"${L[j]==t?" selected":""}${used[t+"|"+d]&&L[j]!=t?" disabled":""}>${t} (${duty[t]||0})</option>`).join("")}</select>`).join("<br>")+"</td>"}).join("")}</tr>`).join("")+"</table></div>"}
+function cbtHtml(){const X=xs(S.data),TN=exTN(),r=cbtMap(),slots=Object.keys(r).map(Number).sort((a,b)=>a-b);if(!slots.length)return"<p class=sm>No CBT papers in this timetable.</p>";
+ return`<p class=sm>Each session is split into turns. One group of classes sits the CBT in the lab(s) per turn while the other classes do their theory papers in their own venues.</p><div style="overflow-x:auto"><table><tr><th>Session</th>${Array.from({length:TN},(_,i)=>`<th>Turn ${i+1}</th>`).join("")}</tr>`+
+  slots.map(s=>{const tm=exTurnTimes(s&1?X.ta:X.tm,TN);return`<tr><td><b>${exSlot(s)}</b></td>${Array.from({length:TN},(_,t)=>{const c=r[s][t];return`<td><small>${tm[t]}</small>${c?Object.keys(c).sort().map(v=>`<br><b>${v}</b>: ${c[v].join(", ")}`).join(""):""}</td>`}).join("")}</tr>`}).join("")+"</table></div>"}
+function papersHtml(){const x=S.ex,K=(x.days||10)*2,P=Object.values(x.papers).sort((a,b)=>a.y-b.y||a.x.localeCompare(b.x)||a.T.localeCompare(b.T)||a.b-b.b);
+ return`<p class=sm>Pick a new slot for a paper. If the move is not allowed, the reasons are shown.</p><div style="overflow-x:auto"><table><tr><th>Year</th><th>Paper</th><th>Classes</th><th>Slot</th></tr>`+P.map(p=>`<tr><td>${p.y}</td><td>${xlab(p.k)}</td><td>${p.cls.join(", ")}</td><td><select class=xslot data-pk="${q(p.k)}">${p.s==null?"<option value=''>Not placed</option>":""}${Array.from({length:K},(_,s)=>`<option value=${s}${p.s===s?" selected":""}>${exSlot(s)}</option>`).join("")}</select></td></tr>`).join("")+"</table></div>"}
+function drawEx(){const x=S.ex;$("#xun").hidden=!S.exUndo;$("#xdnd").innerHTML="";$("#xre").hidden=!x;
+ if(!x){$("#ex").textContent="Exam timetable appears here.";$("#xsum").innerHTML="";return}
+ exStatus(x,S.data);const X=xs(S.data),kd=$("#xkind").value;$("#xsum").innerHTML=exSummary(x)+(X.tm||X.ta?`<div class=sm>Morning ${X.tm||"-"} · Afternoon ${X.ta||"-"} · ${exTN()} turns per session</div>`:"");
+ if(kd=="r"){$("#ex").innerHTML=teamsHtml();return}if(kd=="p"){$("#ex").innerHTML=papersHtml();return}if(kd=="g"){$("#ex").innerHTML=cbtHtml();return}
+ const drag=kd=="c"||kd=="m";
+ $("#ex").innerHTML=(drag?`<p class=sm>Drag a paper to another slot: dropping on an empty cell moves it, dropping on another paper swaps the two. Green cells are allowed.</p>`:"")+'<div style="overflow-x:auto"><table>'+egrid(kd,$("#xwho").value).map(r=>"<tr>"+r.map(c=>{if(c.k=="h")return`<th>${c.t}</th>`;const l=c.t.split("\n");
+  return`<td${c.c!=null?` style="${bgStyle(c.c)}"`:""}${c.i?` title="${q(c.i)}"`:""}${c.sl!=null&&drag?` data-sl=${c.sl}`:""}${c.pk&&drag?` data-pk="${q(c.pk)}" draggable=true`:""}>${l[0]}${l.length>1?"<small>"+l.slice(1).join("<br>")+"</small>":""}</td>`}).join("")+"</tr>").join("")+"</table></div>"}
+const exScore=e=>e.issues.reduce((a,i)=>a+(i.t=="hard"?100:i.t=="staff"?10:1),0);
+function runEx(bump){const X=exRead();normSubj();if(bump)S.exSeed=(S.exSeed||0)+1;$("#xsum").innerHTML="<div class=sm>Generating ...</div>";
+ setTimeout(()=>{const t0=performance.now();let best=null;
+  for(let k=0;k<6;k++){const e=exams(S.data,X.days,S.seed*13+k+(S.exSeed||0)*101,k?t0+4000:t0+2500);if(!best||exScore(e)<exScore(best))best=e;if(!best.issues.length||performance.now()>t0+4000)break}
+  S.exUndo=null;S.ex=best;save();exWho();drawEx()},30)}
 $("#gx").onclick=()=>runEx(false);$("#gx2").onclick=()=>runEx(true);
-$("#xvb").onclick=()=>{S.data.xv=[...new Set($("#xv").value.split("\n").map(x=>x.trim()).filter(Boolean))];if(S.ex){examVenues(S.ex,S.data);exWho()}save();exVs();drawEx();say("Exam venues saved")};
-["#xtm","#xta"].forEach(i=>$(i).onchange=()=>{S.data.xt=exTimes();save();drawEx()});
+$("#xset").addEventListener("change",()=>{exRead();save()});
+$("#xre").onclick=()=>{if(!S.ex)return;exRead();exSnap();exAlloc(S.ex,S.data);exStatus(S.ex,S.data);save();exWho();drawEx();say("Venues, CBT turns and invigilator teams re-assigned with the current settings",4000)};
+$("#xun").onclick=()=>{if(!S.exUndo)return;S.ex=JSON.parse(S.exUndo);S.exUndo=null;save();exWho();drawEx();say("Last change undone")};
 $("#xkind").onchange=()=>{exWho();drawEx()};$("#xwho").onchange=drawEx;
-$("#xv").value=(S.data.xv||[]).join("\n");$("#xtm").value=(S.data.xt||[])[0]||"";$("#xta").value=(S.data.xt||[])[1]||"";
-const exImg=(k,n)=>{const t=exTimes();return drawImg(egrid(k,n),k=="m"?"EXAM MASTER SCHEDULE":n,(k=="c"?"Exam timetable (class)":k=="t"?"Invigilation timetable":k=="v"?"Venue timetable":"All classes")+(t[0]||t[1]?" · Morning "+(t[0]||"-")+" · Afternoon "+(t[1]||"-"):""))};
-$("#xei").onclick=async()=>{if(!S.ex)return say("Generate the exam timetable first");const k=$("#xkind").value,n=k=="m"?"Exam master":$("#xwho").value;dl(await blobOf(exImg(k,n),$("#xfmt").value),safe("Exam "+n)+"."+$("#xfmt").value.toLowerCase())};
+// ---- drag and drop / manual edits: every change is tried on a copy first and only kept when it creates no new clash
+let DRAG=null;const exSnap=()=>{S.exUndo=JSON.stringify(S.ex)};
+function exTry(ex,ch){const base=new Set(exIssues(ex,S.data).map(i=>i.m)),e2=JSON.parse(JSON.stringify(ex)),tc=new Set();
+ Object.entries(ch).forEach(([k,s])=>{tc.add(e2.papers[k].s);tc.add(s);e2.papers[k].s=s});tc.delete(null);tc.delete(undefined);exAlloc(e2,S.data,[...tc]);
+ const now=exIssues(e2,S.data),fresh=now.filter(i=>!base.has(i.m));e2.issues=now;e2.ok=!now.some(i=>i.t!="soft");return{e2,hard:fresh.filter(i=>i.t=="hard"),warn:fresh.filter(i=>i.t!="hard")}}
+function exWhy(ch,hard){const ks=Object.keys(ch),K=(S.ex.days||10)*2;let alt="";
+ if(ks.length==1){const ok=[];for(let s=0;s<K&&ok.length<10;s++)if(s!=S.ex.papers[ks[0]].s&&!exTry(S.ex,{[ks[0]]:s}).hard.length)ok.push(s);
+  alt=ok.length?`<div class=row>Allowed slots: ${ok.map(s=>`<button class="b g" data-mv="${s}" data-k="${q(ks[0])}">${exSlot(s)}</button>`).join("")}</div>`:"<div>No other slot is allowed for this paper right now.</div>"}
+ $("#xdnd").innerHTML=`<div class=box><b class=bad>That move is not allowed:</b><ul>${hard.slice(0,8).map(i=>`<li>${i.m}</li>`).join("")}</ul>${alt}</div>`}
+function exApply(ch,label){const r=exTry(S.ex,ch);if(r.hard.length){exWhy(ch,r.hard);return false}
+ exSnap();S.ex=r.e2;save();exWho();drawEx();say(label+(r.warn.length?` - note: ${r.warn.length} new preference/staffing issue(s), see the summary`:""),5000);return true}
+function exMark(){const P=S.ex.papers,cur=P[DRAG.k].s,cache={};document.querySelectorAll("#ex td[data-sl]").forEach(td=>{td.classList.remove("xok","xno");const s=+td.dataset.sl,k2=td.dataset.pk||"";
+ if(s==cur||k2==DRAG.k)return;const ch=k2&&P[k2].s!=null?{[DRAG.k]:s,[k2]:cur}:{[DRAG.k]:s},key=JSON.stringify(ch);if(!(key in cache))cache[key]=!exTry(S.ex,ch).hard.length;td.classList.add(cache[key]?"xok":"xno")})}
+const exClear=()=>document.querySelectorAll("#ex td").forEach(td=>td.classList.remove("xok","xno"));
+$("#ex").addEventListener("dragstart",e=>{const td=e.target.closest("td[data-pk]");if(!td||!S.ex)return;DRAG={k:td.dataset.pk};e.dataTransfer.setData("text/plain",DRAG.k);e.dataTransfer.effectAllowed="move";setTimeout(exMark,0)});
+$("#ex").addEventListener("dragend",()=>{DRAG=null;exClear()});
+$("#ex").addEventListener("dragover",e=>{if(DRAG&&e.target.closest("td[data-sl]"))e.preventDefault()});
+$("#ex").addEventListener("drop",e=>{const td=e.target.closest("td[data-sl]");if(!td||!DRAG)return;e.preventDefault();const P=S.ex.papers,k=DRAG.k,s=+td.dataset.sl,k2=td.dataset.pk||"";DRAG=null;exClear();if(s==P[k].s||k2==k)return;
+ const sw=k2&&P[k2].s!=null&&P[k2].s!=P[k].s;exApply(sw?{[k]:s,[k2]:P[k].s}:{[k]:s},sw?`Swapped ${xlab(k)} with ${xlab(k2)}`:`Moved ${xlab(k)} to ${exSlot(s)}`)});
+$("#xdnd").addEventListener("click",e=>{const b=e.target.closest("[data-mv]");if(b)exApply({[b.dataset.k]:+b.dataset.mv},`Moved ${xlab(b.dataset.k)} to ${exSlot(+b.dataset.mv)}`)});
+$("#ex").addEventListener("change",e=>{const t=e.target;
+ if(t.classList.contains("xtm")){const k=t.dataset.k,j=+t.dataset.j;exSnap();const L=S.ex.teams[k]=S.ex.teams[k]||[];if(t.value)L[j]=t.value;else L.splice(j,1);S.ex.teams[k]=L.filter(Boolean);exSync(S.ex);save();drawEx()}
+ else if(t.classList.contains("xslot")){const k=t.dataset.pk,s=+t.value;if(!exApply({[k]:s},`Moved ${xlab(k)} to ${exSlot(s)}`))drawEx()}});
+const exImg=(k,n)=>{const X=xs(S.data);return drawImg(egrid(k,n),k=="m"?"EXAM MASTER SCHEDULE":n,(k=="c"?"Exam timetable (class)":k=="t"?"Invigilation timetable":k=="v"?"Venue timetable":"All classes")+(X.tm||X.ta?" · Morning "+(X.tm||"-")+" · Afternoon "+(X.ta||"-"):""))};
+const exImgOk=()=>{if(!S.ex){say("Generate the exam timetable first");return false}if(["r","p","g"].includes($("#xkind").value)){say("Images are for the class, invigilator, venue and master views");return false}return true};
+$("#xei").onclick=async()=>{if(!exImgOk())return;const k=$("#xkind").value,n=k=="m"?"Exam master":$("#xwho").value;dl(await blobOf(exImg(k,n),$("#xfmt").value),safe("Exam "+n)+"."+$("#xfmt").value.toLowerCase())};
 $("#xez").onclick=async()=>{if(!S.ex)return say("Generate the exam timetable first");const f=$("#xfmt").value,ext=f.toLowerCase(),files=[];say("Building images ...");
  const add=async(p,c)=>files.push({name:p,data:new Uint8Array(await(await blobOf(c,f)).arrayBuffer())});
  for(const c of S.data.classes)await add("Classes/"+safe(c.n)+"."+ext,exImg("c",c.n));
- for(const t of[...new Set(S.ex.sit.flatMap(z=>z.i))].sort())await add("Invigilators/"+safe(t)+"."+ext,exImg("t",t));
- for(const v of[...new Set(S.ex.sit.map(z=>z.v).filter(Boolean))].sort())await add("Venues/"+safe(v)+"."+ext,exImg("v",v));
+ for(const t of exInvs())await add("Invigilators/"+safe(t)+"."+ext,exImg("t",t));
+ for(const v of exVenues())await add("Venues/"+safe(v)+"."+ext,exImg("v",v));
  await add("Exam master."+ext,exImg("m",""));dl(zipStore(files),"Exam_timetables_"+f+".zip");say(files.length+" images zipped")};
 $("#xxl").onclick=()=>{if(!S.ex)return say("Generate the exam timetable first");const wb=XLSX.utils.book_new(),used=new Set();
- const add=(k,n,pre)=>{let nm=(pre+n).replace(/[\[\]:*?\/\\]/g,"-").slice(0,31);while(used.has(nm))nm=nm.slice(0,28)+"~";used.add(nm);
-  const rows=egrid(k,n),ws=XLSX.utils.aoa_to_sheet(rows.map(r=>r.map(x=>x.t)));XLSX.utils.book_append_sheet(wb,ws,nm)};
- add("m","Schedule","Exam master ");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exRows()),"Exam list");
- S.data.classes.forEach(c=>add("c",c.n,"X "));[...new Set(S.ex.sit.flatMap(z=>z.i))].sort().forEach(t=>add("t",t,"Inv "));
- [...new Set(S.ex.sit.map(z=>z.v).filter(Boolean))].sort().forEach(v=>add("v",v,"Venue "));XLSX.writeFile(wb,"Exam_Timetable.xlsx")};
+ const add=(k,n,pre)=>{let nm=(pre+n).replace(/[\[\]:*?\/\\]/g,"-").slice(0,31);while(used.has(nm))nm=nm.slice(0,28)+"~";used.add(nm);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(egrid(k,n).map(r=>r.map(x=>x.t))),nm)};
+ add("m","Schedule","Exam master ");[["Exam list",exRows()],["Invigilator teams",exTeamRows()],["CBT schedule",cbtRows()]].forEach(([n,r])=>{used.add(n);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(r),n)});
+ S.data.classes.forEach(c=>add("c",c.n,"X "));exInvs().forEach(t=>add("t",t,"Inv "));exVenues().forEach(v=>add("v",v,"Venue "));XLSX.writeFile(wb,"Exam_Timetable.xlsx")};
 $("#kind").onchange=()=>{whoList();drawGrid()};$("#who").onchange=drawGrid;
 $("#go").onclick=()=>{S.seed=S.seed||1;run()};$("#re").onclick=()=>{S.seed++;run()};
 $("#xl").onclick=()=>{if(!S.pos)return say("Generate a timetable first");const wb=XLSX.utils.book_new(),used=new Set();
@@ -599,6 +738,7 @@ $("#xl").onclick=()=>{if(!S.pos)return say("Generate a timetable first");const w
  if(S.ex)XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exRows()),"Exam Schedule");XLSX.writeFile(wb,"Generated_Timetables.xlsx")};
 
 /* ---------- data editors: classes, teachers, subjects ---------- */
+const fmtIn=t=>{t=String(t||"").toLowerCase();const c=/cbt|mcq|computer/.test(t),p=/pract/.test(t),h=/hall|theor|essay/.test(t);return c&&p?(h?"CBT + Practical + Hall":"CBT + Practical"):c?(h||!/only/.test(t)&&/\+/.test(t)?"CBT + Hall":"CBT"):p?(h?"Practical + Hall":"Practical"):h?"Hall":"CBT + Hall"};
 function applySubj(){CORESET=new Set(S.data.subj.filter(s=>s.k=="Y").map(s=>s.c));NOEX=new Set(S.data.subj.filter(s=>s.x=="N").map(s=>s.c))}
 const ED={},TLm=()=>S.data.tl,uniq=(l,p)=>{let n=1;while(l.includes(p+n))n++;return p+n};
 ED.cls={cols:[["n","Class"],["y","Year","n"],["l","Level","s",["","Junior","Middle","Senior"]]],rows:()=>S.data.classes,
@@ -611,7 +751,7 @@ ED.tch={cols:[["n","Teacher"],["a","Active","s",["Y","N"]],["m","Max periods per
    if(TLm()[o]){TLm()[v]=TLm()[o];delete TLm()[o]}S.data.al.forEach(a=>a.t=a.t.map(x=>x==o?v:x))}else{(TLm()[o]=TLm()[o]||{})[k]=v}},
  del(i){const o=S.data.teachers[i];if(!confirm("Remove "+o+"? Their lessons will have no teacher."))return false;S.data.teachers.splice(i,1);delete TLm()[o];S.data.al.forEach(a=>a.t=a.t.map(x=>x==o?"":x))},
  add(){S.data.teachers.push(uniq(S.data.teachers,"NEW TEACHER "))}};
-ED.sub={cols:[["c","Code"],["n","Name"],["x","Exam","s",["Y","N"]],["k","Core","s",["N","Y"]]],rows:()=>S.data.subj,
+ED.sub={cols:[["c","Code"],["n","Name"],["x","Exam","s",["Y","N"]],["k","Core","s",["N","Y"]],["e","Exam format","s",Object.keys(XFMT)]],rows:()=>S.data.subj,
  set(i,k,v){const s=S.data.subj[i];if(k=="c"){v=v.trim().toUpperCase();if(!v||S.data.subj.some(x=>x.c==v))return say("Subject codes must be unique");const o=s.c;S.data.al.forEach(a=>a.s=a.s.split(" / ").map(x=>x==o?v:x).join(" / "))}s[k]=v;applySubj()},
  del(i){const s=S.data.subj[i];if(S.data.al.some(a=>a.s.split(" / ").includes(s.c))){say(s.c+" is used in allocations - remove those first");return false}S.data.subj.splice(i,1);applySubj()},
  add(){S.data.subj.push({c:uniq(S.data.subj.map(s=>s.c),"SUB"),n:"",x:"Y",k:"N"})}};
@@ -624,7 +764,7 @@ function withUndo(label,fn,keep){S.undo={label,snap:JSON.stringify(S.data),pos:J
 $("#undo").onclick=()=>{const u=S.undo;if(!u)return;S.data=Object.assign(fresh(),JSON.parse(u.snap));S.pos=JSON.parse(u.pos);S.undo=null;save();refresh();Object.keys(ED).forEach(edDraw);updUndo();drawGrid();say("Undone: "+u.label)};
 ED.tch.ph={n:"Type a teacher name to add",m:"8 (default)",u:"MON:1-3;FRI"};ED.sub.ph={c:"Code, e.g. MTH",n:"Subject name"};
 ED.tch.create=v=>{if(S.data.teachers.includes(v)){say("That teacher already exists");return false}S.data.teachers.push(v)};
-ED.sub.create=v=>{v=v.toUpperCase();if(S.data.subj.some(x=>x.c==v)){say("That subject code already exists");return false}S.data.subj.push({c:v,n:"",x:"Y",k:"N"});applySubj()};
+ED.sub.create=v=>{v=v.toUpperCase();if(S.data.subj.some(x=>x.c==v)){say("That subject code already exists");return false}S.data.subj.push({c:v,n:"",x:"Y",k:"N",e:"CBT + Hall"});applySubj()};
 ED.tch.bulk=["a","m","u"];
 ED.tch.cols=[...ED.tch.cols,["w","Periods / week","r"],["c","Classes","r"],["z","Scheduled Mon-Fri","r"]];
 {const base=ED.tch.rows;ED.tch.rows=()=>{const L=teacherLoads(),T=teacherDays();return base().map(r=>{const o=L[r.n]||{w:0,cls:new Set()},cap=5*(+r.m||8);return{...r,w:barH(o.w,cap)+o.w+(o.w>cap?` (over ${cap})`:` / ${cap}`),c:o.cls.size,z:T?(T[r.n]||[0,0,0,0,0]).join(" · "):"—",_b:o.w>cap}})}}
@@ -658,7 +798,7 @@ function edDel(id,i){if(ED[id].del(i)===false)return;edDone(id)}
 function edAdd(id){ED[id].add();edDone(id)}
 function edDup(id,i){ED[id].dup(i);edDone(id)}
 
-function subSample(){withUndo("add common subjects",()=>SUBJ0.forEach(([c,n,x,k])=>{if(!S.data.subj.some(s=>s.c==c))S.data.subj.push({c,n,x,k})}),true);applySubj();edDraw("sub");refresh();say("Common subjects added - edit or delete any")}
+function subSample(){withUndo("add common subjects",()=>SUBJ0.forEach(([c,n,x,k])=>{if(!S.data.subj.some(s=>s.c==c))S.data.subj.push({c,n,x,k,e:DEFFMT[c]||"CBT + Hall"})}),true);applySubj();edDraw("sub");refresh();say("Common subjects added - edit or delete any")}
 function subFromAl(){let n=0;withUndo("subjects from allocations",()=>S.data.al.forEach(A=>comps(A).forEach(c=>{if(!S.data.subj.some(s=>s.c==c)){S.data.subj.push({c,n:"",x:"Y",k:"N"});n++}})),true);applySubj();edDraw("sub");refresh();say(n+" subject code(s) added from the allocations")}
 /* ---------- allocations: apply to same year group / all classes ---------- */
 const scopeOf=(c,sc)=>{const k=clsOf(c);return S.data.classes.filter(x=>sc=="all"||(sc=="year"&&k&&x.y==k.y)||x.n==c).map(x=>x.n)};
@@ -942,7 +1082,7 @@ function drawNav(t){const g=PG[t],o=GR[g];lastIn[g]=t;document.querySelectorAll(
  $("#subnav").hidden=o.p.length<2;$("#subnav").innerHTML=o.p.map(p=>`<button data-t="${p[0]}"${p[0]==t?" class=on":""}>${p[1]}</button>`).join("");$("#gdesc").textContent=o.d}
 function goTab(t,force){if(!force&&!leaveCheck(curTab,t))return;curTab=t;
  document.querySelectorAll("section").forEach(e=>e.classList.remove("on"));$("#"+t).classList.add("on");drawNav(t);
- if(ED[t])edDraw(t);if(t=="clr")drawClr();if(t=="wl")drawWl();if(t=="ver")drawVer();if(t=="rul"){drawRul();loadBell()}if(t=="emg")drawEmg();if(t=="gen")drawGrid();if(t=="exm"){exWho();exVs();drawEx()}scrollTo(0,0)}
+ if(t=="sub")normSubj();if(ED[t])edDraw(t);if(t=="clr")drawClr();if(t=="wl")drawWl();if(t=="ver")drawVer();if(t=="rul"){drawRul();loadBell()}if(t=="emg")drawEmg();if(t=="gen")drawGrid();if(t=="exm"){exUi();exWho();drawEx();$("#xset").open=!S.ex}scrollTo(0,0)}
 const updScope=()=>{const v=$("#sc").value;$("#scl").innerHTML=v=="this"?"Edits apply to this class only":`<span class=warn>⚠ Edits also apply to ${v=="year"?"the same year group":"all classes"}</span>`};$("#sc").addEventListener("change",updScope);updScope();
 const isDark=()=>(document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"))=="dark";
 const lab=()=>$("#th").textContent=isDark()?"☀ Light":"🌙 Dark";if(LS.ttTheme)document.documentElement.dataset.theme=LS.ttTheme;lab();
